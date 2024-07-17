@@ -1,0 +1,38 @@
+//staff.prisma
+
+model Staffs {
+  id             String   @id @unique @default(uuid())
+  FirstName      String
+  LastName       String
+  Address        String
+  Contact        String
+  Email          String
+  HashedPassword String
+  SaltPassword   String
+  DepartmentName String
+  Designation    String
+  Role           String // Waiter, Cashier
+  Salary         Float
+  Incentive      Float?
+  Status         String   @default("Active")
+  HotelId        String
+  Hotel          Hotels   @relation(fields: [HotelId], references: [id])
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  // Parent - Child Relationship
+  Attendance StaffAttendance[]
+}
+
+model StaffAttendance {
+  id        String   @id @unique @default(uuid())
+  Date      String
+  Arrival   String
+  Departure String
+  Type      String   @default("Absent") // Absent, Present, Half-Day, etc.
+  Note      String?
+  StaffId   String
+  Staff     Staffs   @relation(fields: [StaffId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

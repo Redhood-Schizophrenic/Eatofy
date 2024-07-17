@@ -1,0 +1,66 @@
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  cursor: pointer;
+}
+
+.hamburger div {
+  background-color: #fff;
+  transition: all 0.3s ease;
+}
+
+.hamburger.open .bar1 {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.hamburger.open .bar2 {
+  opacity: 0;
+}
+
+.hamburger.open .bar3 {
+  transform: rotate(45deg) translate(-5px, -6px);
+}
+
+.icons{
+  transition-duration: 200ms;
+  border-radius: 10px;
+}
+
+.icon{
+  color: #ef4444;
+}
+
+.icons:hover{
+  color: #fff;
+}
+
+/* SideNav.css */
+.navbar {
+  transition: all 0.3s ease;
+  height: 100dvh;
+}
+
+.navbar.expanded {
+  width: 250px;
+}
+
+.navbar.collapsed {
+  width: 70px;
+}
+
+.icons_name {
+  transition: all 0.3s ease;
+}
+
+.hidden {
+  display: none;
+}
+
+.block {
+  display: block;
+}
+
+#form.active{
+  display: none;
+}

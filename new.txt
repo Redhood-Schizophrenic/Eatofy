@@ -1,0 +1,20 @@
+const status = "Inactive";
+      const section_id = sessionStorage.getItem('section_id');
+
+      const response = await fetch(`${ApiHost}/api/hotel/sections/management/update/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          'status': status,
+          'section_id': section_id
+        }),
+      })
+
+      const data = await response.json();
+
+      if (data.returncode === 200) {
+        alert("Section Deleted");
+        fetchSections();
+      } 

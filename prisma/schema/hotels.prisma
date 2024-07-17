@@ -1,0 +1,33 @@
+//hotels.prisma
+
+model Hotels {
+  id             String   @id @unique @default(uuid())
+  HotelName      String   @unique
+  Email          String   @unique
+  HashedPassword String
+  SaltPassword   String
+  Address        String
+  Speciality     String[]
+  HotelLogo      Bytes?
+  Contacts       String[]
+  Website        String?
+  FSSAICode      String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  //Parent-Child Relation
+  Customers      Customers[]
+  Sections       Sections[]
+  Tables         Tables[]
+  Reservations   TableReservation[]
+  Subscription   Hotel_Subscription[]
+  MenuCategory   MenuCategory[]
+  Dishes         Dishes[]
+  Supplier       Suppliers[]
+  ItemCategory   ItemCategories[]
+  Items          Items[]
+  Invoice        PurchasedInvoice[]
+  AvailableStock AvailableStock[]
+  Staff          Staffs[]
+  Order          Orders[]
+}

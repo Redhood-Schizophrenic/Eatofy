@@ -1,0 +1,106 @@
+//inventory.prisma
+
+model Suppliers {
+  id           String   @id @unique @default(uuid())
+  SupplierName String
+  Contact      String
+  Email        String
+  GSTIN        String
+  Address      String?
+  Status       String   @default("Active")
+  HotelId      String
+  Hotel        Hotels   @relation(fields: [HotelId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  //Parent-Child Relationship
+  StockInvoice PurchasedInvoice[]
+}
+
+model ItemCategories {
+  id           String   @id @unique @default(uuid())
+  CategoryName String
+  Description  String?
+  HotelId      String
+  Status       String   @default("Active")
+  Hotel        Hotels   @relation(fields: [HotelId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Parent Child Relation
+  Item Items[]
+}
+
+model Items {
+  id          String         @id @unique @default(uuid())
+  ItemName    String
+  Description String?
+  HotelId     String
+  Hotel       Hotels         @relation(fields: [HotelId], references: [id])
+  CategoryId  String
+  Status      String         @default("Active")
+  Category    ItemCategories @relation(fields: [CategoryId], references: [id])
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  //Parent Child Relation
+  PurchasedStock PurchasedStock[]
+  AvailableStock AvailableStock[]
+  DailyStock     DailyStock[]
+}
+
+model PurchasedInvoice {
+  id            String    @id @unique @default(uuid())
+  InvoiceNo     String?
+  Date          String
+  PaymentMode   String?
+  TotalAmount   Float
+  BalanceAmount Float     @default(0.00)
+  PaymentStatus String    @default("Paid")
+  SupplierId    String
+  Suppliers     Suppliers @relation(fields: [SupplierId], references: [id])
+  HotelId       String
+  Hotel         Hotels    @relation(fields: [HotelId], references: [id])
+  Status        String    @default("Active")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Parent-Child Relationship
+  Stock PurchasedStock[]
+}
+
+model PurchasedStock {
+  id        String           @id @unique @default(uuid())
+  InvoiceId String
+  Invoice   PurchasedInvoice @relation(fields: [InvoiceId], references: [id])
+  ItemId    String
+  Items     Items            @relation(fields: [ItemId], references: [id])
+  Status    String           @default("Active")
+  Quantity  String
+  Unit      String
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model AvailableStock {
+  id        String   @id @unique @default(uuid())
+  HotelId   String
+  Hotel     Hotels   @relation(fields: [HotelId], references: [id])
+  ItemId    String
+  Items     Items    @relation(fields: [ItemId], references: [id])
+  Quantity  String
+  Unit      String
+  Status    String   @default("Available")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model DailyStock {
+  id       String @id @unique @default(uuid())
+  ItemId   String
+  Items    Items  @relation(fields: [ItemId], references: [id])
+  Quantity String
+
+  Status String @default("Active")
+  Date   String
+}
