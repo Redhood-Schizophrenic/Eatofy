@@ -15,6 +15,13 @@ export async function order_display ({
 			where: {
 				BillId: bill_id,
 			},
+			include: {
+				Menu: {
+					include: {
+						Dish: true
+					}
+				}
+			}
 		});
 
 		// Database is disconnected

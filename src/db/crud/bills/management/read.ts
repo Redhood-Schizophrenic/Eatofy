@@ -44,6 +44,45 @@ export async function read_hotel_bills({
 	}
 }
 
+// Check Bill Exists
+interface TableInterface {
+	table_id: string
+}
+export async function read_bill_info_by_table({
+	table_id
+}: TableInterface) {
+	try {
+
+		// Fetching the record
+		const result = await db.bills.findMany({
+			where: {
+				TableId: table_id,
+				Table: {
+					Status: "Booked"
+				},
+				Status: "Booked",
+			}
+		});
+
+		// Database is disconnected
+		db.$disconnect();
+
+		return {
+			returncode: 200,
+			message: "Data Fetched",
+			output: result
+		};
+
+	} catch (error: any) {
+
+		return {
+			returncode: 500,
+			message: error.message,
+			output: []
+		};
+
+	}
+}
 
 // Fetch Bill Info
 interface BillInterface {

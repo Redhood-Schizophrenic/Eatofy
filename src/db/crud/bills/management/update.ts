@@ -48,7 +48,7 @@ export async function bill_payment({
 				DiscountRate: discount_rate,
 				DiscountPrice: discount_amount,
 				PaymentMode: payment_mode,
-				Status: payment_status,
+				Status: payment_status
 			}
 		});
 

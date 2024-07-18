@@ -9,11 +9,6 @@ import { FaArrowLeft, FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import { useReactToPrint } from 'react-to-print';
 
-interface carts {
-  id: string | null;
-  quantity: number | null;
-}
-
 export default function Menu() {
 
   const [isLoading, setLoading]: any = useState(false);
@@ -37,9 +32,8 @@ export default function Menu() {
   const [paymentstatus, setpaymentstatus] = useState('');
   const [AddCrm, setAddCrm] = useState(false);
   const [isBillSaved, setisBillSaved] = useState(false);
-  const [isSavedInCart, setisSavedInCart] = useState(false);
-  const [SavedCart, setSavedCart] = useState(() => {
-    const savedcart = sessionStorage.getItem('cart');
+  const [SavedCart, setSavedCart] = useState(()=> {
+    const savedcart = localStorage.getItem('cart');
     return savedcart ? JSON.parse(savedcart) : [];
   })
 
@@ -308,18 +302,14 @@ export default function Menu() {
   const handleOrder = async (e: any) => {
     e.preventDefault();
 
-    sessionStorage.setItem('cart', JSON.stringify(Cart));
-
     try {
 
-      const table_id: any = sessionStorage.getItem('table_id');
-      sessionStorage.setItem('table_id_previous', table_id);
       const orderData = Cart.map((item: any) => ({
         quantity: item.quantity.toString(),
         menu_id: item.id
       }));
 
-      setSavedCart((carts: any) => [...carts, Cart]);
+      setSavedCart((carts:any)=>[...carts, Cart]);
 
       const response = await fetch(`${ApiHost}/api/hotel/orders/management/add`, {
         method: 'POST',
@@ -358,7 +348,7 @@ export default function Menu() {
   }
 
   useEffect(() => {
-    fetchBill();
+    fetchBill();  
     fetchAllCategorys();
     fetchAllDishes();
 
@@ -368,21 +358,7 @@ export default function Menu() {
       console.log(pathname);
     }
 
-    const PrevCart: any = sessionStorage.getItem('cart') | null;
-    const Table_id = sessionStorage.getItem('table_id');
-    const Table_p_id = sessionStorage.getItem('table_id_previous');
-
-    if (Table_id === Table_p_id) {
-      if (PrevCart.length === 0) {
-        setisSavedInCart(false);
-      } else {
-        console.log("This is the TEST");
-        setisSavedInCart(true);
-        setShowCart(true);
-      }
-    } else {
-      console.log("This is a different table");
-    }
+    localStorage.setItem('cart', Cart);
 
   }, [pathname, Cart]);
 
@@ -525,101 +501,35 @@ export default function Menu() {
                           <span>Price</span>
                           <span>Action</span>
                         </div>
-                        
-
-                        <div className='w-full'>
-                          {
-                            <table className="w-full min-w-max table-auto text-left">
-                              <thead className="">
-                                <tr>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
-                                      Sr No.
-                                    </p>
-                                  </th>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
-                                      Image
-                                    </p>
-                                  </th>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
-                                      Name
-                                    </p>
-                                  </th>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans text-sm text-blue-gray-900 font-bold leading-none opacity-70">
-                                      Country
-                                    </p>
-                                  </th>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans text-sm text-blue-gray-900 font-bold leading-none opacity-70">
-                                      Region
-                                    </p>
-                                  </th>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans text-sm text-blue-gray-900 font-bold leading-none opacity-70">
-                                      Description
-                                    </p>
-                                  </th>
-
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {
-                                  Cart.map((items: any) => (
-                                    <tr key={items.id}>
-                                      <td className="p-4 border-b border-blue-gray-50">
-                                        <p className="flex justify-center items-center antialiased font-sans text-xl leading-normal text-blue-gray-900 font-bold">
-                                          {count = count + 1}
-                                        </p>
-                                      </td>
-                                      <td className="p-4 border-b border-blue-gray-50">
-                                        <div className="flex flex-col items-center gap-3">
-                                          {
-                                            items.Image.map((img) => (
-                                              <img
-                                                key={img.id}
-                                                src={img.url}
-                                                alt={items.Name}
-                                                className="inline-block relative object-center w-[40dvw] md:w-[10dvw] rounded-lg border border-blue-gray-50 bg-blue-gray-50/50 object-contain p-1"
-                                              />
-                                            ))
-                                          }
-                                        </div>
-                                      </td>
-                                      <td className="p-4 border-b border-blue-gray-50">
-                                        <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
-                                          {items.Name}
-                                        </p>
-                                      </td>
-                                      <td className="p-4 border-b border-blue-gray-50">
-                                        <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
-                                          {items.Country}
-                                        </p>
-                                      </td>
-                                      <td className="p-4 border-b border-blue-gray-50">
-                                        <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
-                                          {items.Region}
-                                        </p>
-                                      </td>
-                                      <td className="p-4 border-b border-blue-gray-50">
-                                        <div
-                                          className="antialiased flex flex-wrap font-sans text-sm leading-normal 
-                                            text-gray-900 font-normal">
-                                          <p className="w-[25dvw]">
-                                            {items.Description}
-                                          </p>
-                                        </div>
-
-                                      </td>
-                                    </tr>
-                                  ))
-                                }
-                              </tbody>
-                            </table>
-                          }
-                        </div>
+                        {
+                          <div className='w-full'>
+                            {
+                              Cart.map((item: any) => (
+                                <div key={item.id} className='w-full flex flex-col items-center gap-2'>
+                                  <div className="w-full flex items-center justify-between gap-8 my-1 text-base">
+                                    <span className='flex-1'>{item.Dish.DishName}</span>
+                                    <div className='w-1/4 h-[40px] inline-flex justify-between items-center gap-1'>
+                                      <button onClick={() => handleDecrement(item.id)} className='inline-flex justify-center items-center'>
+                                        <FaMinus size={20} />
+                                      </button>
+                                      <span className='p-1 px-2 bg-red-400 rounded-lg inline-flex justify-center items-center text-xl'>
+                                        {item.quantity}
+                                      </span>
+                                      <button onClick={() => handleIncrement(item.id)} className='inline-flex justify-center items-center'>
+                                        <FaPlus size={20} />
+                                      </button>
+                                    </div>
+                                    <span className="mx-2">₹{item.Price * item.quantity}</span>
+                                    <button onClick={() => handleDelete(item.id)} className='inline-flex justify-center items-center'>
+                                      <FaTrash size={20} />
+                                    </button>
+                                  </div>
+                                  {/*<input type="text" className="w-full p-1 text-black rounded-lg" />*/}
+                                </div>
+                              ))
+                            }
+                          </div>
+                        }
                       </div>
                       <div className='w-full flex flex-col gap-4'>
                         <div className='w-full flex justify-center items-center flex-wrap gap-4'>

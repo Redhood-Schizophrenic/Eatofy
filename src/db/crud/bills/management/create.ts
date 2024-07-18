@@ -25,6 +25,7 @@ export async function create_bill ({
 				WaiterId: waiter_id,
 				HotelId: hotel_id,
 				CustomerId: customer_id,
+				Status: "Booked"
 			}
 		});
 

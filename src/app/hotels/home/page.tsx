@@ -91,7 +91,9 @@ const Eatofy: React.FC = () => {
 
             <div className="flex justify-between items-center my-8 p-4">
               <div className='flex items-center gap-8'>
-                <button className="bg-red-500 text-white px-4 py-2 rounded-[30px]">TakeAway</button>
+                <button className="bg-red-500 text-white px-4 py-2 rounded-[30px]">
+                   <a href="/hotels/menu">TakeAway</a> 
+                </button>
                 <button className="bg-red-500 text-white px-4 py-2 rounded-[30px]">Delivery</button>
                 <button className="bg-gradient-to-r from-gray-800 to-red-500 text-white px-4 py-2 rounded-[30px]">Zomato</button>
                 <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-[30px]">Swiggy</button>
