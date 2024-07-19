@@ -128,10 +128,7 @@ export default function Menu() {
 
 								{showBillInvoice ? (
 									<div id="Bill_Invoice" className="h-auto z-[-20]">
-
-
 										<div className="pt-4">
-
 											<table className="w-auto table-auto text-left">
 												<thead className="">
 													<tr>
@@ -196,115 +193,120 @@ export default function Menu() {
 											</table>
 										</div>
 									</div>
-								) : (
-									<div id="CRM_Form" className="h-auto">
 
-										<div className="bg-gray-500 h-[0.2dvh] w-full"></div>
-										<div className="h-full p-2 flex flex-col gap-4 justify-center items-center">
-											<div className="w-full flex flex-col gap-3">
-												<label
-													htmlFor="CustomerName"
-													className="text-lg"
-												>
-													Customer Name <span className="text-red-500">*</span>
-												</label>
-												<input
-													className='w-full bg-zinc-900 text-white'
-													type="text"
-													value={CustomerName}
-													onChange={
-														(e) => {
-															setCustomerName(e.target.value)
-														}}
-													placeholder='Enter Customer Name'
-													required
-												/>
-											</div>
-											<div className="w-full flex flex-col gap-3">
-												<label
-													htmlFor="CustomerContact"
-													className="text-lg"
-												>
-													Contact <span className="text-red-500">*</span>
-												</label>
-												<input
-													className='w-full bg-zinc-900 text-white'
-													type="text"
-													value={CustomerContact}
-													onChange={
-														(e) => {
-															setCustomerContact(e.target.value)
-														}}
-													placeholder='Enter Contact'
-													required
-												/>
-											</div>
-											<div className="w-full flex flex-col gap-3">
-												<label
-													htmlFor="CustomerEmail"
-													className="text-lg"
-												>
-													Email <span className="text-red-500">*</span>
-												</label>
-												<input
-													className='w-full bg-zinc-900 text-white'
-													type="text"
-													value={CustomerEmail}
-													onChange={
-														(e) => {
-															setCustomerEmail(e.target.value)
-														}}
-													placeholder='Enter Customer Email'
-													required
-												/>
-											</div>
-											<div className="w-full flex flex-col gap-3">
-												<label
-													htmlFor="CustomerOccassion"
-													className="text-lg"
-												>
-													Occassion
-												</label>
-												<input
-													className='w-full bg-zinc-900 text-white'
-													type="text"
-													value={CustomerOccassion}
-													onChange={
-														(e) => {
-															setCustomerOccassion(e.target.value)
-														}}
-													placeholder='Enter Occassion'
-												/>
-											</div>
-											<div className="w-full flex flex-col gap-3">
-												<label
-													htmlFor="CustomerDate"
-													className="text-lg"
-												>
-													Date
-												</label>
-												<input
-													className='w-full bg-zinc-900 text-white'
-													type="date"
-													value={CustomerDate}
-													onChange={
-														(e) => {
-															setCustomerDate(e.target.value)
-														}}
-												/>
-											</div>
+								)
+									// Bill Section
+									: (
 
-											<div className="w-[40%] flex flex-col mt-4">
-												<button
-													className="p-2 bg-red-900 border border-white"
-												>
-													Add Customer
-												</button>
+										<div id="CRM_Form" className="h-auto">
+
+											<div className="bg-gray-500 h-[0.2dvh] w-full"></div>
+											<div className="h-full p-2 flex flex-col gap-4 justify-center items-center">
+												<div className="w-full flex flex-col gap-3">
+													<label
+														htmlFor="CustomerName"
+														className="text-lg"
+													>
+														Customer Name <span className="text-red-500">*</span>
+													</label>
+													<input
+														className='w-full bg-zinc-900 text-white'
+														type="text"
+														value={CustomerName}
+														onChange={
+															(e) => {
+																setCustomerName(e.target.value)
+															}}
+														placeholder='Enter Customer Name'
+														required
+													/>
+												</div>
+												<div className="w-full flex flex-col gap-3">
+													<label
+														htmlFor="CustomerContact"
+														className="text-lg"
+													>
+														Contact <span className="text-red-500">*</span>
+													</label>
+													<input
+														className='w-full bg-zinc-900 text-white'
+														type="text"
+														value={CustomerContact}
+														onChange={
+															(e) => {
+																setCustomerContact(e.target.value)
+															}}
+														placeholder='Enter Contact'
+														required
+													/>
+												</div>
+												<div className="w-full flex flex-col gap-3">
+													<label
+														htmlFor="CustomerEmail"
+														className="text-lg"
+													>
+														Email <span className="text-red-500">*</span>
+													</label>
+													<input
+														className='w-full bg-zinc-900 text-white'
+														type="text"
+														value={CustomerEmail}
+														onChange={
+															(e) => {
+																setCustomerEmail(e.target.value)
+															}}
+														placeholder='Enter Customer Email'
+														required
+													/>
+												</div>
+												<div className="w-full flex flex-col gap-3">
+													<label
+														htmlFor="CustomerOccassion"
+														className="text-lg"
+													>
+														Occassion
+													</label>
+													<input
+														className='w-full bg-zinc-900 text-white'
+														type="text"
+														value={CustomerOccassion}
+														onChange={
+															(e) => {
+																setCustomerOccassion(e.target.value)
+															}}
+														placeholder='Enter Occassion'
+													/>
+												</div>
+												<div className="w-full flex flex-col gap-3">
+													<label
+														htmlFor="CustomerDate"
+														className="text-lg"
+													>
+														Date
+													</label>
+													<input
+														className='w-full bg-zinc-900 text-white'
+														type="date"
+														value={CustomerDate}
+														onChange={
+															(e) => {
+																setCustomerDate(e.target.value)
+															}}
+													/>
+												</div>
+
+												<div className="w-[40%] flex flex-col mt-4">
+													<button
+														className="p-2 bg-red-900 border border-white"
+													>
+														Add Customer
+													</button>
+												</div>
 											</div>
 										</div>
-									</div>
-								)}
-
+									)
+									// CRM Section
+								}
 							</div>
 						</div>
 					</div>
