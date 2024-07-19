@@ -16,6 +16,11 @@ export async function read_dishes ({
 				HotelId: hotel_id,
 				NOT: {
 					Status: "Inactive"
+				},
+				Category: {
+					NOT: {
+						Status: "Inactive"
+					}
 				}
 			}		
 		});
@@ -62,7 +67,13 @@ export async function read_dish ({
 				Code: dish_code,
 				NOT:{
 					Status: "Inactive"
+				},
+				Category: {
+					NOT: {
+						Status: "Inactive"
+					}
 				}
+
 			}		
 		});
 

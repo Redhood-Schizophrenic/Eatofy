@@ -1,17 +1,25 @@
 'use client';
 import HotelSideNav from "@/components/SideNavHotel";
-import { useState } from "react";
+import { ApiHost } from "@/constants/url_consts";
+import { useEffect, useState } from "react";
 import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa6";
 
 export default function Menu() {
 	const [isLoading, setLoading] = useState(false);
 	const [isMenuOpen, setMenuOpen] = useState(false);
-	const [billId, setBillId] = useState("Order_zuihsujbhduj");
-	const [showAll, setShowAll] = useState(true);
-	const [search, setSearch] = useState('');
+	const [Search, setSearch] = useState('');
 	const [isDishDisplayFullWidth, setDishDisplayFullWidth] = useState(false);
 	const [showBillInvoice, setShowBillInvoice] = useState(true);
+	const [ClickedCategory, setClickedCategory] = useState("");
+	const [ShowAllDishes, setShowAllDishes] = useState(true);
+
+	// Bill Management
+	const [doesBillExists, setdoesBillExists] = useState(false);
+	const [billId, setBillId] = useState("");
+	const [OldCart, setOldCart] = useState([]);
+	const [Cart, setCart] = useState([]);
+
 
 	// Customer Relationship Management
 	const [CustomerName, setCustomerName] = useState('');
@@ -20,29 +28,101 @@ export default function Menu() {
 	const [CustomerOccassion, setCustomerOccassion] = useState('');
 	const [CustomerDate, setCustomerDate] = useState('');
 
-	// Supporting functions
+	// Fetch Display Data
+	const [ExistingBill, setExistingBill] = useState([]);
+	const [Menus, setMenus] = useState([]);
+	const [Categories, setCategories] = useState([]);
+
+	// Search Dishes
 	const handleSearch = (element) => {
-		setShowAll(false);
+		setShowAllDishes(false);
 		setSearch(element.target.value);
 	}
 
+	// On Category click display related dishes
+	const handleCategoryClick = (category_id) => {
+		setShowAllDishes(false);
+		setClickedCategory(category_id);
+	}
+
+	// Display Cart
 	const toggleMenu = () => {
 		setMenuOpen(!isMenuOpen);
 		setDishDisplayFullWidth(!isDishDisplayFullWidth);
+	}
+
+	const handleAddToCart = (dish) => {
+		const existingDish = Cart.find(item => item.id === dish.id);
+		if (existingDish) {
+			setCart(Cart.map(item => item.id === dish.id ? { ...item, quantity: item.quantity + 1 } : item));
+		} else {
+			setCart([...Cart, { ...dish, quantity: 1 }]);
+		}
+		setMenuOpen(true);
+		setDishDisplayFullWidth(true);
+	}
+
+	const handleCartItemIncrement = (id) => {
+		console.log("Id");
+		setCart(Cart.map(item => item.id === id ? { ...item, quantity: item.quantity + 1 } : item));
+	}
+
+	const handleCartItemDecrement = (id) => {
+		console.log(id);
+		setCart(Cart.map(item => item.id === id ? { ...item, quantity: item.quantity - 1 } : item).filter(item => item.quantity > 0));
+	}
+
+	const handleCartItemDelete = (id) => {
+		setCart(Cart.filter(item => item.id !== id));
 	}
 
 	const toggleDisplay = () => {
 		setShowBillInvoice(!showBillInvoice);
 	}
 
-	const items = {
-		id: "jbnsjdfbfd",
-		Price: 90,
-		quantity: 10,
-		Dish: {
-			DishName: "Paneer Crispy"
+	useEffect(() => {
+		const fetch_bill = async () => {
+			const section_id = sessionStorage.getItem('section_id');
+			const table_id = sessionStorage.getItem('table_id');
+
+			try {
+
+				setLoading(true);
+				const response = await fetch(`${ApiHost}/api/hotel/bill_order`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ 'section_id': section_id, 'table_id': table_id }),
+				});
+
+				const data = await response.json();
+				if (data.returncode === 200) {
+					const response_data = await data.output[0];
+					setExistingBill(response_data.ExistingBill);
+					setMenus(response_data.Menus);
+					setCategories(response_data.Categories);
+					if (response_data.ExistingBill.length != 0) {
+						setBillId(response_data.Orders[0].BillId);
+						setdoesBillExists(true);
+						setExistingBill(response_data.ExistingBill);
+						setOldCart(response_data.Orders);
+					}
+					console.log("Bill", response_data.Orders[0]);
+				} else {
+					console.log("Failed to fetch Dishes");
+				}
+			} catch (e) {
+				console.error(e);
+			} finally {
+				setLoading(false);
+			}
 		}
-	}
+
+		fetch_bill()
+	}, []);
+
+
 	return (
 		<main className="h-auto overflow-hidden">
 
@@ -64,7 +144,7 @@ export default function Menu() {
 						<span className="text-4xl font-medium text-gray-500">Loading...</span>
 					</div>
 					:
-					<div className="ml-[70px] w-full flex overflow-hidden">
+					<div className="ml-[70px] w-full flex overflow-x-hidden">
 						<div id="Dish_Display" className={`h-screen transition-width duration-500 ${isDishDisplayFullWidth ? 'w-[60%]' : 'w-full'}`}>
 							<div className="w-[93%] inline-flex justify-between items-center p-4">
 								<div>
@@ -75,7 +155,7 @@ export default function Menu() {
 										type="text"
 										className="rounded-lg text-sm bg-black text-white"
 										placeholder="Search by name or code"
-										value={search}
+										value={Search}
 										onChange={handleSearch}
 									/>
 									<button
@@ -86,7 +166,108 @@ export default function Menu() {
 									</button>
 								</div>
 							</div>
+							<div id="Categories" className="p-4 flex justify-between w-[93%]">
+								{
+									<div className="flex flex-wrap gap-4">
+										<button className="text-red-500 font-semibold">
+											All
+										</button>
+
+										{
+											Categories.map((category, index) => (
+												<button
+													key={index}
+													onClick={
+														() => {
+															handleCategoryClick(category.CategoryName)
+														}
+													}
+													className="text-black font-semibold cursor-pointer"
+												>
+													{category.CategoryName}
+												</button>
+											))
+										}
+									</div>
+								}
+							</div>
+
 							<div className="bg-red-400 w-full h-[0.2dvh]"></div>
+
+							<div className="w-[93%] flex flex-col gap-4">
+								<div className="flex justify-between p-4 items-center">
+									<div>
+										<p className="text-xl font-bold">Choose Dishes</p>
+									</div>
+									<div>
+										<p className="border border-black p-4 rounded-lg"> Dine In </p>
+
+									</div>
+								</div>
+
+								<div className="flex gap-8 p-8 flex-wrap">
+									{
+										ShowAllDishes
+											?
+											Menus.map((menu, index) => (
+												<div
+													key={index}
+													onClick={() => { handleAddToCart(menu) }}
+													id="menu"
+													className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
+														menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
+															menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
+																menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
+														}`}
+												>
+													<p className="flex flex-wrap text-lg font-semibold">
+														{menu.Dish.DishName}
+													</p>
+													<p className="flex justify-center items-center">
+														&#35;{menu.Dish.Code}
+													</p>
+													<p className="flex justify-center items-center">
+														{menu.Dish.Category.CategoryName}
+													</p>
+
+												</div>
+											))
+											:
+											Menus.filter((menu) => {
+												// Check if the category matches or if no category is selected (show all)
+												const categoryMatch = ClickedCategory === null || menu.Dish.Category.CategoryName === ClickedCategory;
+												// Check if the dish name or code includes the search text
+												const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+												// Return true if both conditions are met
+												return categoryMatch && searchMatch;
+											}).map((menu, index) => (
+												<div
+													key={index}
+													onClick={() => { handleAddToCart(menu) }}
+													id="menu"
+													className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
+														menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
+															menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
+																menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
+														}`}
+												>
+													<p className="flex flex-wrap text-lg font-semibold">
+														{menu.Dish.DishName}
+													</p>
+													<p className="flex justify-center items-center">
+														&#35;{menu.Dish.Code}
+													</p>
+													<p className="flex justify-center items-center">
+														{menu.Dish.Category.CategoryName}
+													</p>
+												</div>
+											))
+
+									}
+								</div>
+
+							</div>
+
 						</div>
 
 						<div className={`w-[40%] bg-black text-white h-screen fixed top-0 right-0 transition-transform duration-500 ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
@@ -103,7 +284,10 @@ export default function Menu() {
 
 									<div className="w-1/3 text-center font-bold text-xl">
 										{showBillInvoice ? (
-											<label>#{billId}</label>
+											<div className="flex flex-col gap-2">
+												<label>Bill</label>
+												<label className="text-xs font-normal">#{billId}</label>
+											</div>
 										) : (
 											<label>CRM</label>
 										)}
@@ -127,7 +311,7 @@ export default function Menu() {
 								</div>
 
 								{showBillInvoice ? (
-									<div id="Bill_Invoice" className="h-auto z-[-20]">
+									<div id="Bill_Invoice" className="h-auto z-[-20] overflow-x-hidden">
 										<div className="pt-4">
 											<table className="w-auto table-auto text-left">
 												<thead className="">
@@ -155,40 +339,87 @@ export default function Menu() {
 													</tr>
 												</thead>
 												<tbody>
-													<tr key={items.id}>
-														<td className="p-4 border-b border-blue-gray-50">
-															<p className="flex  antialiased font-sans text-sm leading-normal text-blue-gray-900 font-semibold">
-																<div className="flex flex-col gap-2">
-																	<span>{items.Dish.DishName}</span>
-																	<span className="text-xs font-normal"> Rs.{items.Price} </span>
-																</div>
-															</p>
-														</td>
-														<td className="p-4 border-b border-blue-gray-50">
-															<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal gap-4">
-																<button onClick={() => handleIncrement(items.id)} className="inline-flex justify-center items-center">
-																	<FaPlus size={15} />
-																</button>
-																<span className="border border-white bg-red-500 px-3 py-1 rounded-xl font-bold text-xl">{items.quantity}</span>
-																<button onClick={() => handleDecrement(items.id)} className="inline-flex justify-center items-center font-normal">
-																	<FaMinus size={15} />
-																</button>
-
-															</p>
-														</td>
-														<td className="p-4 border-b border-blue-gray-50">
-															<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
-																Rs.{items.Price * items.quantity}
-															</p>
-														</td>
-														<td className="p-4 border-b border-blue-gray-50">
-															<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
-																<button onClick={() => handleDelete(items.id)} className="inline-flex justify-center items-center">
-																	<FaTrash size={20} />
-																</button>
-															</p>
-														</td>
-													</tr>
+													{
+														OldCart.map((items, index) => (
+															<tr key={index} className="text-gray-600">
+																<td className="p-4 border-b border-blue-gray-50">
+																	<div className="flex  antialiased font-sans text-sm leading-normal  font-semibold">
+																		<div className="flex flex-col gap-2">
+																			<span>{items.Menu.Dish.DishName}</span>
+																			<span className="text-xs font-normal"> Rs.{items.Menu.Price} </span>
+																		</div>
+																	</div>
+																</td>
+																<td className="p-4 border-b border-blue-gray-50">
+																	<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal  font-normal gap-4">
+																		<span className="border border-white bg-red-500 px-3 py-1 rounded-xl font-bold text-xl">
+																			{items.Quantity}
+																		</span>
+																	</p>
+																</td>
+																<td className="p-4 border-b border-blue-gray-50">
+																	<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal  font-normal">
+																		Rs.{items.TotalAmount}
+																	</p>
+																</td>
+																<td className="p-4 border-b border-blue-gray-50">
+																	<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal  font-normal">
+																		<button
+																			onClick={() => { handleUpdateDelete(items.id) }}
+																			className="inline-flex justify-center items-center"
+																		>
+																			<FaTrash size={20} />
+																		</button>
+																	</p>
+																</td>
+															</tr>
+														))
+													}
+													{
+														Cart.map((items) => (
+															<tr key={items.id}>
+																<td className="p-4 border-b border-blue-gray-50">
+																	<div className="flex  antialiased font-sans text-sm leading-normal text-blue-gray-900 font-semibold">
+																		<div className="flex flex-col gap-2">
+																			<span> {items.Dish.DishName} </span>
+																			<span className="text-xs font-normal"> Rs.{items.Price} </span>
+																		</div>
+																	</div>
+																</td>
+																<td className="p-4 border-b border-blue-gray-50">
+																	<div className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal gap-4">
+																		<div className="flex flex-col">
+																			<button
+																				onClick={() => { handleCartItemIncrement(items.id) }}
+																				className="inline-flex justify-center items-center cursor-pointer">
+																				<FaPlus size={15} />
+																			</button>
+																			<button
+																				onClick={() => { handleCartItemDecrement(items.id) }}
+																				className="inline-flex justify-center items-center font-normal cursor-pointer">
+																				<FaMinus size={15} />
+																			</button>
+																		</div>
+																		<span className="border border-white bg-red-500 px-3 py-1 rounded-xl font-bold text-xl"> {items.quantity} </span>
+																	</div>
+																</td>
+																<td className="p-4 border-b border-blue-gray-50">
+																	<div className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
+																		Rs.{items.Price * items.quantity}
+																	</div>
+																</td>
+																<td className="p-4 border-b border-blue-gray-50">
+																	<div className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
+																		<button
+																			onClick={() => { handleCartItemDelete(items.id) }}
+																			className="inline-flex justify-center items-center cursor-pointer">
+																			<FaTrash size={20} />
+																		</button>
+																	</div>
+																</td>
+															</tr>
+														))
+													}
 												</tbody>
 											</table>
 										</div>
