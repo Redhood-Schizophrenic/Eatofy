@@ -204,7 +204,17 @@ export default function Menu() {
   }
 
   const calculateTotalAmount = () => {
-    return Cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
+    let saved_total;
+    
+    if(SavedCart.length != 0) {
+      saved_total = (SavedCart.reduce((total: any, item: any) => total + (item.Price * item.quantity), 0));
+    }
+    else {
+      saved_total = 0;
+    }
+
+    const cart_total = (Cart.reduce((total, item) => total + (item.Price * item.quantity), 0));
+      return saved_total + cart_total;
   };
 
   const handleViewBill = async () => {
@@ -291,6 +301,7 @@ export default function Menu() {
       const data = await response.json();
 
       if (data.returncode === 200) {
+        sessionStorage.removeItem('cart');
         setSettleBill(true);
         setBillpaid(true);
         setTimeout(() => {
@@ -466,7 +477,7 @@ export default function Menu() {
                 <div className="p-4">
                   <div className='flex justify-between items-center p-2'>
                     <h3 className="my-4 text-xl">Choose Dishes</h3>
-                    <Link href="/hotels/takeaway" className='p-2 border border-red-500 rounded-lg'>Take away</Link>
+                    <Link href="/hotels/takeaway" className='p-2 border border-red-500 rounded-lg'>Dine In</Link>
                   </div>
                   <div className="">
                     {
@@ -516,120 +527,133 @@ export default function Menu() {
                   <div>
                     <FaArrowLeft size={25} color='#fff' className="m-3 cursor-pointer" onClick={() => setShowCart(false)} />
                   </div>
-                  <div className="flex items-center h-[90%] p-2">
-                    <div className='p-4 w-full h-full flex flex-col justify-between border-r border-zinc-400'>
-                      <div className="">
-                        <div className='flex items-center gap-8'>
-                          <span className='flex-1'>Item</span>
-                          <span className='w-1/4 text-center'>QTY</span>
-                          <span>Price</span>
-                          <span>Action</span>
-                        </div>
-                        
-
-                        <div className='w-full'>
-                          {
-                            <table className="w-full min-w-max table-auto text-left">
-                              <thead className="">
-                                <tr>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
-                                      Sr No.
-                                    </p>
-                                  </th>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
-                                      Image
-                                    </p>
-                                  </th>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
-                                      Name
-                                    </p>
-                                  </th>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans text-sm text-blue-gray-900 font-bold leading-none opacity-70">
-                                      Country
-                                    </p>
-                                  </th>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans text-sm text-blue-gray-900 font-bold leading-none opacity-70">
-                                      Region
-                                    </p>
-                                  </th>
-                                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
-                                    <p className="block antialiased font-sans text-sm text-blue-gray-900 font-bold leading-none opacity-70">
-                                      Description
-                                    </p>
-                                  </th>
-
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {
-                                  Cart.map((items: any) => (
-                                    <tr key={items.id}>
+                  <div className="flex flex-col items-center h-[90%] p-2">
+                    <div className='p-4 w-full h-full flex flex-col justify-between'>
+                      <div className='w-full flex flex-col'>
+                        {
+                          <table className="w-auto table-auto text-left">
+                            <thead className="">
+                              <tr>
+                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
+                                  <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
+                                    Item
+                                  </p>
+                                </th>
+                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
+                                  <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
+                                    Qty.
+                                  </p>
+                                </th>
+                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
+                                  <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
+                                    Price
+                                  </p>
+                                </th>
+                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
+                                  <p className="block antialiased font-sans text-sm text-blue-gray-900 font-bold leading-none opacity-70">
+                                    Action
+                                  </p>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {
+                                isSavedInCart
+                                  ?
+                                  SavedCart.map((items: any) => (
+                                    <tr key={items.id} className='bg-gray-700'>
                                       <td className="p-4 border-b border-blue-gray-50">
-                                        <p className="flex justify-center items-center antialiased font-sans text-xl leading-normal text-blue-gray-900 font-bold">
-                                          {count = count + 1}
+                                        <p className="flex antialiased font-sans text-sm leading-normal text-blue-gray-900 font-semibold">
+                                          <div className="flex flex-col gap-2">
+                                            <span> {items.Dish.DishName} </span>
+                                            <span className="text-xs font-normal"> Rs.{items.Price} </span>
+                                          </div>
                                         </p>
                                       </td>
                                       <td className="p-4 border-b border-blue-gray-50">
-                                        <div className="flex flex-col items-center gap-3">
-                                          {
-                                            items.Image.map((img) => (
-                                              <img
-                                                key={img.id}
-                                                src={img.url}
-                                                alt={items.Name}
-                                                className="inline-block relative object-center w-[40dvw] md:w-[10dvw] rounded-lg border border-blue-gray-50 bg-blue-gray-50/50 object-contain p-1"
-                                              />
-                                            ))
-                                          }
-                                        </div>
-                                      </td>
-                                      <td className="p-4 border-b border-blue-gray-50">
-                                        <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
-                                          {items.Name}
+                                        <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal gap-4">
+                                          <span className="border border-white bg-red-500 px-3 py-1 rounded-xl font-bold text-xl"> {items.quantity} </span>
                                         </p>
                                       </td>
                                       <td className="p-4 border-b border-blue-gray-50">
                                         <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
-                                          {items.Country}
+                                          Rs.{items.Price * items.quantity}
                                         </p>
                                       </td>
                                       <td className="p-4 border-b border-blue-gray-50">
                                         <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
-                                          {items.Region}
+                                          Ordered
                                         </p>
-                                      </td>
-                                      <td className="p-4 border-b border-blue-gray-50">
-                                        <div
-                                          className="antialiased flex flex-wrap font-sans text-sm leading-normal 
-                                            text-gray-900 font-normal">
-                                          <p className="w-[25dvw]">
-                                            {items.Description}
-                                          </p>
-                                        </div>
-
                                       </td>
                                     </tr>
                                   ))
-                                }
-                              </tbody>
-                            </table>
-                          }
+                                  :
+                                  []
+                              }
+                              {
+                                Cart.map((items) => (
+                                  <tr key={items.id}>
+                                    <td className="p-4 border-b border-blue-gray-50">
+                                      <p className="flex  antialiased font-sans text-sm leading-normal text-blue-gray-900 font-semibold">
+                                        <div className="flex flex-col gap-2">
+                                          <span> {items.Dish.DishName} </span>
+                                          <span className="text-xs font-normal"> Rs.{items.Price} </span>
+                                        </div>
+                                      </p>
+                                    </td>
+                                    <td className="p-4 border-b border-blue-gray-50">
+                                      <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal gap-4">
+                                        <div className="flex flex-col">
+                                          <button onClick={() => handleIncrement(items.id)} className="inline-flex justify-center items-center">
+                                            <FaPlus size={15} />
+                                          </button>
+                                          <button onClick={() => handleDecrement(items.id)} className="inline-flex justify-center items-center font-normal">
+                                            <FaMinus size={15} />
+                                          </button>
+                                        </div>
+                                        <span className="border border-white bg-red-500 px-3 py-1 rounded-xl font-bold text-xl"> {items.quantity} </span>
+                                      </p>
+                                    </td>
+                                    <td className="p-4 border-b border-blue-gray-50">
+                                      <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
+                                        Rs.{items.Price * items.quantity}
+                                      </p>
+                                    </td>
+                                    <td className="p-4 border-b border-blue-gray-50">
+                                      <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
+                                        <button onClick={() => handleDelete(items.id)} className="inline-flex justify-center items-center">
+                                          <FaTrash size={20} />
+                                        </button>
+                                      </p>
+                                    </td>
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
+                          </table>
+                        }
+                      </div>
+                    </div>
+                    <div className='w-full flex flex-col gap-4 '>
+                      <div className='border-t border-gray-400'>
+                        <div className='w-full flex flex-col justify-center align-center p-4'>
+                          <div className='flex justify-between p-4'>
+                            <p>Discount</p>
+                            <p> Rs {discountAmt} </p>
+                          </div>
+                          <div className='flex justify-between p-4'>
+                            <p>Sub Total</p>
+                            <p> Rs {menutotal} </p>
+                          </div>
                         </div>
                       </div>
-                      <div className='w-full flex flex-col gap-4'>
-                        <div className='w-full flex justify-center items-center flex-wrap gap-4'>
-                          <button onClick={handleOrder} className='m-2 bg-red-500 text-white p-2 rounded-lg'>Save</button>
-                          <button onClick={() => { handleViewBill(); }} className='m-2 bg-red-500 text-white p-2 rounded-lg'>View bill</button>
-                          <button onClick={() => {
-                            setSettleBill(true);
-                          }} className='m-2 bg-red-500 text-white p-2 rounded-lg'>Settle bill</button>
-                          <button onClick={handleKotPrint} className="bg-red-500 text-white p-2 rounded-lg">Kot print</button>
-                        </div>
+                      <div className='w-full flex justify-center items-center flex-wrap gap-4'>
+                        <button onClick={handleOrder} className='m-2 bg-red-900 border border-red-500 text-white p-2 rounded-lg'>Save</button>
+                        <button onClick={() => { handleViewBill(); }} className='m-2 bg-red-900 border border-red-500 text-white p-2 rounded-lg'>View bill</button>
+                        <button onClick={() => {
+                          setSettleBill(true);
+                        }} className='m-2 bg-red-900 border border-red-500 text-white p-2 rounded-lg'>Settle bill</button>
+                        <button onClick={handleKotPrint} className="bg-red-900 border border-red-500 text-white p-2 rounded-lg">Kot print</button>
                       </div>
                     </div>
                   </div>

@@ -9,10 +9,14 @@ import { FaArrowLeft, FaMinus, FaPlus, FaTrash } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 import { useReactToPrint } from 'react-to-print';
 
+interface carts {
+  id: string | null;
+  quantity: number | null;
+}
+
 export default function Menu() {
 
   const [isLoading, setLoading]: any = useState(false);
-  const [fetchExistingBill, setfetchExistingBill] = useState([]);
   const [fetchCategorys, setfetchCategorys] = useState([]);
   const [fetchDishes, setfetchDishes]: any = useState([]);
   const [isClicked, setisClicked]: any = useState(null);
@@ -32,13 +36,10 @@ export default function Menu() {
   const [paymentstatus, setpaymentstatus] = useState('');
   const [AddCrm, setAddCrm] = useState(false);
   const [isBillSaved, setisBillSaved] = useState(false);
-  const [SavedCart, setSavedCart] = useState(()=> {
-    const savedcart = localStorage.getItem('cart');
-    return savedcart ? JSON.parse(savedcart) : [];
-  })
+  const [isSavedInCart, setisSavedInCart] = useState(false);
 
+  const order_type = sessionStorage.getItem('order_type');
   const hotel_id = sessionStorage.getItem('hotel_id');
-  const table_id = sessionStorage.getItem('table_id');
   const billkot: any = useRef();
   const bill: any = useRef();
   const pathname = usePathname();
@@ -48,32 +49,6 @@ export default function Menu() {
     month: 'long',
     day: 'numeric'
   });
-
-  const fetchBill = async () => {
-    try {
-      setLoading(true);
-
-      const response = await fetch(`${ApiHost}/api/hotel/bills/management/fetch/table`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 'table_id': table_id }),
-      });
-
-      const data = await response.json();
-      if (data.returncode === 200) {
-        console.log("Bill -->", data);
-        setfetchExistingBill(data.output);
-      } else {
-        console.log("Failed to fetch category");
-      }
-    } catch (e: any) {
-      console.error(e);
-    } finally {
-      setLoading(false);
-    }
-  }
 
   const fetchAllCategorys = async () => {
     try {
@@ -198,7 +173,7 @@ export default function Menu() {
   }
 
   const calculateTotalAmount = () => {
-    return Cart.reduce((total, item) => total + (item.Price * item.quantity), 0);
+    return (Cart.reduce((total, item) => total + (item.Price * item.quantity), 0));
   };
 
   const handleViewBill = async () => {
@@ -287,6 +262,7 @@ export default function Menu() {
       if (data.returncode === 200) {
         setSettleBill(true);
         setBillpaid(true);
+        sessionStorage.removeItem('cart')
         setTimeout(() => {
           setBillpaid(false);
         }, 2000);
@@ -302,14 +278,17 @@ export default function Menu() {
   const handleOrder = async (e: any) => {
     e.preventDefault();
 
+    sessionStorage.setItem('cart', JSON.stringify(Cart));
+
     try {
 
+      const table_id: any = sessionStorage.getItem('table_id');
+      sessionStorage.setItem('table_id_previous', table_id);
       const orderData = Cart.map((item: any) => ({
         quantity: item.quantity.toString(),
         menu_id: item.id
       }));
 
-      setSavedCart((carts:any)=>[...carts, Cart]);
 
       const response = await fetch(`${ApiHost}/api/hotel/orders/management/add`, {
         method: 'POST',
@@ -348,22 +327,34 @@ export default function Menu() {
   }
 
   useEffect(() => {
-    fetchBill();  
     fetchAllCategorys();
     fetchAllDishes();
 
     if (pathname.startsWith('/hotels/menu')) {
-      sessionStorage.setItem('type', 'Dine-In');
+      sessionStorage.setItem('type', order_type);
     } else {
       console.log(pathname);
     }
 
-    localStorage.setItem('cart', Cart);
+    const PrevCart: any = sessionStorage.getItem('cart');
+    const Table_id = sessionStorage.getItem('table_id');
+    const Table_p_id = sessionStorage.getItem('table_id_previous');
+
+    if (Table_id === Table_p_id) {
+      if (PrevCart.length === 0) {
+        setisSavedInCart(false);
+      } else {
+        console.log("This is the TEST");
+        setisSavedInCart(true);
+        setShowCart(true);
+      }
+    } else {
+      console.log("This is a different table");
+    }
 
   }, [pathname, Cart]);
 
 
-  console.log("Bill -->", fetchExistingBill);
   console.log("Cart here", Cart)
   //
   // console.log("menu total", menutotal)
@@ -442,7 +433,7 @@ export default function Menu() {
                 <div className="p-4">
                   <div className='flex justify-between items-center p-2'>
                     <h3 className="my-4 text-xl">Choose Dishes</h3>
-                    <Link href="/hotels/takeaway" className='p-2 border border-red-500 rounded-lg'>Take away</Link>
+                    <Link href="/hotels/takeaway" className='p-2 border border-red-500 rounded-lg'>{order_type}</Link>
                   </div>
                   <div className="">
                     {
@@ -492,54 +483,100 @@ export default function Menu() {
                   <div>
                     <FaArrowLeft size={25} color='#fff' className="m-3 cursor-pointer" onClick={() => setShowCart(false)} />
                   </div>
-                  <div className="flex items-center h-[90%] p-2">
-                    <div className='p-4 w-full h-full flex flex-col justify-between border-r border-zinc-400'>
-                      <div className="">
-                        <div className='flex items-center gap-8'>
-                          <span className='flex-1'>Item</span>
-                          <span className='w-1/4 text-center'>QTY</span>
-                          <span>Price</span>
-                          <span>Action</span>
-                        </div>
+                  <div className="flex flex-col items-center h-[90%] p-2">
+                    <div className='p-4 w-full h-full flex flex-col justify-between'>
+                      <div className='w-full flex flex-col'>
                         {
-                          <div className='w-full'>
-                            {
-                              Cart.map((item: any) => (
-                                <div key={item.id} className='w-full flex flex-col items-center gap-2'>
-                                  <div className="w-full flex items-center justify-between gap-8 my-1 text-base">
-                                    <span className='flex-1'>{item.Dish.DishName}</span>
-                                    <div className='w-1/4 h-[40px] inline-flex justify-between items-center gap-1'>
-                                      <button onClick={() => handleDecrement(item.id)} className='inline-flex justify-center items-center'>
-                                        <FaMinus size={20} />
-                                      </button>
-                                      <span className='p-1 px-2 bg-red-400 rounded-lg inline-flex justify-center items-center text-xl'>
-                                        {item.quantity}
-                                      </span>
-                                      <button onClick={() => handleIncrement(item.id)} className='inline-flex justify-center items-center'>
-                                        <FaPlus size={20} />
-                                      </button>
-                                    </div>
-                                    <span className="mx-2">₹{item.Price * item.quantity}</span>
-                                    <button onClick={() => handleDelete(item.id)} className='inline-flex justify-center items-center'>
-                                      <FaTrash size={20} />
-                                    </button>
-                                  </div>
-                                  {/*<input type="text" className="w-full p-1 text-black rounded-lg" />*/}
-                                </div>
-                              ))
-                            }
-                          </div>
+                          <table className="w-auto table-auto text-left">
+                            <thead className="">
+                              <tr>
+                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
+                                  <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
+                                    Item
+                                  </p>
+                                </th>
+                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
+                                  <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
+                                    Qty.
+                                  </p>
+                                </th>
+                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
+                                  <p className="block antialiased font-sans font-bold text-sm text-blue-gray-900 leading-none opacity-70">
+                                    Price
+                                  </p>
+                                </th>
+                                <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 px-12 py-4">
+                                  <p className="block antialiased font-sans text-sm text-blue-gray-900 font-bold leading-none opacity-70">
+                                    Action
+                                  </p>
+                                </th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {
+                                Cart.map((items) => (
+                                  <tr key={items.id}>
+                                    <td className="p-4 border-b border-blue-gray-50">
+                                      <p className="flex  antialiased font-sans text-sm leading-normal text-blue-gray-900 font-semibold">
+                                        <div className="flex flex-col gap-2">
+                                          <span> {items.Dish.DishName} </span>
+                                          <span className="text-xs font-normal"> Rs.{items.Price} </span>
+                                        </div>
+                                      </p>
+                                    </td>
+                                    <td className="p-4 border-b border-blue-gray-50">
+                                      <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal gap-4">
+                                        <div className="flex flex-col">
+                                          <button onClick={() => handleIncrement(items.id)} className="inline-flex justify-center items-center">
+                                            <FaPlus size={15} />
+                                          </button>
+                                          <button onClick={() => handleDecrement(items.id)} className="inline-flex justify-center items-center font-normal">
+                                            <FaMinus size={15} />
+                                          </button>
+                                        </div>
+                                        <span className="border border-white bg-red-500 px-3 py-1 rounded-xl font-bold text-xl"> {items.quantity} </span>
+                                      </p>
+                                    </td>
+                                    <td className="p-4 border-b border-blue-gray-50">
+                                      <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
+                                        Rs.{items.Price * items.quantity}
+                                      </p>
+                                    </td>
+                                    <td className="p-4 border-b border-blue-gray-50">
+                                      <p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
+                                        <button onClick={() => handleDelete(items.id)} className="inline-flex justify-center items-center">
+                                          <FaTrash size={20} />
+                                        </button>
+                                      </p>
+                                    </td>
+                                  </tr>
+                                ))
+                              }
+                            </tbody>
+                          </table>
                         }
                       </div>
-                      <div className='w-full flex flex-col gap-4'>
-                        <div className='w-full flex justify-center items-center flex-wrap gap-4'>
-                          <button onClick={handleOrder} className='m-2 bg-red-500 text-white p-2 rounded-lg'>Save</button>
-                          <button onClick={() => { handleViewBill(); }} className='m-2 bg-red-500 text-white p-2 rounded-lg'>View bill</button>
-                          <button onClick={() => {
-                            setSettleBill(true);
-                          }} className='m-2 bg-red-500 text-white p-2 rounded-lg'>Settle bill</button>
-                          <button onClick={handleKotPrint} className="bg-red-500 text-white p-2 rounded-lg">Kot print</button>
+                    </div>
+                    <div className='w-full flex flex-col gap-4 '>
+                      <div className='border-t border-gray-400'>
+                        <div className='w-full flex flex-col justify-center align-center p-4'>
+                          <div className='flex justify-between p-4'>
+                            <p>Discount</p>
+                            <p> Rs {discountAmt} </p>
+                          </div>
+                          <div className='flex justify-between p-4'>
+                            <p>Sub Total</p>
+                            <p> Rs {menutotal} </p>
+                          </div>
                         </div>
+                      </div>
+                      <div className='w-full flex justify-center items-center flex-wrap gap-4'>
+                        <button onClick={handleOrder} className='m-2 bg-red-900 border border-red-500 text-white p-2 rounded-lg'>Save</button>
+                        <button onClick={() => { handleViewBill(); }} className='m-2 bg-red-900 border border-red-500 text-white p-2 rounded-lg'>View bill</button>
+                        <button onClick={() => {
+                          setSettleBill(true);
+                        }} className='m-2 bg-red-900 border border-red-500 text-white p-2 rounded-lg'>Settle bill</button>
+                        <button onClick={handleKotPrint} className="bg-red-900 border border-red-500 text-white p-2 rounded-lg">Kot print</button>
                       </div>
                     </div>
                   </div>

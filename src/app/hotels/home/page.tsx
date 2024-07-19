@@ -25,16 +25,16 @@ const Eatofy: React.FC = () => {
 
     try {
       const sectionsResponse = await fetch(`${ApiHost}/api/hotel/sections/management/fetch`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 'hotel_id': hotel_id }),
-        });
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'hotel_id': hotel_id }),
+      });
 
       const tablesResponse = await fetch(`${ApiHost}/api/hotel/tables/management/fetch`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 'hotel_id': hotel_id }),
-        });
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'hotel_id': hotel_id }),
+      });
 
       const sectionsData = await sectionsResponse.json();
       const tablesData = await tablesResponse.json();
@@ -58,7 +58,7 @@ const Eatofy: React.FC = () => {
   }
 
   console.log(sections);
-  console.log("Tables ",tables);
+  console.log("Tables ", tables);
 
   return (
     <>
@@ -91,16 +91,42 @@ const Eatofy: React.FC = () => {
 
             <div className="flex justify-between items-center my-8 p-4">
               <div className='flex items-center gap-8'>
-                <button className="bg-red-500 text-white px-4 py-2 rounded-[30px]">
-                   <a href="/hotels/menu">TakeAway</a> 
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded-[30px]"
+                  onClick={() => {
+                    sessionStorage.setItem('order_type', "TakeAway");
+                    route.push('/hotels/other_menu');
+                  }}
+                >
+                  TakeAway
                 </button>
-                <button className="bg-red-500 text-white px-4 py-2 rounded-[30px]">Delivery</button>
-                <button className="bg-gradient-to-r from-gray-800 to-red-500 text-white px-4 py-2 rounded-[30px]">Zomato</button>
-                <button className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-[30px]">Swiggy</button>
-                <Link
-                  href="/hotels/table_reservation"
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg"
-                >Book table</Link>
+                <button
+                  className="bg-red-500 text-white px-4 py-2 rounded-[30px]"
+                  onClick={() => {
+                    sessionStorage.setItem('order_type', "Delivery");
+                    route.push('/hotels/other_menu');
+                  }}
+                >
+                  Delivery
+                </button>
+                <button
+                  className="bg-gradient-to-r from-gray-800 to-red-500 text-white px-4 py-2 rounded-[30px]"
+                  onClick={() => {
+                    sessionStorage.setItem('order_type', "Zomato");
+                    route.push('/hotels/other_menu');
+                  }}
+                >
+                  Zomato
+                </button>
+                <button
+                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-[30px]"
+                  onClick={() => {
+                    sessionStorage.setItem('order_type', "Swiggy");
+                    route.push('/hotels/other_menu');
+                  }}
+                >
+                  Swiggy
+                </button>
               </div>
               <div className='inline-flex gap-4'>
                 <div>
