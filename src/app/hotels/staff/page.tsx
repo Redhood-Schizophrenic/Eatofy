@@ -2,6 +2,7 @@
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { MdOutlineDeleteOutline, MdOutlineEdit } from "react-icons/md";
 
 interface Staff {
   id: string;
@@ -21,7 +22,7 @@ interface Staff {
 
 const StaffTable: React.FC = () => {
 
-  const hotel_id:any = sessionStorage.getItem('hotel_id');
+  const hotel_id: any = sessionStorage.getItem('hotel_id');
   const [staffList, setStaffList] = useState<Staff[]>([]);
   const [isFormVisible, setFormVisible] = useState(false);
   const [formData, setFormData] = useState({
@@ -38,6 +39,11 @@ const StaffTable: React.FC = () => {
     incentives: "",
     hotel_id: hotel_id
   });
+
+  const handleupdate = async (staff: Staff) => {
+    console.log(staff);
+  }
+
 
   const fetchStaffList = async () => {
     try {
@@ -97,6 +103,7 @@ const StaffTable: React.FC = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
+
     const newStaff = {
       ...formData,
       salary: parseFloat(formData.salary),
@@ -144,8 +151,7 @@ const StaffTable: React.FC = () => {
       <div className={`ml-[70px] flex-1 h-screen p-4 bg-white ${isFormVisible ? "" : ""}`}>
         <h2 className="text-red-500 text-3xl mb-4">Staff</h2>
 
-        <div className="flex space-x-4 mb-4">
-          <button className="bg-zinc-800 text-white px-4 py-2 rounded">Staff</button>
+        <div className="flex justify-end space-x-4 mb-4">
           <button className="bg-zinc-800 text-white px-4 py-2 rounded" onClick={toggleFormVisibility}>
             Staff Add +
           </button>
@@ -157,28 +163,37 @@ const StaffTable: React.FC = () => {
               <thead>
                 <tr className="bg-red-500 text-white">
                   <th className="border px-4 py-2">SR#</th>
-                  <th className="border px-4 py-2">First Name</th>
-                  <th className="border px-4 py-2">Last Name</th>
+                  <th className="border px-4 py-2">Name</th>
                   <th className="border px-4 py-2">Contact</th>
                   <th className="border px-4 py-2">Email</th>
                   <th className="border px-4 py-2">Department</th>
                   <th className="border px-4 py-2">Designation</th>
                   <th className="border px-4 py-2">Salary</th>
                   <th className="border px-4 py-2">Incentives</th>
+                  <th className="border px-4 py-2">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {staffList.map((staff, index) => (
                   <tr key={staff.id} className={index % 2 === 0 ? "bg-zinc-200" : ""}>
                     <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">{staff.first_name}</td>
-                    <td className="border px-4 py-2">{staff.last_name}</td>
+                    <td className="border px-4 py-2">{staff.first_name} {staff.last_name}</td>
                     <td className="border px-4 py-2">{staff.contact}</td>
                     <td className="border px-4 py-2">{staff.email}</td>
                     <td className="border px-4 py-2">{staff.department_name}</td>
                     <td className="border px-4 py-2">{staff.designation}</td>
                     <td className="border px-4 py-2">{staff.salary}</td>
                     <td className="border px-4 py-2">{staff.incentives}</td>
+                    <td className="border px-4 py-2">
+                      <div className="cursor-pointer">
+                        <button onClick={() => { handleupdate(staff) }} className="">
+                          <MdOutlineEdit size={25} />
+                        </button>
+                        <button className="">
+                          <MdOutlineDeleteOutline size={25} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
               </tbody>

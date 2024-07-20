@@ -33,7 +33,7 @@ export async function create_expense({
 				PayableTo: payable_to,
 				AmountPayable: amount_payable,
 				AmountPaid: amount_paid,
-				Status: status
+				PaymentStatus: status
 			}
 		});
 

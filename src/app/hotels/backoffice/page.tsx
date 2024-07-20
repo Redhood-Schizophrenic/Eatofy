@@ -6,6 +6,7 @@ import { BiDish, BiFoodMenu } from "react-icons/bi";
 import { GoHistory, GoPersonAdd } from 'react-icons/go';
 import { IoIosPeople } from 'react-icons/io';
 import { MdOutlinePersonPin, MdOutlineTableRestaurant } from 'react-icons/md';
+import { PiMoneyWavyFill } from 'react-icons/pi';
 
 const EatofyApp: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
@@ -50,6 +51,11 @@ const EatofyApp: React.FC = () => {
       'name': 'Staff Attendance',
       'href': '/hotels/staff_attendance',
       'img_tag': MdOutlinePersonPin
+    },
+    {
+      'name': 'Expense Management',
+      'href': '/hotels/expence_tracking',
+      'img_tag': PiMoneyWavyFill
     }
   ];
 

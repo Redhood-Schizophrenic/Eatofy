@@ -11,10 +11,11 @@ export async function add_customer(data: any): Promise<ApiResponse> {
 		const customer_name: string | null = data['customer_name'];
 		const hotel_id: string | null = data['hotel_id'];
 		const note: string | null = data['occassion'];
+		const no_of_persons: string | null = data['no_of_persons'];
 		const contact: string | null = data['contact'];
 
 		// Default Invalid Checker
-		if (hotel_id == null || customer_name == null || contact == null || date == null || time == null) {
+		if (hotel_id == null || customer_name == null || contact == null || date == null || time == null || no_of_persons == null) {
 			return {
 				returncode: 400,
 				message: 'Invalid Input',
@@ -66,8 +67,9 @@ export async function add_customer(data: any): Promise<ApiResponse> {
 			};
 		}
 
-		// Adding the Customer
+		// Adding the Reservation
 		const result = await create_reservation({
+			no_of_persons,
 			customer_id,
 			date,
 			time,

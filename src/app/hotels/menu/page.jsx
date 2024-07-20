@@ -379,47 +379,42 @@ export default function Menu() {
 														Cart.map((items) => (
 															<tr key={items.id}>
 																<td className="p-4 border-b border-blue-gray-50">
-																	<div className="flex  antialiased font-sans text-sm leading-normal text-blue-gray-900 font-semibold">
+																	<p className="flex  antialiased font-sans text-sm leading-normal text-blue-gray-900 font-semibold">
 																		<div className="flex flex-col gap-2">
 																			<span> {items.Dish.DishName} </span>
 																			<span className="text-xs font-normal"> Rs.{items.Price} </span>
 																		</div>
-																	</div>
+																	</p>
 																</td>
 																<td className="p-4 border-b border-blue-gray-50">
-																	<div className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal gap-4">
+																	<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal gap-4">
 																		<div className="flex flex-col">
-																			<button
-																				onClick={() => { handleCartItemIncrement(items.id) }}
-																				className="inline-flex justify-center items-center cursor-pointer">
+																			<button onClick={() => handleIncrement(items.id)} className="inline-flex justify-center items-center">
 																				<FaPlus size={15} />
 																			</button>
-																			<button
-																				onClick={() => { handleCartItemDecrement(items.id) }}
-																				className="inline-flex justify-center items-center font-normal cursor-pointer">
+																			<button onClick={() => handleDecrement(items.id)} className="inline-flex justify-center items-center font-normal">
 																				<FaMinus size={15} />
 																			</button>
 																		</div>
 																		<span className="border border-white bg-red-500 px-3 py-1 rounded-xl font-bold text-xl"> {items.quantity} </span>
-																	</div>
+																	</p>
 																</td>
 																<td className="p-4 border-b border-blue-gray-50">
-																	<div className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
+																	<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
 																		Rs.{items.Price * items.quantity}
-																	</div>
+																	</p>
 																</td>
 																<td className="p-4 border-b border-blue-gray-50">
-																	<div className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
-																		<button
-																			onClick={() => { handleCartItemDelete(items.id) }}
-																			className="inline-flex justify-center items-center cursor-pointer">
+																	<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">
+																		<button onClick={() => handleDelete(items.id)} className="inline-flex justify-center items-center">
 																			<FaTrash size={20} />
 																		</button>
-																	</div>
+																	</p>
 																</td>
 															</tr>
 														))
 													}
+
 												</tbody>
 											</table>
 										</div>

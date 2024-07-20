@@ -118,8 +118,7 @@ const CustomerTable: React.FC = () => {
       <div className={`ml-[70px] flex-1 h-screen p-4 bg-white ${isFormVisible ? "" : ""}`}>
         <h2 className="text-red-500 text-3xl mb-4">Customer Relationship Management</h2>
 
-        <div className="flex space-x-4 mb-4">
-          <button className="bg-zinc-800 text-white px-4 py-2 rounded">Customers</button>
+        <div className="flex justify-end space-x-4 mb-4">
           <button className="bg-zinc-800 text-white px-4 py-2 rounded" onClick={toggleFormVisibility}>
             Add +
           </button>

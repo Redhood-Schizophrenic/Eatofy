@@ -16,6 +16,7 @@ const ReservationGrid: React.FC = () => {
   const [note, setnote] = useState('');
   const [contact, setcontact] = useState('');
   const [customer, setcustomer] = useState('');
+  const [no_of_persons, setNo_of_persons] = useState('');
 
   function handleClick(e: any) {
     const name = e.target.name;
@@ -90,6 +91,7 @@ const ReservationGrid: React.FC = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          'no_of_persons': no_of_persons,
           'note': note,
           'date': submitData.date,
           'time': submitData.time,
@@ -134,9 +136,9 @@ const ReservationGrid: React.FC = () => {
 
       const data = await response.json();
       if (data.returncode === 200) {
-        console.log("deleted",data);
+        console.log("deleted", data);
         handleFetchReservations();
-      }else{
+      } else {
         console.log("Failed to delete");
       }
 
@@ -193,7 +195,10 @@ const ReservationGrid: React.FC = () => {
                     <div>Time</div>
                   </th>
                   <th className='border p-2'>
-                    <div></div>
+                    <div>No of Persons</div>
+                  </th>
+                  <th className='border p-2'>
+                    <div>Action</div>
                   </th>
                 </tr>
               </thead>
@@ -238,6 +243,13 @@ const ReservationGrid: React.FC = () => {
                       </td>
                       <td className="p-2">
                         <div className="flex flex-col sm:flex-row items-center">
+                          {
+                            <span>{items.NoOfPersons}</span>
+                          }
+                        </div>
+                      </td>
+                      <td className="p-2">
+                        <div className="flex flex-col sm:flex-row items-center">
                           <FaTrash size={28} onClick={() => { sessionStorage.setItem('reservation_id', items.id); handleDelete() }} />
                         </div>
                       </td>
@@ -265,62 +277,79 @@ const ReservationGrid: React.FC = () => {
                 <div className="w-full flex justify-evenly items-start rounded-lg p-4">
                   <div className='w-1/2'>
                     <div className='p-2 w-full'>
+                      <label htmlFor="customer">Customer Name</label>
                       <input
                         type="text"
                         placeholder="Customer name"
                         value={customer}
                         required
-                        className="p-2 w-full text-xl focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
                         onChange={(e) => {
                           setcustomer(e.target.value)
                         }}
                       />
                     </div>
                     <div className='p-2 w-full'>
+                      <label htmlFor="customer">Date</label>
                       <input
-                        type="text"
+                        type="date"
                         placeholder="YY-MM-DD"
                         name='date'
                         required
                         value={submitData.date}
-                        className="p-2 w-full text-xl focus:outline-none border border-zinc-200  focus:outline-red-500 rounded-lg"
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200  focus:outline-red-500 rounded-lg"
                         onChange={handleClick}
                       />
                     </div>
                     <div className='p-2 w-full'>
+                      <label htmlFor="customer">Time</label>
                       <input
                         type="text"
                         placeholder="Time"
                         name='time'
                         required
                         value={submitData.time}
-                        className="p-2 w-full text-xl focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
                         onChange={handleClick}
                       />
                     </div>
                   </div>
                   <div className='w-1/2'>
                     <div className='p-2 w-full'>
+                      <label htmlFor="customer">Customer Contact</label>
                       <input
                         type="text"
-                        placeholder="contact"
+                        placeholder="Contact"
                         value={contact}
                         required
-                        className="p-2 w-full text-xl focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
                         onChange={(e) => {
                           setcontact(e.target.value)
                         }}
                       />
                     </div>
                     <div className='p-2 w-full'>
+                      <label htmlFor="customer">Note</label>
                       <input
                         type="text"
-                        placeholder="note"
+                        placeholder="Note"
                         value={note}
-                        required
-                        className="p-2 w-full text-xl focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
                         onChange={(e) => {
                           setnote(e.target.value);
+                        }}
+                      />
+                    </div>
+                    <div className='p-2 w-full'>
+                      <label htmlFor="customer">No of Persons</label>
+                      <input
+                        type="text"
+                        placeholder="No of Persons"
+                        value={no_of_persons}
+                        required
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
+                        onChange={(e) => {
+                          setNo_of_persons(e.target.value);
                         }}
                       />
                     </div>

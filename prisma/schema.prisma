@@ -92,15 +92,16 @@ model Tables {
 }
 
 model TableReservation {
-  id         String    @id @unique @default(uuid())
-  Date       String
-  Time       String
-  Status     String    @default("Active")
-  Note       String?
-  CustomerId String
-  HotelId    String
-  Customer   Customers @relation(fields: [CustomerId], references: [id])
-  Hotel      Hotels    @relation(fields: [HotelId], references: [id])
+  id          String    @id @unique @default(uuid())
+  Date        String
+  Time        String
+  Status      String    @default("Active")
+  Note        String?
+  NoOfPersons String?
+  CustomerId  String
+  HotelId     String
+  Customer    Customers @relation(fields: [CustomerId], references: [id])
+  Hotel       Hotels    @relation(fields: [HotelId], references: [id])
 }
 
 model MenuCategory {

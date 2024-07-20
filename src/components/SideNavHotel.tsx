@@ -199,6 +199,16 @@ export default function HotelSideNav() {
                     </Link>
 
                     <Link
+                      href="/hotels/inventory_management"
+                      className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[13px] p-2 py-3 gap-8 w-full"
+                      onMouseEnter={() => { changeColor('inventory_management') }}
+                      onMouseLeave={() => { changeColor('inventory_management') }}
+                    >
+                      <FaWarehouse size={25} className="icon" color={isOpen8 ? '#fff' : ''} />
+                      <span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Inventory</span>
+                    </Link>
+
+                    <Link
                       href="/hotels/table_reservation"
                       className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[13px] p-2 py-3 gap-8 w-full"
                       onMouseEnter={() => { changeColor('table_reservation') }}

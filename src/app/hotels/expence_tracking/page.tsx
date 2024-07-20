@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import { ApiHost } from "@/constants/url_consts";
+import HotelSideNav from "@/components/SideNavHotel";
+import { AiOutlineCloseCircle } from "react-icons/ai";
+import { MdOutlineEdit } from "react-icons/md";
 
 interface Expense {
   id: string;
@@ -10,6 +13,7 @@ interface Expense {
   ExpenseName: string;
   AmountPayable: number;
   AmountPaid: number;
+  Note: string | null;
   date: string;
   description: string;
 }
@@ -18,13 +22,15 @@ const ExpenseTracking: React.FC = () => {
   const [showAddExpenseForm, setShowAddExpenseForm] = useState(false);
   const [showUpdateExpenseForm, setShowUpdateExpenseForm] = useState(false);
   const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [expenseId, setExpenseId] = useState<Expense[]>([]);
   const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
   const [expenseDetails, setExpenseDetails] = useState({
+    bearer: "",
     date: "",
-    amount: 0,
+    amount_payable: 0,
+    amount_paid: 0,
     category: "",
     description: "",
-    nonChargeable: false,
     status: "",
   });
 
@@ -73,9 +79,9 @@ const ExpenseTracking: React.FC = () => {
           expense_name: expenseDetails.category,
           date: expenseDetails.date,
           note: expenseDetails.description,
-          payable_to: "Supplier",
-          amount_payable: expenseDetails.amount,
-          amount_paid: 0.0,
+          payable_to: expenseDetails.bearer,
+          amount_payable: expenseDetails.amount_payable,
+          amount_paid: expenseDetails.amount_paid,
           status: expenseDetails.status
         })
       });
@@ -83,6 +89,7 @@ const ExpenseTracking: React.FC = () => {
       const data = await response.json();
 
       if (data.resturncode === 200) {
+        setShowAddExpenseForm(!showAddExpenseForm);
         fetchExpenses();
         console.log("Expense added successfully");
         setShowAddExpenseForm(false);
@@ -95,6 +102,22 @@ const ExpenseTracking: React.FC = () => {
     }
   };
 
+  const updateParams = (expense: any) => {
+    setExpenseId(expense.id);
+    setExpenseDetails({
+      bearer: expense.PayableTo,
+      date: expense.Date,
+      amount_payable: expense.AmountPayable,
+      amount_paid: expense.AmountPaid,
+      category: expense.ExpenseName,
+      description: expense.Note,
+      status: expense.PaymentStatus,
+    });
+    setShowUpdateExpenseForm(true);
+    setSelectedExpense(expense);
+
+  }
+
   const handleUpdateExpense = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedExpense) return;
@@ -106,13 +129,13 @@ const ExpenseTracking: React.FC = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          expense_id: selectedExpense.id,
+          expense_id: expenseId,
           date: expenseDetails.date,
           note: expenseDetails.description,
-          payable_to: "Supplier",
-          amount_payable: expenseDetails.amount,
-          amount_paid: 0.0,
-          status: "Unpaid"
+          payable_to: expenseDetails.bearer,
+          amount_payable: expenseDetails.amount_payable,
+          amount_paid: expenseDetails.amount_paid,
+          status: expenseDetails.status
         })
       });
 
@@ -133,9 +156,9 @@ const ExpenseTracking: React.FC = () => {
 
   return (
     <div className="flex h-screen flex-col md:flex-row">
-      <div className="flex-1 p-8">
+      <HotelSideNav />
+      <div className="flex-1 ml-[70px] p-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-red-500">EATOFY</h1>
           <h2 className="text-3xl font-bold">
             Expenses <span className="text-red-500">Tracking</span>
           </h2>
@@ -158,182 +181,271 @@ const ExpenseTracking: React.FC = () => {
         </div>
 
         {showAddExpenseForm && (
-          <div className="w-full md:w-1/3 p-4 border border-red-500 rounded-lg mb-8">
-            <h3 className="text-xl font-bold mb-4">Add Expenses</h3>
-            <form onSubmit={handleAddExpense}>
-              <div className="mb-4">
-                <label className="block text-zinc-700">Date</label>
-                <input
-                  type="date"
-                  className="w-full border-b border-red-500 focus:outline-none focus:border-red-700"
-                  value={expenseDetails.date}
-                  onChange={(e) =>
-                    setExpenseDetails({
-                      ...expenseDetails,
-                      date: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-zinc-700">Amount</label>
-                <input
-                  type="number"
-                  className="w-full border-b border-red-500 focus:outline-none focus:border-red-700"
-                  value={expenseDetails.amount}
-                  onChange={(e) =>
-                    setExpenseDetails({
-                      ...expenseDetails,
-                      amount: Number(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-zinc-700">Category</label>
-                <input
-                  type="text"
-                  className="w-full border-b border-red-500 focus:outline-none focus:border-red-700"
-                  value={expenseDetails.category}
-                  onChange={(e) =>
-                    setExpenseDetails({
-                      ...expenseDetails,
-                      category: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-zinc-700">Description</label>
-                <textarea
-                  className="w-full border-b border-red-500 focus:outline-none focus:border-red-700"
-                  value={expenseDetails.description}
-                  onChange={(e) =>
-                    setExpenseDetails({
-                      ...expenseDetails,
-                      description: e.target.value,
-                    })
-                  }
-                ></textarea>
-              </div>
-              <div className="mb-4 flex items-center">
-                <label className="text-zinc-700">Non-Chargeable</label>
-                <input
-                  type="checkbox"
-                  className="mr-2"
-                  checked={expenseDetails.nonChargeable}
-                  onChange={(e) =>
-                    setExpenseDetails({
-                      ...expenseDetails,
-                      nonChargeable: e.target.checked,
-                    })
-                  }
-                />
-              </div>
-              <div className="mb-4">
-                <select
-                  name="status"
-                  value={expenseDetails.status}
-                  onChange={(e) =>
-                    setExpenseDetails({
-                      ...expenseDetails,
-                      status: e.target.value,
-                    })
-                  }
+          <div className="fixed w-[100dvw] h-[100dvh] bg-black bg-opacity-40 backdrop-blur-md top-0 left-0 flex flex-col justify-center items-center">
+            <div className="ml-[70px] w-full md:w-1/2 p-8 border border-red-500 rounded-lg mb-8 bg-white flex flex-col">
+              <div className="flex justify-between">
+                <h3 className="text-xl font-bold mb-4 h-[100%] flex items-center">Add Expense</h3>
+                <button
+                  onClick={() => setShowAddExpenseForm(!showAddExpenseForm)}
                 >
-                  <option value="">--Select--</option>
-                  <option value="Paid">Paid</option>
-                  <option value="Unpaid">Unpaid</option>
-                  <option value="Partpaid">Part paid</option>
-                </select>
+                  <AiOutlineCloseCircle size={35} />
+                </button>
               </div>
-              <button className="bg-red-500 text-white px-4 py-2 rounded">
-                Add
-              </button>
-            </form>
+              <form onSubmit={handleAddExpense} className="flex flex-col gap-4 my-4 w-full">
+                <div className="flex justify-between w-full gap-6">
+                  <div className="w-[100%] text-black font-medium flex flex-col gap-6">
+                    <div className="">
+                      <label className="block ">Bearer<span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        placeholder="eg; John Doe"
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        value={expenseDetails.bearer}
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            bearer: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="">
+                      <label className="block ">Category<span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        placeholder="eg; Salary, Purchases"
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        value={expenseDetails.category}
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            category: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="">
+                      <label className="block text-zinc-700">Date<span className="text-red-500">*</span></label>
+                      <input
+                        type="date"
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        value={expenseDetails.date}
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            date: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="w-[100%] text-black font-medium flex flex-col gap-6">
+                    <div className="">
+                      <label className="block">Balance Amount<span className="text-red-500">*</span></label>
+                      <input
+                        type="number"
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        value={expenseDetails.amount_payable}
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            amount_payable: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="">
+                      <label className="block">Paid Amount<span className="text-red-500">*</span></label>
+                      <input
+                        type="number"
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        value={expenseDetails.amount_paid}
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            amount_paid: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="block">Payment Status<span className="text-red-500">*</span></label>
+                      <select
+                        name="status"
+                        value={expenseDetails.status}
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            status: e.target.value,
+                          })
+                        }
+                      >
+                        <option value="">--Select--</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Unpaid">Unpaid</option>
+                        <option value="Partpaid">Part paid</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="">
+                  <label className="block ">Note</label>
+                  <textarea
+                    className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                    value={expenseDetails.description}
+                    onChange={(e) =>
+                      setExpenseDetails({
+                        ...expenseDetails,
+                        description: e.target.value,
+                      })
+                    }
+                  ></textarea>
+                </div>
+
+                <button className="bg-red-500 text-white px-4 py-2 rounded">
+                  Add
+                </button>
+              </form>
+            </div>
           </div>
         )}
 
         {showUpdateExpenseForm && selectedExpense && (
-          <div className="w-full md:w-1/3 p-4 border border-red-500 rounded-lg mb-8">
-            <h3 className="text-xl font-bold mb-4">Update Expense</h3>
-            <form onSubmit={handleUpdateExpense}>
-              <div className="mb-4">
-                <label className="block text-zinc-700">Date</label>
-                <input
-                  type="date"
-                  className="w-full border-b border-red-500 focus:outline-none focus:border-red-700"
-                  value={expenseDetails.date}
-                  onChange={(e) =>
-                    setExpenseDetails({
-                      ...expenseDetails,
-                      date: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-zinc-700">Amount</label>
-                <input
-                  type="number"
-                  className="w-full border-b border-red-500 focus:outline-none focus:border-red-700"
-                  value={expenseDetails.amount}
-                  onChange={(e) =>
-                    setExpenseDetails({
-                      ...expenseDetails,
-                      amount: Number(e.target.value),
-                    })
-                  }
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-zinc-700">Category</label>
-                <input
-                  type="text"
-                  className="w-full border-b border-red-500 focus:outline-none focus:border-red-700"
-                  value={expenseDetails.category}
-                  onChange={(e) =>
-                    setExpenseDetails({
-                      ...expenseDetails,
-                      category: e.target.value,
-                    })
-                  }
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-zinc-700">Description</label>
-                <textarea
-                  className="w-full border-b border-red-500 focus:outline-none focus:border-red-700"
-                  value={expenseDetails.description}
-                  onChange={(e) =>
-                    setExpenseDetails({
-                      ...expenseDetails,
-                      description: e.target.value,
-                    })
-                  }
-                ></textarea>
-              </div>
-              <div className="mb-4">
-                <select
-                  name="status"
-                  value={expenseDetails.status}
-                  onChange={(e) =>
-                    setExpenseDetails({
-                      ...expenseDetails,
-                      status: e.target.value,
-                    })
-                  }
+          <div className="fixed w-[100dvw] h-[100dvh] bg-black bg-opacity-40 backdrop-blur-md top-0 left-0 flex flex-col justify-center items-center">
+            <div className="ml-[70px] w-full md:w-1/2 p-8 border border-red-500 rounded-lg mb-8 bg-white flex flex-col">
+              <div className="flex justify-between">
+                <h3 className="text-xl font-bold mb-4 h-[100%] flex items-center">Add Expense</h3>
+                <button
+                  onClick={() => {
+                    setShowUpdateExpenseForm(false);
+                    setSelectedExpense(null);
+                  }}
                 >
-                  <option value="">--Select--</option>
-                  <option value="Paid">Paid</option>
-                  <option value="Unpaid">Unpaid</option>
-                  <option value="Partpaid">Part paid</option>
-                </select>
+                  <AiOutlineCloseCircle size={35} />
+                </button>
               </div>
-              <button className="bg-red-500 text-white px-4 py-2 rounded">
-                Update
-              </button>
-            </form>
+              <form onSubmit={handleUpdateExpense} className="flex flex-col gap-4 my-4 w-full">
+                <div className="flex justify-between w-full gap-6">
+                  <div className="w-[100%] text-black font-medium flex flex-col gap-6">
+                    <div className="">
+                      <label className="block ">Bearer<span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        placeholder="eg; John Doe"
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        value={expenseDetails.bearer}
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            bearer: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="">
+                      <label className="block ">Category<span className="text-red-500">*</span></label>
+                      <input
+                        type="text"
+                        placeholder="eg; Salary, Purchases"
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        value={expenseDetails.category}
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            category: e.target.value,
+                          })
+                        }
+                        required
+                      />
+                    </div>
+                    <div className="">
+                      <label className="block text-zinc-700">Date<span className="text-red-500">*</span></label>
+                      <input
+                        type="date"
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        value={expenseDetails.date}
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            date: e.target.value,
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="w-[100%] text-black font-medium flex flex-col gap-6">
+                    <div className="">
+                      <label className="block">Balance Amount<span className="text-red-500">*</span></label>
+                      <input
+                        type="number"
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        value={expenseDetails.amount_payable}
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            amount_payable: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="">
+                      <label className="block">Paid Amount<span className="text-red-500">*</span></label>
+                      <input
+                        type="number"
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        value={expenseDetails.amount_paid}
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            amount_paid: Number(e.target.value),
+                          })
+                        }
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="block">Payment Status<span className="text-red-500">*</span></label>
+                      <select
+                        name="status"
+                        value={expenseDetails.status}
+                        className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                        onChange={(e) =>
+                          setExpenseDetails({
+                            ...expenseDetails,
+                            status: e.target.value,
+                          })
+                        }
+                      >
+                        <option value="">--Select--</option>
+                        <option value="Paid">Paid</option>
+                        <option value="Unpaid">Unpaid</option>
+                        <option value="Partpaid">Part paid</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="">
+                  <label className="block ">Note</label>
+                  <textarea
+                    className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                    value={expenseDetails.description}
+                    onChange={(e) =>
+                      setExpenseDetails({
+                        ...expenseDetails,
+                        description: e.target.value,
+                      })
+                    }
+                  ></textarea>
+                </div>
+
+                <button className="bg-red-500 text-white px-4 py-2 rounded">
+                  Update 
+                </button>
+              </form>
+            </div>
           </div>
         )}
 
@@ -348,6 +460,7 @@ const ExpenseTracking: React.FC = () => {
                   <th className="border-b pb-2">Amount Paid</th>
                   <th className="border-b pb-2">Balance</th>
                   <th className="border-b pb-2">Payment Status</th>
+                  <th className="border-b pb-2">Note</th>
                   <th className="border-b pb-2">Actions</th>
                 </tr>
               </thead>
@@ -360,18 +473,21 @@ const ExpenseTracking: React.FC = () => {
                     <td>₹{expense.AmountPaid}</td>
                     <td>₹{expense.AmountPayable}</td>
                     <td>{expense.PaymentStatus}</td>
+                    <td>{expense.Note}</td>
+                    <td>
+                      <button
+                        onClick={() => {
+                          updateParams(expense);
+                        }}
+                      >
+                        <MdOutlineEdit size={20} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            {/* <button className="bg-red-500 text-white px-4 py-2 mt-4 w-full rounded">
-              View All
-            </button> */}
           </div>
-        </div>
-
-        <div className="flex space-x-4 mt-8">
-
         </div>
       </div>
     </div>
