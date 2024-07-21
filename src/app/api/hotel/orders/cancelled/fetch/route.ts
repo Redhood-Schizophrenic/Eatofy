@@ -1,9 +1,9 @@
-import { add_menu_orders } from "./controller";
+import { fetch_cancelled_orders } from "./controller";
 
 export async function POST(request: Request) {
 	try {
 		const data = await request.json();
-		const result = await add_menu_orders(data);
+		const result = await fetch_cancelled_orders(data);
 		return Response.json(
 			{
 				returncode: result.returncode,
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 		return Response.json(
 			{
 				returncode: 500,
-				message: `Error Adding Menu Orders: ${error.message}`,
+				message: `Error Fetching Cancelled Order: ${error.message}`,
 				output: []
 			},
 			{
@@ -28,4 +28,3 @@ export async function POST(request: Request) {
 		);
 	}
 }
-

@@ -301,18 +301,20 @@ model CustomerOccassion {
 }
 
 model Orders {
-  id          String   @id @unique @default(uuid())
-  Quantity    String
-  Note        String?
-  TotalAmount Float
-  MenuId      String
-  Menu        Menus    @relation(fields: [MenuId], references: [id])
-  BillId      String
-  Bill        Bills    @relation(fields: [BillId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  hotelsId    String
-  Hotels      Hotels   @relation(fields: [hotelsId], references: [id])
+  id              String            @id @unique @default(uuid())
+  Quantity        String
+  Note            String?
+  TotalAmount     Float
+  MenuId          String
+  Menu            Menus             @relation(fields: [MenuId], references: [id])
+  BillId          String
+  Bill            Bills             @relation(fields: [BillId], references: [id])
+  Status          String            @default("Active")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  hotelsId        String
+  Hotels          Hotels            @relation(fields: [hotelsId], references: [id])
+  CancelledOrders CancelledOrders[]
 }
 
 model Bills {
@@ -340,6 +342,15 @@ model Bills {
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt
   Orders        Orders[]
+}
+
+model CancelledOrders {
+  id        String   @id @unique @default(uuid())
+  Reason    String
+  OrderId   String
+  Order     Orders   @relation(fields: [OrderId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Expenses {

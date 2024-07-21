@@ -1,9 +1,9 @@
-import { delete_an_order } from "./controller";
+import { add_cancelled_order } from "./controller";
 
-export async function DELETE(request: Request) {
+export async function POST(request: Request) {
 	try {
 		const data = await request.json();
-		const result = await delete_an_order(data);
+		const result = await add_cancelled_order(data);
 		return Response.json(
 			{
 				returncode: result.returncode,
@@ -19,7 +19,7 @@ export async function DELETE(request: Request) {
 		return Response.json(
 			{
 				returncode: 500,
-				message: `Error Deleting Orders: ${error.message}`,
+				message: `Error Adding Cancelled Order: ${error.message}`,
 				output: []
 			},
 			{
@@ -28,3 +28,4 @@ export async function DELETE(request: Request) {
 		);
 	}
 }
+

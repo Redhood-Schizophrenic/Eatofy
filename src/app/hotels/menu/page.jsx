@@ -27,6 +27,7 @@ export default function Menu() {
 	const [CustomerEmail, setCustomerEmail] = useState('');
 	const [CustomerOccassion, setCustomerOccassion] = useState('');
 	const [CustomerDate, setCustomerDate] = useState('');
+	const [CustomerId, setCustomerId] = useState('');
 
 	// Fetch Display Data
 	const [ExistingBill, setExistingBill] = useState([]);
@@ -62,12 +63,12 @@ export default function Menu() {
 		setDishDisplayFullWidth(true);
 	}
 
-	const handleCartItemIncrement = (id) => {
+	const handleIncrement = async(id) => {
 		console.log("Id");
 		setCart(Cart.map(item => item.id === id ? { ...item, quantity: item.quantity + 1 } : item));
 	}
 
-	const handleCartItemDecrement = (id) => {
+	const handleDecrement = (id) => {
 		console.log(id);
 		setCart(Cart.map(item => item.id === id ? { ...item, quantity: item.quantity - 1 } : item).filter(item => item.quantity > 0));
 	}
@@ -387,9 +388,9 @@ export default function Menu() {
 																	</p>
 																</td>
 																<td className="p-4 border-b border-blue-gray-50">
-																	<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal gap-4">
+																	<div className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal gap-4">
 																		<div className="flex flex-col">
-																			<button onClick={() => handleIncrement(items.id)} className="inline-flex justify-center items-center">
+																			<button onClick={async() => handleIncrement(items.id)} className="inline-flex justify-center items-center">
 																				<FaPlus size={15} />
 																			</button>
 																			<button onClick={() => handleDecrement(items.id)} className="inline-flex justify-center items-center font-normal">
@@ -397,7 +398,7 @@ export default function Menu() {
 																			</button>
 																		</div>
 																		<span className="border border-white bg-red-500 px-3 py-1 rounded-xl font-bold text-xl"> {items.quantity} </span>
-																	</p>
+																	</div>
 																</td>
 																<td className="p-4 border-b border-blue-gray-50">
 																	<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal">

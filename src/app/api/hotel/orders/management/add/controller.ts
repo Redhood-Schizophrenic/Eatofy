@@ -4,6 +4,7 @@ import { create_bill } from "@/db/crud/bills/management/create";
 import { read_customer } from "@/db/crud/customers/management/read";
 import { create_customer } from "@/db/crud/customers/management/create";
 import { create_customer_occassion } from "@/db/crud/customers/occasions/create";
+import { add_menu_order } from "../../menus/add/controller";
 
 interface MenuOrder {
 	quantity: string;
@@ -25,8 +26,6 @@ interface MenuRequestOrder {
 	note: string | null;
 	hotel_id: string;
 }
-
-const api_host = process.env.NEXT_URL || "http://localhost:3000/";
 
 export async function add__order(data: any): Promise<ApiResponse> {
 	try {
@@ -101,6 +100,9 @@ export async function add__order(data: any): Promise<ApiResponse> {
 			customer_id
 		});
 
+		let OrdersArray = [];
+		let isAllOrdersAdded = true;
+
 		if (result.returncode == 200) {
 			for (const element of menu_data) {
 				let menu_id: string = element['menu_id'];
@@ -109,7 +111,7 @@ export async function add__order(data: any): Promise<ApiResponse> {
 				let bill_id: string = (result.output as { id: string }).id;
 
 				let menu_request: MenuRequestOrder | MenuRequestOptionalOrder;
-				if(note != null || note != undefined) {
+				if (note != null || note != undefined) {
 					menu_request = {
 						menu_id,
 						quantity,
@@ -127,30 +129,48 @@ export async function add__order(data: any): Promise<ApiResponse> {
 					}
 				}
 
-				console.log(menu_request);
-
 				try {
-					let out = await fetch(`${api_host}/api/hotel/orders/menus/add`, {
-						headers: {
-							'Accept': 'application/json',
-							'Content-Type': 'application/json'
-						},
-						method: "POST",
-						body: JSON.stringify(menu_request)
-					});
+					let out = await add_menu_order(menu_request);
 
-					console.log(out);
+					if (out.returncode == 200) {
+						OrdersArray.push(out.output);
+					}
+					else {
+						isAllOrdersAdded = false; 
+					}
 				} catch (error) {
+					isAllOrdersAdded = false;
 					console.error(error);
 				}
 			}
 
-			return {
-				returncode: 200,
-				message: "Order Added",
-				output: result.output
-			};
-		} else {
+			if (isAllOrdersAdded == true) {
+				return {
+					returncode: 200,
+					message: "Orders Added",
+					output: [
+						{
+							Bill: result.output,
+							Orders: OrdersArray
+						}
+					]
+				}
+			}
+			else {
+				return {
+					returncode: 510,
+					message: "Some Orders aren't Added",
+					output: [
+						{
+							Bill: result.output,
+							Orders: OrdersArray
+						}
+					]
+				}
+			}
+
+		}
+		 else {
 			return result;
 		}
 	} catch (error: any) {

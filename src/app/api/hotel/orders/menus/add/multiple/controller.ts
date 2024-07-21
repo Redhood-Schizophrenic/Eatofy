@@ -1,4 +1,5 @@
 import { ApiResponse } from "@/types/ApiResponse";
+import { add_menu_order } from "../controller";
 
 interface MenuOrder {
 	quantity: string,
@@ -7,7 +8,7 @@ interface MenuOrder {
 	note: string | null
 }
 
-export async function add_menu_order(data: any): Promise<ApiResponse> {
+export async function add_menu_orders(data: any): Promise<ApiResponse> {
 	try {
 
 		const response_data: Array<MenuOrder> | any | null = data['data'];
@@ -24,15 +25,16 @@ export async function add_menu_order(data: any): Promise<ApiResponse> {
 
 		response_data.forEach((element: MenuOrder) => {
 			try {
-				fetch("http://localhost:3000/api/hotel/orders/menus/add/", {
-					headers: {
-						'Accept': 'application/json',
-						'Content-Type': 'application/json'
-					},
-					method: "POST",
-					body: JSON.stringify(element)
-				});
 
+				const menu_orders_added = add_menu_order(element);
+				if (menu_orders_added.returncode != 200) {
+					return {
+						returncode: 200,
+						message: "Menu Orders Added",
+						output: []
+					};
+
+				}
 			} catch (error) {
 				console.error(error);
 			}
