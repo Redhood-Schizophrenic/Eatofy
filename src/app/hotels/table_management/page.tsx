@@ -3,6 +3,7 @@ import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import React, { useState, useEffect, FormEvent } from "react";
 import { FaTrash } from "react-icons/fa";
+import { IoIosAdd, IoIosAddCircleOutline } from "react-icons/io";
 
 interface WidgetProps { }
 
@@ -388,7 +389,7 @@ const Widget: React.FC<WidgetProps> = () => {
               </form>
             </div>
           </div>
-            :
+          :
           <div className="hidden"></div>
         }
 
@@ -453,15 +454,30 @@ const Widget: React.FC<WidgetProps> = () => {
           <div key={section.id} className="mt-8">
             <h3 className="bg-zinc-200 p-2 rounded-lg text-red-500 font-bold mb-4 inline-flex justify-between items-center w-full">
               <span className="text-black">{section.SectionName}</span>
-              <FaTrash
-                size={20}
-                onClick={
-                  () => {
-                    sessionStorage.setItem('section_id', section.id);
-                    handleDeleteSection();
+
+              <div className="flex gap-4">
+
+                <button
+                  key={section.id}
+                  onClick={() => { sessionStorage.setItem('section_id', section.id); handleShowTableForm() }}
+
+                >
+                  <span>
+                    <IoIosAddCircleOutline size={25} />
+                  </span>
+                </button>
+
+                <FaTrash
+                  size={20}
+                  onClick={
+                    () => {
+                      sessionStorage.setItem('section_id', section.id);
+                      handleDeleteSection();
+                    }
                   }
-                }
-              />
+                />
+              </div>
+
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-black">
               {tables

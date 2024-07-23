@@ -1,4 +1,5 @@
 import { read_hotel_menus } from "@/db/crud/menus/management/read";
+import { read_sections } from "@/db/crud/sections/management/read";
 
 export async function fetch_hotel_menus(data) {
 	try {
@@ -25,15 +26,24 @@ export async function fetch_hotel_menus(data) {
 			hotel_id
 		})
 
-		if (result.returncode == 200) {
+		if ( menu_result.returncode == 200 && section_result.returncode == 200 ) {
 			return {
 				returncode: 200,
 				message: "Hotel's Menus Fetched",
-				output: result.output
+				output: [
+					{
+						Menus: menu_result.output,
+						Sections: section_result.output
+					}
+				]
 			};
 		}
 		else {
-			return result;
+			return {
+				returncode: 503,
+				message: "Error Fetching Results",
+				output: []
+			};
 		}
 
 

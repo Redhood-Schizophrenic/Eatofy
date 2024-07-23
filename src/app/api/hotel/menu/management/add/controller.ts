@@ -20,7 +20,7 @@ export async function add_menu(data: any): Promise<ApiResponse> {
 		}
 
 		// Existing Dish 
-		const existingDish = await read_menu({ dish_id });
+		const existingDish = await read_menu({ dish_id, section_id });
 		if ( existingDish.returncode == 200 ) {
 			return existingDish;
 		}

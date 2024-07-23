@@ -38,7 +38,8 @@ export async function read_hotel_menus({
 					include: {
 						Category: true
 					}
-				}
+				},
+				Section: true
 			}
 		});
 
@@ -123,11 +124,13 @@ export async function read_menus({
 
 // Check if menu exists
 interface MenuInterface {
-	dish_id: string
+	dish_id: string,
+	section_id: string
 }
 
 export async function read_menu({
-	dish_id
+	dish_id,
+	section_id
 }: MenuInterface) {
 	try {
 
@@ -135,6 +138,7 @@ export async function read_menu({
 		const result = await db.menus.findMany({
 			where: {
 				DishId: dish_id,
+				SectionId: section_id,
 				Dish: {
 					Category: {
 						NOT: {

@@ -3,6 +3,7 @@ import HotelSideNav from '@/components/SideNavHotel';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import { BiDish, BiFoodMenu } from "react-icons/bi";
+import { FaWarehouse } from 'react-icons/fa6';
 import { GoHistory, GoPersonAdd } from 'react-icons/go';
 import { IoIosPeople } from 'react-icons/io';
 import { MdOutlinePersonPin, MdOutlineTableRestaurant } from 'react-icons/md';
@@ -18,9 +19,9 @@ const EatofyApp: React.FC = () => {
 
   const menuItems = [
     {
-      'name': 'Dishes Management',
-      'href': '/hotels/dish_management',
-      'img_tag': BiDish
+      'name': 'Inventory Management',
+      'href': '/hotels/inventory_management',
+      'img_tag': FaWarehouse
     },
     {
       'name': 'Menu Management',
