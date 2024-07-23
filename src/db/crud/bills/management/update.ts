@@ -13,7 +13,9 @@ interface BillPaymentInterface {
 	discount_rate: string,
 	discount_amount: number,
 	payment_mode: string,
-	payment_status: string
+	payment_status: string,
+	vat_rate: string | null,
+	vat_amount: number | null
 }
 
 export async function bill_payment({
@@ -28,7 +30,9 @@ export async function bill_payment({
 	discount_rate,
 	discount_amount,
 	payment_mode,
-	payment_status
+	payment_status,
+	vat_rate,
+	vat_amount
 }: BillPaymentInterface) {
 	try {
 
@@ -48,7 +52,9 @@ export async function bill_payment({
 				DiscountRate: discount_rate,
 				DiscountPrice: discount_amount,
 				PaymentMode: payment_mode,
-				Status: payment_status
+				Status: payment_status,
+				VatRate: vat_rate,
+				VatAmount: vat_amount
 			}
 		});
 

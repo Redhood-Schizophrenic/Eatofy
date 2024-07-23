@@ -5,7 +5,7 @@ interface StaffsInterface {
 	hotel_id: string
 }
 
-export async function read_hotel_staffs ({
+export async function read_hotel_staffs({
 	hotel_id
 }: StaffsInterface) {
 	try {
@@ -14,7 +14,7 @@ export async function read_hotel_staffs ({
 		const result = await db.staffs.findMany({
 			where: {
 				HotelId: hotel_id,
-				NOT:{
+				NOT: {
 					Status: "Inactive"
 				}
 			}
@@ -49,7 +49,7 @@ interface StaffCheckerInterface {
 	hotel_id: string
 }
 
-export async function check_staff_exists ({
+export async function check_staff_exists({
 	first_name,
 	last_name,
 	email,
@@ -66,16 +66,16 @@ export async function check_staff_exists ({
 				Email: email,
 				Contact: contact,
 				HotelId: hotel_id,
-				NOT:{
+				NOT: {
 					Status: "Inactive"
 				}
-			}		
+			}
 		});
 
 		// Database is disconnected
 		db.$disconnect();
 
-		if(result.length==0){
+		if (result.length == 0) {
 			return {
 				returncode: 400,
 				message: "Staff doesn't exist",
@@ -105,7 +105,7 @@ interface EmailInterface {
 	email: string
 }
 
-export async function read_staff_details ({
+export async function read_staff_details({
 	email
 }: EmailInterface) {
 	try {
@@ -114,16 +114,16 @@ export async function read_staff_details ({
 		const result = await db.staffs.findMany({
 			where: {
 				Email: email,
-				NOT:{
+				NOT: {
 					Status: "Inactive"
 				}
-			}		
+			}
 		});
 
 		// Database is disconnected
 		db.$disconnect();
 
-		if(result.length==0){
+		if (result.length == 0) {
 			return {
 				returncode: 400,
 				message: "Category doesn't exist",
@@ -154,7 +154,7 @@ interface LoginInterface {
 	email: string,
 }
 
-export async function staff_login ({
+export async function staff_login({
 	email
 }: LoginInterface) {
 	try {
@@ -163,28 +163,47 @@ export async function staff_login ({
 		const result = await db.staffs.findMany({
 			where: {
 				Email: email,
-				NOT:{
+				NOT: {
 					Status: "Inactive"
 				}
-			}		
+			}
+		});
+
+		const hotel_id = result[0].HotelId;
+
+		const subscription_check = await db.hotel_Subscription.findMany({
+			where: {
+				HotelId: hotel_id,
+				isValid: true
+			}
 		});
 
 		// Database is disconnected
 		db.$disconnect();
 
-		if(result.length==0){
+		if (result.length == 0) {
 			return {
 				returncode: 400,
-				message: "Category doesn't exist",
+				message: "Staff doesn't exist",
 				output: []
 			}
 		}
 
-		return {
-			returncode: 200,
-			message: "Data Fetched",
-			output: result
-		};
+		if (subscription_check.length != 0) {
+
+			return {
+				returncode: 200,
+				message: "Data Fetched",
+				output: result
+			};
+		}
+		else {
+			return {
+				returncode: 403,
+				message: "Subscription Expired",
+				output: []
+			}
+		}
 
 	} catch (error: any) {
 

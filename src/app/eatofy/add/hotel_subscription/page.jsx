@@ -2,7 +2,6 @@
 
 import SideNav from "@/components/SideNavbar";
 import { ApiHost } from "@/constants/url_consts";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -10,16 +9,18 @@ export default function HotelSubscription() {
 
 	const [data, setdata] = useState([]);
 	const [valid, setvalid] = useState(false);
-	const [isvalid, setisvalid]:any = useState('');
+	const [isvalid, setisvalid] = useState('');
 	const [start_date, setstart_date] = useState('');
 	const [start_time, setstart_time] = useState('');
 	const [end_date, setend_date] = useState('');
 	const [end_time, setend_time] = useState('');
-	const route:any = useRouter();
-	let settime: any;
+	const [errorMessage, setErrorMessage] = useState('');
+	const [successMessage, setSuccessMessage] = useState('');
+	const route = useRouter();
+	let settime;
 	const valnum = parseInt(sessionStorage.getItem("subscription_validity") || '0');
 
-	async function handleSubmit(e: any) {
+	async function handleSubmit(e) {
 		e.preventDefault();
 
 		if (isvalid === 'true') {
@@ -32,7 +33,7 @@ export default function HotelSubscription() {
 		const subscription_id = sessionStorage.getItem('subscription_id');
 
 		try {
-			const response = await fetch(`${ApiHost}/api/eatofy/hotel_subscription/add`, {
+			const response = await fetch(`${ApiHost}/api/eatofy/hotel_subscription/management/add`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -51,20 +52,22 @@ export default function HotelSubscription() {
 			if (response.ok) {
 				const data = await response.json();
 				setdata(data);
-				console.log('Subscription Added:', data);
-				alert("Subscription Added");
-				route.push('/eatofy/add/hotels');
+				if (data.returncode == 200) {
+					setSuccessMessage(data.message);
+					route.push('/eatofy/add/hotels');
+				} else {
+					setErrorMessage(data.message);
+				}
 			} else {
-				console.error('Failed to Add Subscription');
-				alert("Failed to Add Subscription")
+				setErrorMessage('Failed to Add Subscription');
 			}
 		} catch (error) {
-			console.error('An error occurred:', error);
+			setErrorMessage(`An error occurred: ${error.message}`);
 		}
 
 	}
 
-	function incrementDate(dateStr: any, validityDays: any) {
+	function incrementDate(dateStr, validityDays) {
 		let date = new Date(dateStr);
 		date.setDate(date.getDate() + validityDays);
 		let day = date.getDate().toString().padStart(2, '0');
@@ -78,15 +81,15 @@ export default function HotelSubscription() {
 		if (start_date) {
 			setend_date(incrementDate(start_date, valnum));
 			const date = new Date();
-			let minuts:any = date.getMinutes();
-			minuts = minuts.toString().padStart(2,'0');
+			let minuts = date.getMinutes();
+			minuts = minuts.toString().padStart(2, '0');
 			setend_time(`${date.getHours()}:${minuts}`);
-			console.log(end_time,"hello")
+			console.log(end_time, "hello")
 		}
 
 	}, [start_date, valnum, end_time])
 
-	function convertTo24Hour(timeStr: any) {
+	function convertTo24Hour(timeStr) {
 		let [time, modifier] = timeStr.split(' ');
 		let [hours, minutes] = time.split(':');
 		hours = parseInt(hours);
@@ -102,8 +105,8 @@ export default function HotelSubscription() {
 
 	console.log(`${start_date}T${start_time}`);
 	console.log(isvalid)
-	
-	function SelectMy(){
+
+	function SelectMy() {
 		isvalid ? setisvalid(false) : setisvalid(true);
 	}
 
@@ -112,8 +115,12 @@ export default function HotelSubscription() {
 			<SideNav />
 			<section className="ml-[60px] bg-gradient-to-tr from-red-500 to-zinc-800 flex justify-center items-center h-dvh">
 				<form encType="multipart/form-data" onSubmit={handleSubmit} className="w-[80%] h-[80%] rounded-lg bg-black bg-opacity-20 flex flex-col justify-center items-center gap-6 text-white">
+					<div className="flex items-center justify-center w-full">
+						<p className="text-green-400 text-3xl absolute mt-[-150px]">{successMessage}</p>
+						<p className="text-red-500 text-3xl absolute mt-[-150px]">{errorMessage}</p>
+					</div>
 					<div className="w-[60%]">
-						<label>Valid or Not</label>
+						<label>Validity</label>
 						<select
 							id="validation"
 							name="validation"
@@ -121,7 +128,8 @@ export default function HotelSubscription() {
 							value={isvalid}
 							onChange={SelectMy}
 						>
-							<option value="true" defaultValue={isvalid}>Valid</option>
+							<option value="">--- Select ---</option>
+							<option value="true">Valid</option>
 							<option value="false">Not Valid</option>
 						</select>
 					</div>
@@ -162,7 +170,7 @@ export default function HotelSubscription() {
 						<button type="submit" className="bg-red-500 text-white font-bold p-3 rounded-md border border-red-500">
 							Add subscription
 						</button>
-						<button type="button" onClick={ ()=>{ route.push('/eatofy/add/hotels') } } className="w-[100px] bg-black text-white font-bold p-3 rounded-md">
+						<button type="button" onClick={() => { route.push('/eatofy/add/hotels') }} className="w-[100px] bg-black text-white font-bold p-3 rounded-md">
 							Back
 						</button>
 					</div>

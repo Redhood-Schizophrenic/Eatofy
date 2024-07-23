@@ -18,7 +18,6 @@ export async function read_reservations ({
 				}
 			},
 			include: {
-				Hotel: true,
 				Customer: true
 			}
 		});

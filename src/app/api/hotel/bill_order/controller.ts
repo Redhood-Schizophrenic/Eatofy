@@ -1,7 +1,6 @@
 import { ApiResponse } from "@/types/ApiResponse";
 import { read_bill_info_by_table } from "@/db/crud/bills/management/read";
-import { read_hotel_menus, read_menus } from "@/db/crud/menus/management/read";
-import { read_sections } from "@/db/crud/sections/management/read";
+import { read_menus } from "@/db/crud/menus/management/read";
 import { read_menu_categories } from "@/db/crud/menus/category/read";
 import { order_display } from "@/db/crud/orders/management/read";
 
@@ -26,18 +25,23 @@ export async function fetch_hotel_bill_data(data: any): Promise<ApiResponse> {
 			table_id
 		});
 
-		const bill_id = existing_bill.output[0].id;
+		let fetched_orders: [];
+		if ( existing_bill.returncode == 200 && existing_bill.output.length != 0 ) {
 
-		let fetched_orders: any
-		if( bill_id != null || bill_id!= undefined ) {
+			const bill_id = existing_bill.output[0].id;
 
-			//Orders
-			const orders = await order_display({
-				bill_id
-			});
-			fetched_orders = orders.output;
+			if( bill_id != null || bill_id!= undefined ) {
+
+				//Orders
+				const orders = await order_display({
+					bill_id
+				});
+
+				if ( orders.returncode == 200 && orders.output.length != 0 ) {
+					fetched_orders = orders.output;
+				}
+			}
 		}
-
 
 		// Menu
 		const menus = await read_menus({

@@ -22,6 +22,8 @@ export async function auth_staff_login(data: any): Promise<ApiResponse> {
 			email
 		});
 
+		console.log(result);
+
 		if (result.returncode == 200) {
 
 			for (const user of result.output) {
@@ -42,10 +44,9 @@ export async function auth_staff_login(data: any): Promise<ApiResponse> {
 
 		}
 		else {
-			console.error(result.message);
 			return {
 				returncode: 400,
-				message: "Authentication Failed",
+				message: "Authentication Failed | Subscription Expired",
 				output: []
 			};
 		}

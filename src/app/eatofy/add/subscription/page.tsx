@@ -28,6 +28,8 @@ export default function Subscription() {
 	const [date, setdate]: any = useState('');
 	const [status, setstatus]: any = useState('');
 	const [remove, setRemove]: any = useState('');
+	const [SubscriptionSuccess, setSubscriptionSuccess]: any = useState('');
+	const [SubscriptionError, setSubscriptionError]: any = useState('');
 
 	// console.log(subscription_name, " ", price, " ", typeof validity);
 
@@ -54,14 +56,14 @@ export default function Subscription() {
 	async function handleSubmit(e: any) {
 		e.preventDefault();
 		try {
-			const response = await fetch(`${ApiHost}/api/eatofy/subscription/add`, {
+			const response = await fetch(`${ApiHost}/api/eatofy/subscriptions/management/add`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
 					subscription_name: subscription_name,
-					price: price,
+					price: parseFloat(price),
 					validity: validity
 				})
 			});
@@ -70,25 +72,26 @@ export default function Subscription() {
 				const data = await response.json();
 				setdata(data);
 				console.log('Subscription Added', data);
+
 				if (data.returncode === 200) {
 					ShowForm
-					console.log("done")
+					console.log("done");
+					setSubscriptionSuccess(data.message);
 				} else {
-					location.reload();
+					setSubscriptionError(data.message);
 				}
 			} else {
-				console.error('Failed to Add Subscription');
-				alert("Subscription Failed")
+				setSubscriptionError("Failed to Add Subscription");
 			}
 		} catch (error) {
 			console.error('An error occurred:', error);
-			alert("An error occurred:")
+			setSubscriptionError(`Error Occured: ${error}`);
 		}
 
 	}
 
 	const fetchSubscription = async () => {
-		const res = await fetch(`${ApiHost}/api/eatofy/subscription/fetch`);
+		const res = await fetch(`${ApiHost}/api/eatofy/subscriptions/management/fetch`);
 		const data = await res.json();
 		setSubscription(data.output);
 	}
@@ -168,7 +171,7 @@ export default function Subscription() {
 	const filteredData: any = enddate.filter((items: any) => {
 		const endDate: any = new Date(items.EndDate);
 		const diffInDays = Math.abs((endDate - today) / (1000 * 3600 * 24));
-		console.log(diffInDays," ",closetoEndDate);
+		console.log(diffInDays, " ", closetoEndDate);
 		return diffInDays <= closetoEndDate;
 	});
 
@@ -404,6 +407,10 @@ export default function Subscription() {
 
 			<section ref={form} className="ml-[60px] hidden fixed top-0 left-0 w-full h-full text-white flex bg-white justify-center items-center bg-gradient-to-tr from-red-500 to-zinc-800 ">
 				<form encType="multipart/form-data" onSubmit={handleSubmit} className="w-[80%] bg-black bg-opacity-30 h-[80%] flex flex-col justify-center items-center gap-6 rounded-md shadow-md shadow-zinc-800">
+					<div className="w-full flex justify-center items-center">
+						<p className="text-red-500 font-bold text-3xl">{SubscriptionError}</p>
+						<p className="text-green-500 font-bold text-3xl">{SubscriptionSuccess}</p>
+					</div>
 					<div className="w-[60%]">
 						<label>Subscription Name</label>
 						<input

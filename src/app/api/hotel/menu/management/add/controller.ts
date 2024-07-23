@@ -7,7 +7,6 @@ export async function add_menu(data: any): Promise<ApiResponse> {
 
 		const dish_id: string | null = data['dish_id'];
 		const section_id: string | null = data['section_id'];
-		const code: string | null = data['code'];
 		const price: number | null = data['price'];
 
 		// Default Invalid Checker
@@ -30,15 +29,21 @@ export async function add_menu(data: any): Promise<ApiResponse> {
 		const result = await create_menu({
 			dish_id,
 			section_id,
-			code,
 			price
 		});
 
-		return {
-			returncode: 200,
-			message: "Menu Added",
-			output: result.output
-		};
+		if ( result.returncode == 200 ) {
+
+			return {
+				returncode: 200,
+				message: "Menu Added",
+				output: result.output
+			};
+		}
+		else {
+			return result;
+		}
+
 
 	} catch (error: any) {
 		return {

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 
-const Eatofy: React.FC = () => {
+const Eatofy = () => {
 
   const [isLoading, setLoading] = useState(false);
   const [sections, setSections] = useState([]);
@@ -109,27 +109,9 @@ const Eatofy: React.FC = () => {
                 >
                   Delivery
                 </button>
-                <button
-                  className="bg-gradient-to-r from-gray-800 to-red-500 text-white px-4 py-2 rounded-[30px]"
-                  onClick={() => {
-                    sessionStorage.setItem('order_type', "Zomato");
-                    route.push('/hotels/other_menu');
-                  }}
-                >
-                  Zomato
-                </button>
-                <button
-                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-2 rounded-[30px]"
-                  onClick={() => {
-                    sessionStorage.setItem('order_type', "Swiggy");
-                    route.push('/hotels/other_menu');
-                  }}
-                >
-                  Swiggy
-                </button>
               </div>
               <div className='inline-flex gap-4'>
-                <div>
+                <div className='flex gap-2 justify-center items-center'>
                   <span className="bg-red-500 w-3 h-3 block border border-black"></span>
                   <span>Booked</span>
                 </div>
@@ -137,12 +119,12 @@ const Eatofy: React.FC = () => {
             </div>
 
             <div>
-              {sections?.map((section: any) => (
+              {sections?.map((section) => (
                 <div key={section.id} className="my-4">
                   <span className="bg-red-200 text-black px-4 py-2 rounded-lg">{section.SectionName}</span>
                   <div className="grid grid-cols-6 ml-5 gap-4 my-8">
-                    {tables.filter((table: any) => table.SectionId === section.id)
-                      .map((table: any) => (
+                    {tables.filter((table) => table.SectionId === section.id)
+                      .map((table) => (
                         <div
                           key={table.id}
                           onClick={() => {

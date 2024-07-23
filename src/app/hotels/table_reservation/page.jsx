@@ -2,10 +2,10 @@
 import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
 import React, { useEffect, useState } from 'react';
-import { FaEdit, FaTrash } from 'react-icons/fa';
+import { FaTrash } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 
-const ReservationGrid: React.FC = () => {
+const ReservationGrid = () => {
 
   const [data, setData] = useState([]);
   const [isOpen, setisOpen] = useState(false);
@@ -18,7 +18,7 @@ const ReservationGrid: React.FC = () => {
   const [customer, setcustomer] = useState('');
   const [no_of_persons, setNo_of_persons] = useState('');
 
-  function handleClick(e: any) {
+  function handleClick(e) {
     const name = e.target.name;
     const value = e.target.value;
     setsubmitData({
@@ -69,7 +69,7 @@ const ReservationGrid: React.FC = () => {
         alert("Fetch Failed!!! :(")
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.error(e);
     }
   }
@@ -80,7 +80,7 @@ const ReservationGrid: React.FC = () => {
 
   }, [])
 
-  async function handleSubmit(e: any) {
+  async function handleSubmit(e) {
     e.preventDefault();
 
     try {
@@ -112,7 +112,7 @@ const ReservationGrid: React.FC = () => {
       }
       handleFetchReservations();
       // location.reload();
-    } catch (e: any) {
+    } catch (e) {
       throw console.error(e);
 
     }
@@ -142,7 +142,7 @@ const ReservationGrid: React.FC = () => {
         console.log("Failed to delete");
       }
 
-    } catch (e: any) {
+    } catch (e) {
 
     }
   }
@@ -162,7 +162,7 @@ const ReservationGrid: React.FC = () => {
               setisOpen(true);
             }}
             className="bg-red-500 text-white p-2 rounded">
-            Add Table Reservation +
+            Add Reservation +
           </button>
         </div>
 
@@ -189,7 +189,7 @@ const ReservationGrid: React.FC = () => {
                     <div>Contact no</div>
                   </th>
                   <th className='border p-2'>
-                    <div>Status</div>
+                    <div>Note</div>
                   </th>
                   <th className='border p-2'>
                     <div>Time</div>
@@ -204,7 +204,7 @@ const ReservationGrid: React.FC = () => {
               </thead>
               <tbody>
                 {
-                  data.map((items: any) => (
+                  data.map((items) => (
                     <tr key={items.id}>
                       <td className="p-2">
                         <div className="flex flex-col sm:flex-row items-center">
@@ -230,7 +230,7 @@ const ReservationGrid: React.FC = () => {
                       <td className="p-2">
                         <div className="flex flex-col sm:flex-row items-center">
                           {
-                            <span>{items.Status}</span>
+                            <span>{items.Note}</span>
                           }
                         </div>
                       </td>
@@ -369,5 +369,3 @@ const ReservationGrid: React.FC = () => {
 };
 
 export default ReservationGrid;
-
-

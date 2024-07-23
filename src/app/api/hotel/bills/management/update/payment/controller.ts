@@ -9,9 +9,11 @@ export async function pay_bill(data: any): Promise<ApiResponse> {
 		const table_id: string | null = data['table_id'];
 		const total_amount: number | null = data['total_amount'];
 		const cgst_rate: string | null = data['cgst_rate'];
-		const sgst_rate: string | null = data['sgst_rate'];
 		const cgst_amount: number | null = data['cgst_amount'];
+		const sgst_rate: string | null = data['sgst_rate'];
 		const sgst_amount: number | null = data['sgst_amount'];
+		const vat_rate: string | null = data['vat_rate'];
+		const vat_amount: number | null = data['vat_amount'];
 		const menu_total: number | null = data['menu_total'];
 		const balance_amount: number | null = data['balance_amount'];
 		const discount_rate: string | null = data['discount_rate'];
@@ -41,7 +43,9 @@ export async function pay_bill(data: any): Promise<ApiResponse> {
 			discount_rate,
 			discount_amount,
 			payment_mode,
-			payment_status
+			payment_status,
+			vat_rate,
+			vat_amount
 		});
 
 		// Update Table Status as Booked
@@ -52,11 +56,18 @@ export async function pay_bill(data: any): Promise<ApiResponse> {
 			});
 		}
 
-		return {
-			returncode: 200,
-			message: "Bill Payment Updated",
-			output: Array.isArray(result.output) ? result.output : [result.output as any]
-		};
+		if ( result.returncode == 200 ) {
+
+			return {
+				returncode: 200,
+				message: "Bill Payment Updated",
+				output: result.output	
+			};
+		}
+		else {
+			return result;
+		}
+
 
 	} catch (error: any) {
 		return {

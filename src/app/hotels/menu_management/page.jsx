@@ -8,77 +8,13 @@ import { FaTrashCan, FaXmark } from 'react-icons/fa6';
 
 const MenuManagement = () => {
 
-  const [data, setData]: any = useState([]);
-  const [dishes, setdishes] = useState([]);
-  const [section, setsection] = useState([]);
   const [showaddmenu, setShowaddmenu] = useState(false);
-  const [dishname, setDishname] = useState('');
-  const [dishcode, setDishCode] = useState('');
-  const [dishtype, setDishType] = useState('');
-  const [price, setprice]: any = useState(0);
-  const [code, setcode] = useState('');
-  const hotel_id = sessionStorage.getItem('hotel_id');
-  const [MeDisable, setMeDisable] = useState(true);
-  const [mainmenudish, setmainmenudish] = useState([]);
+  const [hotelDishes, setHotelDishes] = useState([]);
+  const [displayAllDishes, setdisplayAllDishes] = useState(true);
+  const [sectionDishes, setSectionDishes] = useState([]);
 
-  useEffect(() => {
-    fetchSections();
-    fetchDishes();
-  }, [])
-
-  const fetchDishes = async () => {
-    try {
-
-      const response = await fetch(`${ApiHost}/api/hotel/dish/management/fetch`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          'hotel_id': hotel_id
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.returncode === 200) {
-        console.log("Data fetched", data);
-        setmainmenudish(data.output);
-      } else {
-        alert("Unable to fetch Category's");
-      }
-    } catch (e: any) {
-      throw console.error(e);
-    }
-  }
-
-  const fetchSections = async () => {
-    try {
-
-      const response = await fetch(`${ApiHost}/api/hotel/sections/management/fetch`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          'hotel_id': hotel_id
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.returncode === 200) {
-        console.log("Data fetched", data);
-        setsection(data.output);
-      } else {
-        alert("Unable to fetch Sections");
-      }
-    } catch (e: any) {
-      throw console.error(e);
-    }
-  }
-
-  const handleFetchDish = async () => {
+  // Fetch Logic
+  const SectionFetch = async (section_id) => {
 
     try {
 
@@ -88,25 +24,54 @@ const MenuManagement = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          'section_id': sessionStorage.getItem('menu_section_id')
+          'section_id': section_id
         }),
       });
 
       const data = await response.json();
 
       if (data.returncode === 200) {
-        // alert(data.message);
-        setdishes(data.output);
-      } else {
-        alert("Failed to Add Dish");
+        setSectionDishes(data.output);
       }
-    } catch (e: any) {
+    }
+    catch (e) {
       throw console.error(e);
     }
   }
 
+  useEffect(() => {
 
-  const handleAddMenuAll = async (e: any) => {
+    const MenuFetch = async () => {
+
+      try {
+
+        const response = await fetch(`${ApiHost}/api/hotel/menu/fetch`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            'hotel_id': sessionStorage.getItem('hotel_id')
+          }),
+        });
+
+        const data = await response.json();
+
+        if (data.returncode === 200) {
+          setHotelDishes(data.output);
+        }
+      }
+      catch (e) {
+        throw console.error(e);
+      }
+    }
+
+    MenuFetch();
+  }, [])
+
+
+
+  const handleAddMenuAll = async (e) => {
     e.preventDefault();
 
     const section_id = sessionStorage.getItem("section_id");
@@ -136,7 +101,7 @@ const MenuManagement = () => {
         console.log("failed to fetch")
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.error(e);
     }
   }
@@ -145,8 +110,6 @@ const MenuManagement = () => {
     setShowaddmenu(!showaddmenu);
   }
 
-  console.log(dishname, "\n", dishcode, "\n", dishtype)
-  console.log("cate_id", sessionStorage.getItem('category_id_option'))
 
   return (
     <>
@@ -169,28 +132,19 @@ const MenuManagement = () => {
                     className="block text-gray-700 text-sm font-bold mb-2"
                     htmlFor="dish name"
                   >
-                    Dish
+                    Dish Name
                   </label>
-                  <select className='rounded-lg'>
-                    <option value="">---Select---</option>
-
-                    {
-                      mainmenudish.map((dish: any) => (
-                        <option
-                          key={dish.id}
-                          value={dish.id}
-                          onClick={
-                            (e) => {
-                              const id = e.currentTarget.value;
-                              sessionStorage.setItem('dish_id', id);
-                            }
-                          }
-                        >
-                          {dish.DishName}
-                        </option>
-                      ))
+                  <input
+                    type="text"
+                    className='rounded-lg'
+                    placeholder='dish_name'
+                    value=""
+                    onChange={
+                      (e) => {
+                        setprice(Number(e.target.value));
+                      }
                     }
-                  </select>
+                  />
                 </div>
                 <div className="mb-4">
                   <label
@@ -202,7 +156,7 @@ const MenuManagement = () => {
                   <select className='rounded-lg'>
                     <option value="">---Select---</option>
                     {
-                      section.map((items: any) => (
+                      section.map((items) => (
                         <option
                           key={items.id}
                           value={items.id}
@@ -271,7 +225,7 @@ const MenuManagement = () => {
       }
 
       <div className="ml-[70px] flex-1 p-4">
-        <div className=' flex m-6 justify-center'>
+        <div className='flex m-6 justify-center'>
           <h1 className="text-2xl  font-bold mb-4">
             Menu <span className="text-red-500">Management</span>
           </h1>
@@ -279,7 +233,7 @@ const MenuManagement = () => {
         <div className="w-full flex justify-between items-center px-4 py-2">
           <div className="w-full flex items-center gap-4">
             {
-              section.map((categorys: any) => (
+              section.map((categorys) => (
                 <div
                   key={categorys.id}
                   onClick={
@@ -308,7 +262,7 @@ const MenuManagement = () => {
                 </div>
               )
               :
-              dishes.map((dish: any) => (
+              dishes.map((dish) => (
 
                 <div
                   key={dish.id}

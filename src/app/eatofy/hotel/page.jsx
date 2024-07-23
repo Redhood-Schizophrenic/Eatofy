@@ -7,27 +7,28 @@ import { useEffect, useRef, useState } from "react"
 
 export default function Hotels() {
 
-	const [data, setData]: any = useState([]);
-	const [message, setMessage] = useState('')
+	const [data, setData] = useState([]);
+	const [successMessage, setSuccessMessage] = useState('');
+	const [errorMessage, setErrorMessage] = useState('');
 	const [showForm, setshowForm] = useState(false);
-	const form: any = useRef();
+	const form = useRef();
 	const route = useRouter();
 
 	//Variables to send backend to add hotels
-	const [hotel_name, sethotel_name]: any = useState('');
-	const [email, setemail]: any = useState('');
-	const [password, setpassword]: any = useState('');
-	const [website, setwebsite]: any = useState('N/A');
+	const [hotel_name, sethotel_name] = useState('');
+	const [email, setemail] = useState('');
+	const [password, setpassword] = useState('');
+	const [website, setwebsite] = useState('N/A');
 	const [address, setaddress] = useState('')
-	const [fssai_code, setfssai_code]: any = useState('');
-	const [contacts, setcontacts]: any = useState('');
-	const [speciality, setspeciality]: any = useState('');
-	const [file, setFile]: any = useState<File | undefined>();
+	const [fssai_code, setfssai_code] = useState('');
+	const [contacts, setcontacts] = useState('');
+	const [speciality, setspeciality] = useState('');
+	const [file, setFile] = useState();
 	const specialArray = speciality.split(',');
 	const contactsArray = contacts.split(',');
 
 	
-	const handleSubmitProfle = async (e: any) => {
+	const handleSubmitProfle = async (e) => {
 		e.preventDefault();
 
 		const formData = new FormData(e.currentTarget);
@@ -35,7 +36,7 @@ export default function Hotels() {
 		formData.append('logo',file);
 		
 		try {
-			const response = await fetch(`${ApiHost}/api/eatofy/hotels/operations/fetch`, {
+			const response = await fetch(`${ApiHost}/api/eatofy/hotels/management/fetch`, {
 				method: 'PUT',
 				body: formData,
 			});
@@ -53,7 +54,7 @@ export default function Hotels() {
 		}
 	};
 
-	const handleSubmit = async (e: any) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		const formData = new FormData(e.currentTarget);
@@ -78,10 +79,8 @@ export default function Hotels() {
 			if (response.ok) {
 				const data = await response.json();
 				console.log('Hotel created:', data);
-				setMessage('Hotel Added');
 			} else {
 				console.error('Failed to create hotel');
-				setMessage('Failed to Add hotel');
 			}
 		} catch (error) {
 			console.error('An error occurred:', error);
@@ -93,7 +92,7 @@ export default function Hotels() {
 	}
 
 	const fetchHotel = async () => {
-		const res = await fetch(`${ApiHost}/api/eatofy/hotels/operations/fetch`, {
+		const res = await fetch(`${ApiHost}/api/eatofy/hotels/management/fetch`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -117,7 +116,7 @@ export default function Hotels() {
 			<SideNav />
 			<div className="ml-[70px] h-dvh bg-gradient-to-tr from-red-500 to-zinc-800 flex justify-center items-center ">
 				{
-					data.map((items: any) => (
+					data.map((items) => (
 						<div key={items.id} className="w-[80%] h-[80%] bg-black bg-opacity-20 rounded-lg shadow-md shadow-zinc-900 text-white p-4 flex flex-row justify-center items-center">
 							<div className="w-[30%] h-full flex flex-col justify-center items-center">
 								<img src={`data:image/*;base64,${items.HotelLogo}`} alt="hotel_img" className="w-[200px] rounded-full p-1 m-2" />
@@ -153,7 +152,7 @@ export default function Hotels() {
 											hotel Speciality
 										</div>
 										<div>{
-											items.Speciality.map((item: any, i: any) => (
+											items.Speciality.map((item, i) => (
 												<div key={i} className="">
 
 													<span>{++i}:- </span>
@@ -167,7 +166,7 @@ export default function Hotels() {
 											hotel contacts
 										</div>
 										<div>{
-											items.Contacts.map((item: any, i: any) => (
+											items.Contacts.map((item, i) => (
 												<div key={i} className="">
 													<span>{++i}:- </span>
 													<span>{item}</span><br />

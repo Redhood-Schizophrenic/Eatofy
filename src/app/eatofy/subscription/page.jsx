@@ -9,11 +9,11 @@ import { FaArrowRightToBracket } from "react-icons/fa6";
 
 export default function Subscription(){
 
-	const [sub, setSubscription]: any = useState([]);
+	const [sub, setSubscription] = useState([]);
 	const route = useRouter();
 
 	const fetchSubscription = async () => {
-		const res = await fetch(`${ApiHost}/api/eatofy/subscription/fetch`);
+		const res = await fetch(`${ApiHost}/api/eatofy/subscriptions/management/fetch`);
 		const data = await res.json();
 		setSubscription(data.output);
 	}
@@ -45,7 +45,7 @@ export default function Subscription(){
 						</thead>
 						<tbody>
 							{
-								sub.map((items:any,i:any)=>(
+								sub.map((items, i)=>(
 									<tr className="px-4 py-4 border border-black" key={items.id}>
 										<td className="px-4 py-4">{++i}</td>
 										<td className="px-4 py-4">{items.SubscriptionName}</td>
@@ -59,7 +59,6 @@ export default function Subscription(){
 														sessionStorage.setItem("subscription_validity", items.Validity);
 														if (sessionStorage.getItem("subscription_id") === items.id && sessionStorage.getItem("subscription_validity")) {
 															route.push('/eatofy/add/hotel_subscription');
-															alert("Subscription is selected")
 														} else {
 															alert("subscription is not selected!!")
 														}

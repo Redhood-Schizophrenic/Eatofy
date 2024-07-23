@@ -4,31 +4,30 @@ import React, { useEffect, useRef, useState } from "react";
 import SideNav from "@/components/SideNavbar"
 import { ApiHost } from "@/constants/url_consts";
 import { FaEye, FaRegEdit } from "react-icons/fa";
-import { MdDeleteOutline } from "react-icons/md";
 import { MdOutlineSubscriptions } from "react-icons/md";
 import { useRouter } from "next/navigation";
-import Popup from "@/components/Popup";
+import Link from "next/link";
 
 export default function AddHotels() {
 
-	const [data, setData]: any = useState([]);
-	const [hotels, setHotels]: any = useState([]);
+	const [data, setData] = useState([]);
+	const [hotels, setHotels] = useState([]);
 	const [showForm, setshowForm] = useState(false);
 	const [istrue, setistrue] = useState(true);
 	const [message, setMessage] = useState('')
-	const form: any = useRef();
+	const form = useRef();
 	const route = useRouter();
 
 	//Variables to send backend to add hotels
-	const [hotel_name, sethotel_name]: any = useState('');
-	const [email, setemail]: any = useState('');
-	const [password, setpassword]: any = useState('');
-	const [website, setwebsite]: any = useState('N/A');
+	const [hotel_name, sethotel_name] = useState('');
+	const [email, setemail] = useState('');
+	const [password, setpassword] = useState('');
+	const [website, setwebsite] = useState('N/A');
 	const [address, setaddress] = useState('')
-	const [fssai_code, setfssai_code]: any = useState('');
-	const [contacts, setcontacts]: any = useState('');
-	const [speciality, setspeciality]: any = useState('');
-	const [file, setFile]: any = useState<File | undefined>();
+	const [fssai_code, setfssai_code] = useState('');
+	const [contacts, setcontacts] = useState('');
+	const [speciality, setspeciality] = useState('');
+	const [file, setFile] = useState();
 	const specialArray = speciality.split(',');
 	const contactsArray = contacts.split(',');
 
@@ -39,11 +38,10 @@ export default function AddHotels() {
 
 	// console.log(specialArray, ' ', contactsArray)
 
-	const handleSubmit = async (e: any) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault();
 
 		const formData = new FormData(e.currentTarget);
-		console.log(formData);
 		formData.append('hotel_name', hotel_name);
 		formData.append('email', email);
 		formData.append('password', password);
@@ -57,7 +55,7 @@ export default function AddHotels() {
 		console.log(formData);
 
 		try {
-			const response = await fetch(`${ApiHost}/api/eatofy/hotels/operations/add`, {
+			const response = await fetch(`${ApiHost}/api/eatofy/hotels/management/add/single/logo`, {
 				method: 'POST',
 				body: formData,
 			});
@@ -77,7 +75,7 @@ export default function AddHotels() {
 		}
 	};
 
-	async function handleSubmitOwner(e: React.FormEvent<HTMLFormElement>) {
+	async function handleSubmitOwner(e) {
 		e.preventDefault();
 
 		try {
@@ -107,22 +105,8 @@ export default function AddHotels() {
 		}
 	}
 
-	const deleteHotel = async (hotel_id: any) => {
-		const res = await fetch(`${ApiHost}/api/eatofy/hotels/operations/remove`, {
-			method: 'DELETE',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				'hotel_id': hotel_id
-			})
-		})
-		const data = await res.json();
-		setData(data);
-	}
-
 	const fetchHotels = async () => {
-		const res = await fetch(`${ApiHost}/api/eatofy/hotels/operations/fetch`);
+		const res = await fetch(`${ApiHost}/api/eatofy/hotels/management/fetch`);
 		const data = await res.json();
 		setHotels(data.output);
 	}
@@ -138,8 +122,6 @@ export default function AddHotels() {
 			setistrue(true);
 		}, 3000);
 	}, [])
-
-	// console.log(website.length)
 
 	return (
 		<>
@@ -170,7 +152,7 @@ export default function AddHotels() {
 						</thead>
 						<tbody>
 							{
-								hotels.map((items: any, i: any) => (
+								hotels.map((items, i) => (
 									<tr
 										key={i}
 										className="px-4 py-4 border-black border text-center"
@@ -196,17 +178,16 @@ export default function AddHotels() {
 										<td className="px-4 py-4">{items.Speciality}</td>
 										<td className="px-4 py-4 flex gap-6 justify-center items-center text-gray-400">
 											<button
-													onClick={
-														() => {
-															sessionStorage.setItem("hotel_name", items.HotelName);
-															if (sessionStorage.getItem("hotel_name") === items.HotelName) {
-																route.push('/eatofy/hotel');
-																alert("Hotel selected")
-															} else {
-																alert("Hotel is not selected!!")
-															}
+												onClick={
+													() => {
+														sessionStorage.setItem("hotel_name", items.HotelName);
+														if (sessionStorage.getItem("hotel_name") === items.HotelName) {
+															route.push('/eatofy/hotel');
+														} else {
+															alert("Hotel is not selected!!")
 														}
 													}
+												}
 											>
 												<FaEye size={25} />
 											</button>
@@ -216,7 +197,6 @@ export default function AddHotels() {
 														sessionStorage.setItem("hotel_id", items.id);
 														if (sessionStorage.getItem("hotel_id") === items.id) {
 															route.push('/eatofy/subscription');
-															alert("Hotel selected")
 														} else {
 															alert("Hotel is not selected!!")
 														}
@@ -225,14 +205,17 @@ export default function AddHotels() {
 											>
 												<MdOutlineSubscriptions size={25} />
 											</button>
-											<div className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+											<Link
+												href='/hotels/staff'
+												className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
 												onClick={
 													() => {
 														sessionStorage.setItem("hotel_id", items.id);
-														showForm ? setshowForm(false) : setshowForm(true);
 													}
 												}
-											>Add Owners</div>
+											>
+												Add Staff
+											</Link>
 										</td>
 									</tr>
 								))
@@ -243,25 +226,45 @@ export default function AddHotels() {
 
 				<div ref={form} id="form" className='hidden fixed top-0 left-0 w-full h-dvh flex flex-col md:flex-row backdrop-blur-md'>
 
-					<div
-						className="bg-black cursor-pointer w-[100px] text-center text-white p-2 px-3 fixed top-[10px] right-[10px] rounded-md mr-2"
-						onClick={ShowForm}
-					>close</div>
 
-					<div className={`flex-1 bg-opacity-60 p-8 transition-margin duration-300 flex items-center justify-center`}>
-						<div className="bg-red-900 bg-opacity-60 p-8 rounded-lg w-full max-w-3xl">
+					<div className={`flex-1 bg-opacity-60 p-8 transition-margin duration-300 flex flex-col items-center justify-center`}>
+
+						<div className="bg-red-900 bg-opacity-60 p-8 rounded-lg w-full max-w-3xl relative">
+							<div
+								className=" absolute bg-black cursor-pointer w-[100px] text-center text-white p-2 px-3 top-[10px] right-[10px] rounded-md mr-2"
+								onClick={ShowForm}
+							>close</div>
+
 							<form encType="multipart/form-data" onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
 								<div>
 									<label className="block text-white">Hotel Name</label>
-									<input type="text" value={hotel_name} onChange={(e) => { sethotel_name(e.target.value) }} className="w-full p-2 bg-black bg-opacity-20 text-white rounded" />
+									<input 
+										type="text" 
+										value={hotel_name} 
+										onChange={(e) => { sethotel_name(e.target.value) }} 
+										className="w-full p-2 bg-black bg-opacity-20 text-white rounded" 
+										required 
+									/>
 								</div>
 								<div>
 									<label className="block text-white">Email</label>
-									<input type="email" value={email} onChange={(e) => { setemail(e.target.value) }} className="w-full p-2 bg-black bg-opacity-20 text-white rounded" />
+									<input 
+										type="email" 
+										value={email} 
+										onChange={(e) => { setemail(e.target.value) }} 
+										className="w-full p-2 bg-black bg-opacity-20 text-white rounded" 
+										required 
+									/>
 								</div>
 								<div>
 									<label className="block text-white">Password</label>
-									<input type="password" value={password} onChange={(e) => { setpassword(e.target.value) }} className="w-full p-2 bg-black bg-opacity-20 text-white rounded" />
+									<input 
+										type="password" 
+										value={password} 
+										onChange={(e) => { setpassword(e.target.value) }} 
+										className="w-full p-2 bg-black bg-opacity-20 text-white rounded" 
+										required 
+									/>
 								</div>
 								<div>
 									<label className="block text-white">Website</label>
@@ -288,16 +291,20 @@ export default function AddHotels() {
 										onChange={(e) => { setfssai_code(e.target.value) }}
 										type="text"
 										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
+										required
 									/>
 								</div>
 								<div>
 									<label className="block text-white">Contact</label>
-									<input type="text" className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
+									<input 
+										type="text" 
+										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
 										onChange={
 											(e) => {
 												setcontacts(e.target.value);
 											}
 										}
+										required
 									/>
 								</div>
 								<div>
@@ -308,24 +315,33 @@ export default function AddHotels() {
 												setaddress(e.target.value);
 											}
 										}
-										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"></textarea>
+										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
+										required
+									>
+									</textarea>
 								</div>
 								<div>
 									<label className="block text-white">Speciality</label>
-									<textarea className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
+									<textarea 
+										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
 										onChange={
 											(e) => {
 												setspeciality(e.target.value);
 											}
 										}
 										defaultValue={speciality}
-									></textarea>
+										required
+									>
+									</textarea>
 								</div>
 								<div>
 									<label className="block text-white">Hotel Logo (Images)</label>
-									<input type="file" className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
+									<input 
+										type="file" 
+										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
 										onChange={(e) => setFile(e.target.files?.[0])}
 										defaultValue={file}
+										required
 									/>
 								</div>
 								<div className="col-span-1 md:col-span-2 flex justify-between mt-4">

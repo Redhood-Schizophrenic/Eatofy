@@ -4,14 +4,14 @@ import { useRouter } from 'next/navigation';
 import React, { useState, FormEvent } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-const Widget: React.FC = () => {
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
-  const [role, setRole] = useState<string>('');
-  const [message, setMessage] = useState<string>('');
-  const [isLogged, setIsLogged] = useState<boolean>(false);
-  const [isfailed, setFailed] = useState<boolean>(false);
+const Widget = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [role, setRole] = useState('');
+  const [message, setMessage] = useState('');
+  const [isLogged, setIsLogged] = useState(false);
+  const [isfailed, setFailed] = useState(false);
   const timeout = 3000;
   const route = useRouter();
 
@@ -19,7 +19,7 @@ const Widget: React.FC = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
@@ -93,7 +93,7 @@ const Widget: React.FC = () => {
     }
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (e) => {
     setRole(e.target.value);
   }
 
@@ -176,7 +176,7 @@ const Widget: React.FC = () => {
                 <option value="">--Select--</option>
                 <option value="owner">Owner</option>
                 <option value="backoffice">Backoffice</option>
-                <option value="waiter">waiter</option>
+                <option value="waiter">Waiter</option>
               </select>
             </div>
             {/* Login Button */}
