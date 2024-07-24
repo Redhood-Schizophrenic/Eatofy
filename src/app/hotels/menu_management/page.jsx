@@ -11,12 +11,18 @@ const MenuManagement = () => {
 
   const [showaddmenu, setShowaddmenu] = useState(false);
   const [showeditmenu, setShoweditmenu] = useState(false);
+  const [Search, setSearch] = useState("");
   const [hotelDishes, setHotelDishes] = useState([]);
   const [displayAllDishes, setdisplayAllDishes] = useState(true);
   const [sectionDishes, setSectionDishes] = useState([]);
   const [sections, setSection] = useState([]);
   const [SuccessMessage, setSuccessMessage] = useState('');
   const [ErrorMessage, setErrorMessage] = useState('');
+
+  // Search Dishes
+  const handleSearch = (element) => {
+    setSearch(element.target.value);
+  }
 
   // Form Elements
   const [DishName, setDishName] = useState('');
@@ -409,9 +415,20 @@ const MenuManagement = () => {
 
       <div className="ml-[70px] flex-1 p-4">
         <div className='flex m-6 justify-center gap-2 flex-col'>
-          <h1 className="text-2xl  font-bold mb-4">
-            Menu <span className="text-red-500">Management</span>
-          </h1>
+          <div className='flex justify-between'>
+            <h1 className="text-2xl  font-bold mb-4">
+              Menu <span className="text-red-500">Management</span>
+            </h1>
+            <div>
+              <input
+                type="text"
+                className="rounded-lg text-sm bg-black text-white"
+                placeholder="Search by name or code"
+                value={Search}
+                onChange={handleSearch}
+              />
+            </div>
+          </div>
           {
             SuccessMessage === "" && ErrorMessage !== "" ? (
               <div className='text-red-500 p-4 flex items-center justify-center font-semibold text-3xl bg-red-200 border-t-8 border-red-500 rounded-xl'>
@@ -464,42 +481,49 @@ const MenuManagement = () => {
             displayAllDishes
               ?
 
-              hotelDishes.map((dish) => (
-
-                <div
-                  key={dish.id}
-                  className={`relative overflow-hidden border rounded-lg bg-white shadow-lg p-12 flex flex-col items-center space-x-4 
+              hotelDishes.filter((menu) => {
+                const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+                return searchMatch;
+              })
+              .map((dish) => (
+                  <div
+                    key={dish.id}
+                    className={`relative overflow-hidden border rounded-lg bg-white shadow-lg p-12 flex flex-col items-center space-x-4 
                     ${dish.Dish.Type.startsWith('V') ? 'border-green-500' :
-                      dish.Dish.Type.startsWith('N') ? 'border-red-500' :
-                        dish.Dish.Type.startsWith('E') ? 'border-yellow-500' :
-                          dish.Dish.Type.startsWith('B') ? 'border-blue-500' :
-                            'border-gray-500'
-                    }`}
-                >
-                  <span className='absolute top-0 right-0 p-2 font-semibold bg-zinc-200 text-[12px] rounded-md'>&#35;{dish.Dish.Code}</span>
-                  <span className='absolute top-0 left-0 font-semibold bg-yellow-200 text-yellow-500 border border-yellow-500 px-2 py-1 rounded-md'>
-                    {dish.Dish.Category.CategoryName}
-                  </span>
-
-                  <h2 className="font-bold pt-4">{dish.Dish.DishName}</h2>
-                  <p
-                    className={`${dish.Dish.Type.startsWith('V') ? 'text-green-500' :
-                      dish.Dish.Type.startsWith('N') ? 'text-red-500' :
-                        dish.Dish.Type.startsWith('E') ? 'text-yellow-500' :
-                          dish.Dish.Type.startsWith('B') ? 'text-blue-500' :
-                            'text-gray-500'
+                        dish.Dish.Type.startsWith('N') ? 'border-red-500' :
+                          dish.Dish.Type.startsWith('E') ? 'border-yellow-500' :
+                            dish.Dish.Type.startsWith('B') ? 'border-blue-500' :
+                              'border-gray-500'
                       }`}
                   >
-                    {dish.Dish.Type}
-                  </p>
-                  <p>Rs.{dish.Price}</p>
-                  <p className='text-sm font-bold text-gray-700'>Section:- {dish.Section.SectionName}</p>
-                </div>
-              ))
+                    <span className='absolute top-0 right-0 p-2 font-semibold bg-zinc-200 text-[12px] rounded-md'>&#35;{dish.Dish.Code}</span>
+                    <span className='absolute top-0 left-0 font-semibold bg-yellow-200 text-yellow-500 border border-yellow-500 px-2 py-1 rounded-md'>
+                      {dish.Dish.Category.CategoryName}
+                    </span>
+
+                    <h2 className="font-bold pt-4">{dish.Dish.DishName}</h2>
+                    <p
+                      className={`${dish.Dish.Type.startsWith('V') ? 'text-green-500' :
+                        dish.Dish.Type.startsWith('N') ? 'text-red-500' :
+                          dish.Dish.Type.startsWith('E') ? 'text-yellow-500' :
+                            dish.Dish.Type.startsWith('B') ? 'text-blue-500' :
+                              'text-gray-500'
+                        }`}
+                    >
+                      {dish.Dish.Type}
+                    </p>
+                    <p>Rs.{dish.Price}</p>
+                    <p className='text-sm font-bold text-gray-700'>Section:- {dish.Section.SectionName}</p>
+                  </div>
+                ))
 
               :
-              sectionDishes.map((dish) => (
-
+              sectionDishes
+              .filter((menu) => {
+                const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+                return searchMatch;
+              })
+              .map((dish) => (
                 <div
                   key={dish.id}
                   className={`relative overflow-hidden border rounded-lg bg-white shadow-lg p-8 flex flex-col items-center space-x-4 

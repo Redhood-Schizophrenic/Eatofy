@@ -1,7 +1,5 @@
 import db from "@/db/connector";
-import { getCurrentMonthName } from "@/helpers/monthName";
 
-// Fetch all categories
 interface AttendanceInterface {
 	hotel_id: string,
 	date: string
@@ -124,6 +122,50 @@ export async function read_staff_attendance({
 				output: []
 			}
 		}
+
+		return {
+			returncode: 200,
+			message: "Data Fetched",
+			output: result
+		};
+
+	} catch (error: any) {
+
+		return {
+			returncode: 500,
+			message: error.message,
+			output: []
+		};
+
+	}
+}
+
+interface AttendancesInterface {
+	hotel_id: string,
+}
+
+export async function read_staffs_attendance({
+	hotel_id,
+}: AttendancesInterface) {
+	try {
+
+		// Fetching the record
+		const result = await db.staffAttendance.findMany({
+			where: {
+				Staff: {
+					HotelId: hotel_id,
+					NOT: {
+						Status: "Inactive"
+					}
+				},
+			},
+			include: {
+				Staff: true
+			}
+		});
+
+		// Database is disconnected
+		db.$disconnect();
 
 		return {
 			returncode: 200,

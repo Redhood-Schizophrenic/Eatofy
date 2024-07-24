@@ -6,24 +6,12 @@ import HotelSideNav from "@/components/SideNavHotel";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { MdOutlineEdit } from "react-icons/md";
 
-interface Expense {
-  id: string;
-  PaymentStatus: string;
-  PayableTo: string;
-  ExpenseName: string;
-  AmountPayable: number;
-  AmountPaid: number;
-  Note: string | null;
-  date: string;
-  description: string;
-}
-
-const ExpenseTracking: React.FC = () => {
+const ExpenseTracking = () => {
   const [showAddExpenseForm, setShowAddExpenseForm] = useState(false);
   const [showUpdateExpenseForm, setShowUpdateExpenseForm] = useState(false);
-  const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [expenseId, setExpenseId] = useState<Expense[]>([]);
-  const [selectedExpense, setSelectedExpense] = useState<Expense | null>(null);
+  const [expenses, setExpenses] = useState([]);
+  const [expenseId, setExpenseId] = useState([]);
+  const [selectedExpense, setSelectedExpense] = useState(null);
   const [expenseDetails, setExpenseDetails] = useState({
     bearer: "",
     date: "",
@@ -66,7 +54,7 @@ const ExpenseTracking: React.FC = () => {
     }
   };
 
-  const handleAddExpense = async (e: React.FormEvent) => {
+  const handleAddExpense = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch(`${ApiHost}/api/hotel/expenses/management/add`, {
@@ -88,7 +76,7 @@ const ExpenseTracking: React.FC = () => {
 
       const data = await response.json();
 
-      if (data.resturncode === 200) {
+      if (data.returncode === 200) {
         setShowAddExpenseForm(!showAddExpenseForm);
         fetchExpenses();
         console.log("Expense added successfully");
@@ -102,7 +90,7 @@ const ExpenseTracking: React.FC = () => {
     }
   };
 
-  const updateParams = (expense: any) => {
+  const updateParams = (expense) => {
     setExpenseId(expense.id);
     setExpenseDetails({
       bearer: expense.PayableTo,
@@ -118,7 +106,7 @@ const ExpenseTracking: React.FC = () => {
 
   }
 
-  const handleUpdateExpense = async (e: React.FormEvent) => {
+  const handleUpdateExpense = async (e) => {
     e.preventDefault();
     if (!selectedExpense) return;
 
@@ -166,8 +154,8 @@ const ExpenseTracking: React.FC = () => {
 
         <div className="mb-8 justify-between flex ">
           <div className="flex items-center space-y-4">
-            <div className="p-4">
-              <h3 className="text-purple-500 text-xl font-bold">Total Expenses</h3>
+            <div className="p-4 border border-red-500 rounded-md">
+              <h3 className="text-red-500 text-xl font-bold">Total Expenses</h3>
               <p className="text-xl">Rs. {totalExp}</p>
             </div>
           </div>
@@ -450,31 +438,31 @@ const ExpenseTracking: React.FC = () => {
         )}
 
         <div className="flex flex-col md:flex-row space-x-0 md:space-x-8 space-y-8 md:space-y-0">
-          <div className="w-full p-4 border border-red-500 rounded-lg">
+          <div className="w-full">
             <table className="w-full text-left">
               <thead>
-                <tr>
-                  <th className="border-b pb-2">#SR</th>
-                  <th className="border-b pb-2">Bearer</th>
-                  <th className="border-b pb-2">Category</th>
-                  <th className="border-b pb-2">Amount Paid</th>
-                  <th className="border-b pb-2">Balance</th>
-                  <th className="border-b pb-2">Payment Status</th>
-                  <th className="border-b pb-2">Note</th>
-                  <th className="border-b pb-2">Actions</th>
+                <tr className="bg-red-500 text-white">
+                  <th className="border px-4 py-2">#SR</th>
+                  <th className="border px-4 py-2">Bearer</th>
+                  <th className="border px-4 py-2">Category</th>
+                  <th className="border px-4 py-2">Amount Paid</th>
+                  <th className="border px-4 py-2">Balance</th>
+                  <th className="border px-4 py-2">Payment Status</th>
+                  <th className="border px-4 py-2">Note</th>
+                  <th className="border px-4 py-2">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {expenses.map((expense, index) => (
-                  <tr key={expense.id}>
-                    <td>{index + 1}</td>
-                    <td>{expense.PayableTo}</td>
-                    <td>{expense.ExpenseName}</td>
-                    <td>₹{expense.AmountPaid}</td>
-                    <td>₹{expense.AmountPayable}</td>
-                    <td>{expense.PaymentStatus}</td>
-                    <td>{expense.Note}</td>
-                    <td>
+                  <tr className="bg-zinc-100 border-black" key={expense.id}>
+                    <td className="border px-4 py-2">{index + 1}</td>
+                    <td className="border px-4 py-2">{expense.PayableTo}</td>
+                    <td className="border px-4 py-2">{expense.ExpenseName}</td>
+                    <td className="border px-4 py-2">₹{expense.AmountPaid}</td>
+                    <td className="border px-4 py-2">₹{expense.AmountPayable}</td>
+                    <td className="border px-4 py-2">{expense.PaymentStatus}</td>
+                    <td className="border px-4 py-2">{expense.Note}</td>
+                    <td className="border px-4 py-2">
                       <button
                         onClick={() => {
                           updateParams(expense);

@@ -5,6 +5,7 @@ interface MenuOrder {
 	quantity: string,
 	menu_id: string,
 	bill_id: string,
+	hotel_id: string,
 	note: string | null
 }
 

@@ -10,8 +10,8 @@ interface BillPaymentInterface {
 	sgst_amount: number,
 	menu_total: number,
 	balance_amount: number,
-	discount_rate: string,
-	discount_amount: number,
+	discount_rate: string | null,
+	discount_amount: number | null,
 	payment_mode: string,
 	payment_status: string,
 	vat_rate: string | null,
@@ -34,6 +34,22 @@ export async function bill_payment({
 	vat_rate,
 	vat_amount
 }: BillPaymentInterface) {
+	console.log(
+		bill_id,
+		total_amount,
+		cgst_rate,
+		sgst_rate,
+		cgst_amount,
+		sgst_amount,
+		menu_total,
+		balance_amount,
+		discount_rate,
+		discount_amount,
+		payment_mode,
+		payment_status,
+		vat_rate,
+		vat_amount
+	);
 	try {
 
 		// Updating the Payment
@@ -57,6 +73,7 @@ export async function bill_payment({
 				VatAmount: vat_amount
 			}
 		});
+
 
 		// Database is disconnected
 		db.$disconnect();
@@ -138,6 +155,47 @@ export async function bill_table_update({
 			},
 			data: {
 				TableId: table_id
+			}
+		});
+
+		// Database is disconnected
+		db.$disconnect();
+
+		return {
+			returncode: 200,
+			message: "Data Updated",
+			output: result
+		};
+
+	} catch (error: any) {
+		return {
+			returncode: 500,
+			message: error.message,
+			output: []
+		};
+
+	}
+}
+
+// Update Table Status
+interface TableStatusInterface {
+	bill_id: string,
+	status: string
+}
+
+export async function bill_status_update({
+	bill_id,
+	status
+}: TableStatusInterface) {
+	try {
+
+		// Updating the Payment
+		const result = await db.bills.update({
+			where: {
+				id: bill_id
+			},
+			data: {
+				Status: status
 			}
 		});
 

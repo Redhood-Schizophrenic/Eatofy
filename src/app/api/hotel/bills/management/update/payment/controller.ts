@@ -1,4 +1,4 @@
-import { bill_payment } from "@/db/crud/bills/management/update";
+import { bill_payment, bill_status_update } from "@/db/crud/bills/management/update";
 import { update_table_status } from "@/db/crud/tables/management/update";
 import { ApiResponse } from "@/types/ApiResponse";
 
@@ -22,7 +22,7 @@ export async function pay_bill(data: any): Promise<ApiResponse> {
 		const payment_status: string | null = data['payment_status'];
 
 		// Default Invalid Checker
-		if (bill_id == null || total_amount == null || cgst_rate == null || sgst_rate == null || cgst_amount == null || sgst_amount == null || menu_total == null || balance_amount == null || discount_rate == null || discount_amount == null || payment_mode == null || payment_status == null) {
+		if (bill_id == null || total_amount == null || cgst_rate == null || sgst_rate == null || cgst_amount == null || sgst_amount == null || menu_total == null || balance_amount == null || payment_mode == null || payment_status == null) {
 			return {
 				returncode: 400,
 				message: 'Invalid Input',

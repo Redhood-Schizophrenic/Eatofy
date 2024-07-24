@@ -228,12 +228,14 @@ export default function Item_management() {
               <div className="w-[30%] p-4">
                 <form onSubmit={handleAddItems} className="h-auto flex flex-col gap-8 justify-between items-center p-4 border-zinc-400 border rounded-lg">
                   <div className="w-full">
-                    <label htmlFor="category" className="text-xl">Category</label>
+                    <label htmlFor="category" className="text-xl">Category<span className="text-red-500">*</span></label>
                     <select
                       id="category"
                       name="raw materials"
                       className="w-full rounded-lg"
+                      required
                     >
+                      <option value="">-- Select --</option>
                       {
                         fetcedcategory.map((items: any) => (
                           <option key={items.id} value={items.id} onClick={() => { sessionStorage.setItem('category_id', items.id) }}>{items.CategoryName}</option>
@@ -242,7 +244,7 @@ export default function Item_management() {
                     </select>
                   </div>
                   <div className="w-full">
-                    <label htmlFor="itemname" className="text-xl">Item name</label>
+                    <label htmlFor="itemname" className="text-xl">Item name<span className="text-red-500">*</span></label>
                     <input
                       type="text"
                       required

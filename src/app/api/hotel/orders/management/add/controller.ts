@@ -5,6 +5,7 @@ import { read_customer } from "@/db/crud/customers/management/read";
 import { create_customer } from "@/db/crud/customers/management/create";
 import { create_customer_occassion } from "@/db/crud/customers/occasions/create";
 import { add_menu_order } from "../../menus/add/controller";
+import { bill_status_update } from "@/db/crud/bills/management/update";
 
 interface MenuOrder {
 	quantity: string;
@@ -103,6 +104,12 @@ export async function add__order(data: any): Promise<ApiResponse> {
 		let OrdersArray = [];
 		let isAllOrdersAdded = true;
 
+		// Update Bill Status
+		await bill_status_update({
+			bill_id: (result.output as { id: string }).id,
+			status: "Booked"
+		});
+
 		if (result.returncode == 200) {
 			for (const element of menu_data) {
 				let menu_id: string = element['menu_id'];
@@ -131,7 +138,7 @@ export async function add__order(data: any): Promise<ApiResponse> {
 
 				try {
 					let out = await add_menu_order(menu_request);
-
+					console.log(out);
 					if (out.returncode == 200) {
 						OrdersArray.push(out.output);
 					}

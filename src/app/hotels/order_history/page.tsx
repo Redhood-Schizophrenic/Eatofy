@@ -2,6 +2,8 @@
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { FaRegTrashAlt } from "react-icons/fa";
+import { FaPrint } from "react-icons/fa6";
 
 interface Bill {
   id: string;
@@ -60,6 +62,30 @@ const BillTable: React.FC = () => {
     fetchBillList();
   }, []);
 
+  const handleBillDelete = async (bill_id: any) => {
+    try {
+      const response = await fetch(`${ApiHost}/api/hotel/bills/management/update/status`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 'bill_id': bill_id }),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.returncode === 200) {
+          fetchBillList();
+        } else {
+          alert(`Unexpected Response: ${result.message}`);
+        }
+      } else {
+        alert("Failed to fetch bill list");
+      }
+    } catch (error) {
+      alert(`Error: ${error}`);
+    }
+  };
 
   return (
     <>
@@ -80,7 +106,7 @@ const BillTable: React.FC = () => {
                   <th className="border px-4 py-2">Balance</th>
                   <th className="border px-4 py-2">Total</th>
                   <th className="border px-4 py-2">Status</th>
-
+                  <th className="border px-4 py-2">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -113,6 +139,22 @@ const BillTable: React.FC = () => {
                           </span>
                         )
                       }
+                    </td>
+                    <td className="border px-4 py-2">
+                      <div className="flex justify-center items-center gap-4">
+                        <button
+                          onClick={
+                            () => {
+                              handleBillDelete(bill.id);
+                            }
+                          }
+                        >
+                          <FaRegTrashAlt size={25} />
+                        </button>
+                        <button>
+                          <FaPrint size={25} />
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

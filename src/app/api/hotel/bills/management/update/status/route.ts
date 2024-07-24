@@ -1,9 +1,9 @@
-import { add_purchase_stock } from "./controller";
+import { update_status_bill } from "./controller";
 
-export async function POST(request: Request) {
+export async function PUT(request: Request) {
 	try {
 		const data = await request.json();
-		const result = await add_purchase_stock(data);
+		const result = await update_status_bill(data);
 		return Response.json(
 			{
 				returncode: result.returncode,
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 		return Response.json(
 			{
 				returncode: 500,
-				message: `Error Adding Purchase Stock: ${error.message}`,
+				message: `Error Updating Table: ${error.message}`,
 				output: []
 			},
 			{

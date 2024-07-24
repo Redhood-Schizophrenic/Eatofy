@@ -1,7 +1,7 @@
 "use client";
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect } from "react";
 import { MdOutlineDeleteOutline, MdOutlineEdit } from "react-icons/md";
 
 

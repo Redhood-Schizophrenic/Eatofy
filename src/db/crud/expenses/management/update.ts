@@ -30,7 +30,7 @@ export async function update_expense({
 				AmountPayable: amount_payable,
 				AmountPaid: amount_paid,
 				Note: note,
-				Status: status
+				PaymentStatus: status
 			},
 		});
 

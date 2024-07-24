@@ -3,7 +3,7 @@
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import { useEffect, useState } from "react";
-import { FaPlus, FaTrash } from "react-icons/fa";
+import { FaPlus } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
 
 export default function Supplier_management() {
@@ -199,13 +199,6 @@ export default function Supplier_management() {
           <button onClick={handleAddMenu} className="bg-red-500 inline-flex justify-center items-center gap-4 p-2 rounded-lg">
             Add <FaPlus size={20} />
           </button>
-          <div>
-            <input 
-              type="text"
-              placeholder="Filter"
-              className="rounded-lg focus:outline-none focus:ring-white"
-            />
-          </div>
         </div>
         <div className="my-6">
             <table className="min-w-full border-collapse rounded-lg table-auto">
