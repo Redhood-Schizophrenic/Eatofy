@@ -18,7 +18,6 @@ interface Bill {
 
 const BillTable: React.FC = () => {
 
-  const hotel_id: any = sessionStorage.getItem('hotel_id');
   const [billList, setBillList] = useState<Bill[]>([]);
 
   const fetchBillList = async () => {
@@ -28,7 +27,7 @@ const BillTable: React.FC = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 'hotel_id': hotel_id }),
+        body: JSON.stringify({ 'hotel_id': sessionStorage.getItem('hotel_id') }),
       });
 
       if (response.ok) {
@@ -59,7 +58,10 @@ const BillTable: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchBillList();
+    const hotel_id: any = sessionStorage.getItem('hotel_id');
+    if (hotel_id) {
+      fetchBillList();
+    }
   }, []);
 
   const handleBillDelete = async (bill_id: any) => {

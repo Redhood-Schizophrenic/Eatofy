@@ -46,15 +46,17 @@ const Widget = () => {
         setIsLogged(true);
         setFailed(false);
         const userData = data.output[0].result[0];
+        const id = JSON.stringify(data.output[0].result[0].id);
         sessionStorage.setItem('userData', JSON.stringify(userData));
-        console.log("user info");
         console.log('Login successful:', data);
+        console.log(id, "id")
         setTimeout(() => {
           setIsLogged(false);
         }, timeout);
 
         switch (role) {
           case 'owner':
+            sessionStorage.setItem('waiter_id', JSON.parse(id));
             route.push('/hotels/dashboard');
             break;
 
@@ -63,8 +65,7 @@ const Widget = () => {
             break;
 
           case 'waiter':
-            const id = JSON.stringify(data.output[0].result[0].id);
-            sessionStorage.setItem('waiter_id',JSON.parse(id));
+            sessionStorage.setItem('waiter_id', JSON.parse(id));
             route.push('/hotels/home');
             break;
 
@@ -76,7 +77,7 @@ const Widget = () => {
             }, timeout);
             break;
         }
-        sessionStorage.setItem('role',role);
+        sessionStorage.setItem('role', role);
 
       } else {
         console.error('Login failed:', response.statusText);

@@ -85,6 +85,7 @@ const Eatofy = () => {
                   className="bg-red-500 text-white px-4 py-2 rounded-[30px]"
                   onClick={() => {
                     sessionStorage.setItem('order_type', "TakeAway");
+                    sessionStorage.setItem('section_id', sections[0].id);
                   }}
                 >
                   TakeAway
@@ -94,6 +95,7 @@ const Eatofy = () => {
                   className="bg-red-500 text-white px-4 py-2 rounded-[30px]"
                   onClick={() => {
                     sessionStorage.setItem('order_type', "Delivery");
+                    sessionStorage.setItem('section_id', sections[0].id);
                   }}
                 >
                   Delivery
