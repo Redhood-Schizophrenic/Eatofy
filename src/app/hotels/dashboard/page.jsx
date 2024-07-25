@@ -2,7 +2,7 @@
 
 import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import "chart.js/auto";
 import { Bar, Line, Pie } from 'react-chartjs-2';
 
@@ -74,7 +74,7 @@ const Dashboard = () => {
         setAmount(data.output.Chart.All_Order.Amount);
 
         // Employee
-        setTable(data.output.Table);
+        setTable(data.output.Table.All);
         setEmployee(data.output.Chart.Employee.Dates);
         setEmployeeAmount(data.output.Chart.Employee.Amount);
 

@@ -57,8 +57,6 @@ const Eatofy = () => {
     }
   }
 
-  console.log(sections);
-  console.log("Tables ", tables);
 
   return (
     <>
@@ -80,35 +78,26 @@ const Eatofy = () => {
       ) : (
         <div className="ml-[70px]">
           <div className="w-full p-4 h-full bg-white">
-            <div className="flex justify-center items-center mb-4">
-              <div className="text-3xl text-black font-bold">
-                RESTAURANT
-                <span className='mx-2'>
-                  🏨
-                </span>
-              </div>
-            </div>
-
             <div className="flex justify-between items-center my-8 p-4">
               <div className='flex items-center gap-8'>
-                <button
+                <Link
+                    href="/hotels/takeaway"
                   className="bg-red-500 text-white px-4 py-2 rounded-[30px]"
                   onClick={() => {
                     sessionStorage.setItem('order_type', "TakeAway");
-                    route.push('/hotels/other_menu');
                   }}
                 >
                   TakeAway
-                </button>
-                <button
+                </Link>
+                <Link
+                    href="/hotels/delivery"
                   className="bg-red-500 text-white px-4 py-2 rounded-[30px]"
                   onClick={() => {
                     sessionStorage.setItem('order_type', "Delivery");
-                    route.push('/hotels/other_menu');
                   }}
                 >
                   Delivery
-                </button>
+                </Link>
               </div>
               <div className='inline-flex gap-4'>
                 <div className='flex gap-2 justify-center items-center'>
@@ -131,6 +120,7 @@ const Eatofy = () => {
                             sessionStorage.setItem('table_id', table.id);
                             sessionStorage.setItem('table_name', table.TableName)
                             sessionStorage.setItem('section_id', section.id);
+                            sessionStorage.setItem('type', "Dine-In")
                             route.push('/hotels/menu');
                           }}
                           className={`w-full h-40 inline-flex flex-col justify-center items-center p-4 rounded-lg border ${table.Status === 'Booked' ? 'border-red-500' : 'border-black'}`}

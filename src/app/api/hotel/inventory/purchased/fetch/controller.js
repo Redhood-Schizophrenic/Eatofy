@@ -1,7 +1,6 @@
 import { read_invoices } from "@/db/crud/inventory/purchases/invoices/read";
 import { read_suppliers } from "@/db/crud/inventory/suppliers/read";
 import { read_items } from "@/db/crud/inventory/items/read";
-import { read_purchased_stock } from "@/db/crud/inventory/purchases/stock/read";
 
 export async function fetch_invoices_web_data(data) {
 	try {
@@ -39,7 +38,7 @@ export async function fetch_invoices_web_data(data) {
 			hotel_id
 		});
 		if ( items_result.returncode != 200 && items_result.output.length == 0 ) {
-			return invoices_result;
+			return items_result;
 		}
 
 		return {

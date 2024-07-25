@@ -5,8 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa6";
 import { useReactToPrint } from "react-to-print";
-import { IoIosArrowBack } from "react-icons/io";
-import Link from "next/link";
 
 export default function Menu() {
 	const [isLoading, setLoading] = useState(false);
@@ -43,6 +41,7 @@ export default function Menu() {
 	const [OldCart, setOldCart] = useState([]);
 	const [Cart, setCart] = useState([]);
 	const [Message, setMessage] = useState('');
+	const [isSaved, setisSaved] = useState(false);
 
 
 	// Customer Relationship Management
@@ -343,7 +342,7 @@ export default function Menu() {
 						setExistingBill(response_data.ExistingBill);
 						setOldCart(response_data.Orders);
 					}
-					return
+					return 
 				} else {
 					console.log("Failed to fetch Dishes");
 					return
@@ -385,15 +384,7 @@ export default function Menu() {
 					<div className="ml-[70px] flex px-0 overflow-hidden bg-white">
 						<div id="Dish_Display" className={`h-auto transition-width duration-500 ${isDishDisplayFullWidth ? 'w-[65%]' : 'w-full'}`}>
 							<div className="w-full inline-flex justify-between items-center p-4">
-								<div className="flex gap-4 justify-center items-center">
-									<Link
-										href="/hotels/home"
-									>
-										<IoIosArrowBack
-											className="text-red-500"
-											size={45} 
-										/>
-									</Link>
+								<div>
 									<h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-2xl uppercase font-bold">Order</h1>
 								</div>
 								<div className="flex gap-3">
@@ -510,7 +501,7 @@ export default function Menu() {
 
 						</div>
 
-						<div className={`bg-black text-white h-screen transition-transform duration-500 ${isMenuOpen ? 'fixed w-[35%] top-0 right-0' : 'fixed top-0 right-[-100%]'}`}>
+						<div className={`bg-black text-white h-screen transition-transform duration-500 ${isMenuOpen ? 'w-[35%]' : 'fixed top-0 right-[-100%]'}`}>
 							<div className="flex flex-col gap-4 justify-center align-center h-auto">
 
 								<div className="flex">
@@ -658,10 +649,9 @@ export default function Menu() {
 													<div className="w-full inline-flex justify-center items-center gap-4">
 														<button
 															className="w-full bg-red-500 text-white p-2 px-3 rounded-md"
-															onClick={async () => {
+															onClick={ async() => {
 																await handleSaveMenu();
 																setshowBillButton(true);
-																window.location.href = "/hotels/home"
 															}}
 														>Save</button>
 														{
@@ -683,10 +673,9 @@ export default function Menu() {
 												) : (
 													<button
 														className="w-full bg-red-500 text-white p-2 px-3 rounded-md"
-														onClick={async () => {
+														onClick={async() => {
 															await handleUpdateMenu();
 															setshowBillUpdate(true);
-															window.location.href = "/hotels/home"
 														}}
 													>Update</button>
 												)
@@ -752,7 +741,7 @@ export default function Menu() {
 														htmlFor="CustomerEmail"
 														className="text-lg"
 													>
-														Email
+														Email <span className="text-red-500">*</span>
 													</label>
 													<input
 														className='w-full bg-zinc-900 text-white'
@@ -763,6 +752,7 @@ export default function Menu() {
 																setCustomerEmail(e.target.value)
 															}}
 														placeholder='Enter Customer Email'
+														required
 													/>
 												</div>
 												<div className="w-full flex flex-col gap-3">

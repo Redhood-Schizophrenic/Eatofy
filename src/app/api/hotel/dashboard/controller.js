@@ -114,7 +114,12 @@ export async function hotel_dashboard(data) {
 					Takeaway: takeaway_amount,
 					Delivery: delivery_amount
 				},
-				Table: orders
+				Table: {
+					All: orders,
+					Dine_In: dine_in_orders,
+					Takeaway: takeaway__orders,
+					Delivery: delivery__orders
+				}
 			}
 		};
 

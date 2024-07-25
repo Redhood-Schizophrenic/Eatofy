@@ -1,5 +1,52 @@
 import db from "@/db/connector";
 
+// Fetch Hotel's Bills by type
+interface TypeInterface {
+	hotel_id: string,
+	type: string
+}
+export async function read_hotel_bills_by_type({
+	hotel_id,
+	type
+}: TypeInterface) {
+	try {
+
+		// Fetching the record
+		const result = await db.bills.findMany({
+			where: {
+				HotelId: hotel_id,
+				Type: type,
+				NOT: {
+					Status: "Inactive"
+				},
+			},
+			include: {
+				Customer: true,
+				Waiter: true,
+				Table: true
+			}
+		});
+
+		// Database is disconnected
+		db.$disconnect();
+
+		return {
+			returncode: 200,
+			message: "Data Fetched",
+			output: result
+		};
+
+	} catch (error: any) {
+
+		return {
+			returncode: 500,
+			message: error.message,
+			output: []
+		};
+
+	}
+}
+
 // Fetch Hotel's Bills
 interface HotelsInterface {
 	hotel_id: string

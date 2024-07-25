@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { FaArrowLeft, FaBriefcase, FaDashcube, FaHome, FaList, FaWarehouse } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 import { IoLogOutOutline } from "react-icons/io5";
-import { FaBookBookmark, FaTable } from "react-icons/fa6";
+import { FaBookBookmark, FaChartPie, FaTable } from "react-icons/fa6";
 // import { MdOutline1K, MdOutlineSubscriptions } from "react-icons/md";
 import { MdOutlineMenuBook } from "react-icons/md";
 import "../styles/navbar.css";
@@ -28,6 +28,7 @@ export default function HotelSideNav() {
   const [isOpen7, setIsOpen7] = useState(false);
   const [isOpen8, setIsOpen8] = useState(false);
   const [isOpen9, setIsOpen9] = useState(false);
+  const [isOpen10, setIsOpen10] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const isThere = sessionStorage.getItem('role');
 
@@ -129,6 +130,15 @@ export default function HotelSideNav() {
         }
         break;
 
+      case 'reports':
+        if (isOpen10) {
+          setIsOpen10(false);
+        } else {
+          setIsOpen10(true);
+        }
+        break;
+
+
       case 'logout':
         if (isOpen5) {
           setIsOpen5(false);
@@ -168,6 +178,24 @@ export default function HotelSideNav() {
                 ?
                 (
                   <>
+                    <Link
+                      href="/hotels/home"
+                      className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[13px] p-2 py-3 gap-8 w-full"
+                      onMouseEnter={() => { changeColor('home') }}
+                      onMouseLeave={() => { changeColor('home') }}
+                    >
+                      <FaHome size={25} className="icon" color={isOpen9 ? '#fff' : ''} />
+                      <span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Home</span>
+                    </Link>
+                    <Link
+                      href="/hotels/reports"
+                      className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[13px] p-2 py-3 gap-8 w-full"
+                      onMouseEnter={() => { changeColor('reports') }}
+                      onMouseLeave={() => { changeColor('reports') }}
+                    >
+                      <FaChartPie size={25} className="icon" color={isOpen10 ? '#fff' : ''} />
+                      <span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Reports</span>
+                    </Link>
                     <Link
                       href="/hotels/dashboard"
                       className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[13px] p-2 py-3 gap-8 w-full"

@@ -66,7 +66,7 @@ const EatofyApp: React.FC = () => {
       <div className="ml-[70px] h-screen flex items-center justify-center bg-gray-100">
         <div className="w-screen h-screen px-6 bg-white rounded-lg shadow-lg" >
           <div className="flex justify-center items-center my-8">
-            <h1 className="text-red-500 text-2xl font-bold">EATOFY</h1>
+            <h1 className="text-red-500 text-2xl font-bold">Backoffice</h1>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {menuItems.map((item, index) => (

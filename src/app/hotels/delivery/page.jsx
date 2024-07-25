@@ -1,12 +1,11 @@
 'use client';
+
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import { useEffect, useRef, useState } from "react";
 import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
 import { FaMinus, FaPlus, FaTrash } from "react-icons/fa6";
 import { useReactToPrint } from "react-to-print";
-import { IoIosArrowBack } from "react-icons/io";
-import Link from "next/link";
 
 export default function Menu() {
 	const [isLoading, setLoading] = useState(false);
@@ -24,10 +23,12 @@ export default function Menu() {
 	const [showBillUpdate, setshowBillUpdate] = useState(false);
 	const [disAmt, setdisAmt] = useState('');
 	const [vatAmt, setvatAmt] = useState('');
+	const [billP, setbillP] = useState(false);
+	const [kotP, setkotP] = useState(false);
 	const [BalanceAmt, setBalanceAmt] = useState(0);
 	const [PaymentMode, setPaymentMode] = useState('');
 	const [PaymentStatus, setPaymentStatus] = useState('');
-	const Type = sessionStorage.getItem('type');
+	const Type = 'Delivery';
 	const billkot = useRef();
 	const bill = useRef();
 	const today = new Date();
@@ -132,56 +133,31 @@ export default function Menu() {
 				hotel_id: item.Section.HotelId
 			}));
 
-			let response;
-			if (Type == "Dine-In") {
-
-				response = await fetch(`${ApiHost}/api/hotel/orders/management/add`, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						'type': Type,
-						'table_id': TableId,
-						'hotel_id': HotelId,
-						'waiter_id': WaiterId,
-						'menu_data': OrderData,
-						'customer_name': CustomerName,
-						'contact': CustomerContact,
-						'email': CustomerEmail,
-						'occassion': CustomerOccassion,
-						'date': CustomerDate
-					}),
-				});
-			}
-			else {
-				response = await fetch(`${ApiHost}/api/hotel/orders/management/add`, {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({
-						'type': Type,
-						'table_id': "",
-						'hotel_id': HotelId,
-						'waiter_id': WaiterId,
-						'menu_data': OrderData,
-						'customer_name': CustomerName,
-						'contact': CustomerContact,
-						'email': CustomerEmail,
-						'occassion': CustomerOccassion,
-						'date': CustomerDate
-					}),
-				});
-			}
+			const response = await fetch(`${ApiHost}/api/hotel/orders/management/add`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					'type': Type,
+					'table_id': TableId,
+					'hotel_id': HotelId,
+					'waiter_id': WaiterId,
+					'menu_data': OrderData,
+					'customer_name': CustomerName,
+					'contact': CustomerContact,
+					'email': CustomerEmail,
+					'occassion': CustomerOccassion,
+					'date': CustomerDate
+				}),
+			});
 
 			if (response.status === 200) {
 				const data = await response.json();
 				console.log("Order Saved", data);
-				return;
+				setBillId(data.output[0].Bill.id);
 			} else {
 				console.log("Lavde Lagle BCC000000D");
-				return;
 			}
 
 		} catch (e) {
@@ -286,7 +262,7 @@ export default function Menu() {
 					'vat_rate': vatAmt,
 					'vat_amount': VatAmt,
 					'menu_total': parseFloat(menutotal),
-					'balance_amount': parseFloat(BalanceAmt),
+					'balance_amount': BalanceAmt,
 					'discount_rate': disAmt,
 					'discount_amount': discount,
 					'payment_mode': PaymentMode,
@@ -298,11 +274,9 @@ export default function Menu() {
 				const data = await response.json();
 				console.log("data", data);
 				setMessage('Payment Successful');
-				return
 			} else {
 				console.log("Failed to update bill");
 				setMessage('Payment Failed');
-				return;
 			}
 
 		} catch (e) {
@@ -338,19 +312,16 @@ export default function Menu() {
 					setMenus(response_data.Menus);
 					setCategories(response_data.Categories);
 					if (response_data.ExistingBill.length != 0) {
-						setBillId(response_data.ExistingBill[0].id);
+						// setBillId(response_data.ExistingBill[0].id);
 						setdoesBillExists(true);
 						setExistingBill(response_data.ExistingBill);
 						setOldCart(response_data.Orders);
 					}
-					return
 				} else {
 					console.log("Failed to fetch Dishes");
-					return
 				}
 			} catch (e) {
 				console.error(e);
-				return
 			} finally {
 				setLoading(false);
 			}
@@ -358,6 +329,15 @@ export default function Menu() {
 
 		fetch_bill()
 	}, []);
+
+	console.log("New Cart", Cart);
+	console.log("Old Cart", OldCart);
+	//
+	console.log('Balance', BalanceAmt);
+	console.log("Gross", grosstotal)
+	console.log("total", totalAmt)
+	console.log("paymentmode", PaymentMode);
+	console.log("paymentstatus", PaymentStatus);
 
 	return (
 		<>
@@ -385,16 +365,8 @@ export default function Menu() {
 					<div className="ml-[70px] flex px-0 overflow-hidden bg-white">
 						<div id="Dish_Display" className={`h-auto transition-width duration-500 ${isDishDisplayFullWidth ? 'w-[65%]' : 'w-full'}`}>
 							<div className="w-full inline-flex justify-between items-center p-4">
-								<div className="flex gap-4 justify-center items-center">
-									<Link
-										href="/hotels/home"
-									>
-										<IoIosArrowBack
-											className="text-red-500"
-											size={45} 
-										/>
-									</Link>
-									<h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-2xl uppercase font-bold">Order</h1>
+								<div>
+									<h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-2xl uppercase font-bold">Delivery Order</h1>
 								</div>
 								<div className="flex gap-3">
 									<input
@@ -412,7 +384,7 @@ export default function Menu() {
 									</button>
 								</div>
 							</div>
-							<div id="Categories" className="p-4 flex justify-between w-full border-b border-black">
+							<div id="Categories" className="p-4 flex justify-between w-full">
 								{
 									<div className="flex flex-wrap gap-4">
 										<button className="text-red-500 font-semibold">
@@ -438,7 +410,7 @@ export default function Menu() {
 								}
 							</div>
 
-							<div className="w-full flex flex-col gap-4 h-screen">
+							<div className="w-full flex flex-col gap-4">
 								<div className="flex justify-between p-2 px-4 items-center">
 									<div>
 										<p className="text-xl font-bold">Choose Dishes</p>
@@ -510,7 +482,7 @@ export default function Menu() {
 
 						</div>
 
-						<div className={`bg-black text-white h-screen transition-transform duration-500 ${isMenuOpen ? 'fixed w-[35%] top-0 right-0' : 'fixed top-0 right-[-100%]'}`}>
+						<div className={`bg-black text-white h-screen transition-transform duration-500 ${isMenuOpen ? 'w-[35%]' : 'fixed top-0 right-[-100%]'}`}>
 							<div className="flex flex-col gap-4 justify-center align-center h-auto">
 
 								<div className="flex">
@@ -525,7 +497,7 @@ export default function Menu() {
 									<div className="w-1/3 inline-flex justify-center items-center gap-4 font-bold text-xl p-4">
 										{showBillInvoice ? (
 											<div className="flex flex-col gap-2">
-												<label>Bill <span className="text-xs font-normal">&nbsp; #{billId.slice(0, 12)}</span></label>
+												<label>Bill <span className="text-xs font-normal">#{billId.slice(0, 12)}</span></label>
 											</div>
 										) : (
 											<label>CRM</label>
@@ -553,7 +525,7 @@ export default function Menu() {
 								</div>
 
 								{showBillInvoice ? (
-									<div id="Bill_Invoice" className="h-auto flex flex-col flex-1 justify-center items-center">
+									<div id="Bill_Invoice" className="h-auto flex flex-col flex-1">
 										<div className="pt-4 h-[80dvh]">
 											<table className="w-auto table-fixed text-left">
 												<thead className="">
@@ -582,37 +554,6 @@ export default function Menu() {
 												</thead>
 												<tbody>
 													{
-														OldCart.map((items, index) => (
-															<tr key={index} className="text-gray-600">
-																<td className="p-4 border-b border-blue-gray-50">
-																	<div className="flex  antialiased font-sans text-sm leading-normal  font-semibold">
-																		<div className="flex flex-col gap-2">
-																			<span>{items.Menu.Dish.DishName}</span>
-																			<span className="text-xs font-normal"> Rs.{items.Menu.Price} </span>
-																		</div>
-																	</div>
-																</td>
-																<td className="p-4 border-b border-blue-gray-50">
-																	<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal  font-normal gap-4">
-																		<span className="border border-white bg-red-500 px-3 py-1 rounded-xl font-bold text-xl">
-																			{items.Quantity}
-																		</span>
-																	</p>
-																</td>
-																<td className="p-4 border-b border-blue-gray-50">
-																	<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal  font-normal">
-																		Rs.{items.TotalAmount}
-																	</p>
-																</td>
-																<td className="p-4 border-b border-blue-gray-50">
-																	<p className="flex justify-center items-center antialiased font-sans text-sm leading-normal  font-normal">
-																		Ordered
-																	</p>
-																</td>
-															</tr>
-														))
-													}
-													{
 														Cart.map((items) => (
 															<tr key={items.id}>
 																<td className="p-4 border-b border-blue-gray-50">
@@ -623,14 +564,15 @@ export default function Menu() {
 																</td>
 																<td className="p-4 border-b border-blue-gray-50">
 																	<div className="flex justify-center items-center antialiased font-sans text-sm leading-normal text-blue-gray-900 font-normal gap-4">
-																		<button onClick={async () => handleIncrement(items.id)} className="inline-flex justify-center items-center">
-																			<FaPlus size={15} />
-																		</button>
+																		<div className="flex flex-col">
+																			<button onClick={async () => handleIncrement(items.id)} className="inline-flex justify-center items-center">
+																				<FaPlus size={15} />
+																			</button>
+																			<button onClick={() => handleDecrement(items.id)} className="inline-flex justify-center items-center font-normal">
+																				<FaMinus size={15} />
+																			</button>
+																		</div>
 																		<span className="border border-white bg-red-500 px-3 py-1 rounded-xl font-bold text-xl"> {items.quantity} </span>
-																		<button onClick={() => handleDecrement(items.id)} className="inline-flex justify-center items-center font-normal">
-																			<FaMinus size={15} />
-																		</button>
-
 																	</div>
 																</td>
 																<td className="p-4 border-b border-blue-gray-50">
@@ -654,15 +596,11 @@ export default function Menu() {
 										</div>
 										<div className={`p-4 py-6 w-full ${showBillUpdate ? 'inline-flex justify-center items-center gap-4' : ''}`}>
 											{
-												OldCart.length === 0 ? (
+												Cart.length !== 0 ? (
 													<div className="w-full inline-flex justify-center items-center gap-4">
 														<button
 															className="w-full bg-red-500 text-white p-2 px-3 rounded-md"
-															onClick={async () => {
-																await handleSaveMenu();
-																setshowBillButton(true);
-																window.location.href = "/hotels/home"
-															}}
+															onClick={() => { handleSaveMenu(); setshowBillButton(true) }}
 														>Save</button>
 														{
 															showBillButton ?
@@ -671,36 +609,17 @@ export default function Menu() {
 																</button> : []
 														}
 													</div>
-												) : Cart.length === 0 ? (
-													<div className="w-full inline-flex justify-center items-center gap-4">
-														<button onClick={() => { setisSettleBill(true) }} className="w-full inline-flex justify-center items-center bg-red-500 p-2 rounded-md">
-															Settle Bill
-														</button>
-														<button onClick={() => { handleKotPrint(); }} className="w-full inline-flex justify-center items-center bg-red-500 p-2 rounded-md">
-															Print kot
-														</button>
-													</div>
 												) : (
-													<button
-														className="w-full bg-red-500 text-white p-2 px-3 rounded-md"
-														onClick={async () => {
-															await handleUpdateMenu();
-															setshowBillUpdate(true);
-															window.location.href = "/hotels/home"
-														}}
-													>Update</button>
+													<div className="w-full inline-flex justify-center items-center gap-4">
+														<button
+															className="w-full bg-red-500 text-white p-2 px-3 rounded-md"
+															onClick={() => { handleSaveMenu(); setshowBillButton(true) }}
+														>Save</button>
+													</div>
 												)
-
-											}
-											{
-												showBillUpdate ?
-													<button onClick={() => { setisSettleBill(true) }} className="w-full inline-flex justify-center items-center bg-red-500 p-2 rounded-md">
-														Settle Bill
-													</button> : []
 											}
 										</div>
 									</div>
-
 								)
 									// Bill Section
 									: (
@@ -752,7 +671,7 @@ export default function Menu() {
 														htmlFor="CustomerEmail"
 														className="text-lg"
 													>
-														Email
+														Email <span className="text-red-500">*</span>
 													</label>
 													<input
 														className='w-full bg-zinc-900 text-white'
@@ -763,6 +682,7 @@ export default function Menu() {
 																setCustomerEmail(e.target.value)
 															}}
 														placeholder='Enter Customer Email'
+														required
 													/>
 												</div>
 												<div className="w-full flex flex-col gap-3">
@@ -800,14 +720,6 @@ export default function Menu() {
 															}}
 													/>
 												</div>
-
-												{/*<div className="w-[40%] flex flex-col mt-4">
-													<button
-														className="p-2 bg-red-900 border border-white rounded-md"
-													>
-														Add Customer
-													</button>
-												</div>*/}
 											</div>
 										</div>
 									)
@@ -822,7 +734,7 @@ export default function Menu() {
 										<div className="w-1/2 h-auto bg-white p-4 relative">
 											<p className="w-full text-left text-red-500 font-bold p-2">Settle Bill</p>
 											<p className={`border-2 p-2 text-center ${Message === 'Payment Successful' ? 'bg-green-200 border-green-500 text-green-500' : ''} ${Message === 'Payment Failed' ? 'bg-red-200 border-red-500 text-red-500' : ''}`}>{Message}</p>
-											<div className="absolute top-4 right-4 bg-black inline-flex justify-center items-center rounded-full w-[30px] h-[30px]" onClick={() => { setisSettleBill(false) }}>
+											<div className="absolute top-4 right-4 bg-black inline-flex justify-center items-center rounded-full w-[30px] h-[30px]" onClick={() => { setisSettleBill(false); setbillP(false); }}>
 												<div className="text-white">X</div>
 											</div>
 											<div className="w-full p-2">
@@ -842,15 +754,6 @@ export default function Menu() {
 															</tr>
 														</thead>
 														<tbody className="text-center">
-															{
-																OldCart.map((item, index) => (
-																	<tr key={index} className="border-t border-b border-black p-1">
-																		<td>{item.Menu.Dish.DishName}</td>
-																		<td>{item.Quantity}</td>
-																		<td className="text-right">{item.Menu.Price}</td>
-																	</tr>
-																))
-															}
 															{
 																Cart.map((item, index) => (
 																	<tr key={index} className="border-t border-b border-black p-1">
@@ -892,7 +795,7 @@ export default function Menu() {
 												</div>
 												<div className="w-full inline-flex justify-between items-center mb-2">
 													<label className="text-lg w-1/2">Enter Balance Amount</label>
-													<input type="text" value={BalanceAmt} onChange={(e) => { setBalanceAmt(e.target.value) }} className="w-1/2 p-1 text-base" placeholder="Balance amount" />
+													<input type="number" value={BalanceAmt} onChange={(e) => { setBalanceAmt(Number(e.target.value)) }} className="w-1/2 p-1 text-base" placeholder="Balance amount" />
 												</div>
 												<div className="w-full my-4 border-b border-black">
 													<div className="text-right my-2 text-lg font-bold">Total Amount :- Rs.{totalAmt ? (totalAmt) : (CalculateSubTotal())}</div>
@@ -917,7 +820,7 @@ export default function Menu() {
 													<button className="bg-red-500 text-white p-2 rounded-md" onClick={() => { handleSettleBill() }}>
 														Payment
 													</button>
-													<button onClick={() => { handleBillPrint(); setisSettleBill(false) }} className="bg-black text-white p-2 rounded-md">
+													<button onClick={() => { handleBillPrint(); setbillP(true); setisSettleBill(false) }} className="bg-black text-white p-2 rounded-md">
 														Print Bill
 													</button>
 												</div>
@@ -926,128 +829,74 @@ export default function Menu() {
 									</div>
 								) : []
 						}
-						<div ref={billkot} className="max-w-md mx-auto p-4 border border-zinc-300 rounded-md bg-white text-black fixed left-0 top-[50dvh] z-[-500]">
-							<div className="flex justify-between mb-2">
-								<span>Dt: </span>
-							</div>
-							<div className="mb-2">
-								<span><strong>{sessionStorage.getItem('table_name')}</strong></span>
-							</div>
-							<table className="w-full text-left border-collapse mb-2">
-								<thead>
-									<tr className="border-b">
-										<th className="py-1">Item</th>
-										<th className="py-1 text-right">Qty</th>
-									</tr>
-								</thead>
-								<tbody>
-									{
-										OldCart.map((items, index) => {
-											return (
-												<tr key={index} className="border-b">
-													<td className="py-1">{items.Menu.Dish.DishName}</td>
-													<td className="py-1 text-right">{items.Quantity}</td>
-												</tr>
-											);
-										})
-									}
-									{
-										Cart.map((items, index) => {
-											return (
-												<tr key={index} className="border-b">
-													<td className="py-1">{items.Dish.DishName}</td>
-													<td className="py-1 text-right">{items.quantity}</td>
-												</tr>
-											);
-										})
-									}
-								</tbody>
-							</table>
 
-							<div className="text-center m-6">
-								<span>!!! Thank You !!!</span>
-							</div>
+							<div ref={bill} className={`max-w-md mx-auto p-4 border border-zinc-300 rounded-md bg-white text-black fixed ${billP ? 'top-0 left-0' : 'top-0 left-[-100%]'} z-[-100]`}>
+								<div className="flex flex-col justify-between mb-2">
+									<span>Bill No: {billId.slice(0, 12)}</span>
+									<span>Date: {formattedDate}</span>
+								</div>
+								<div className="mb-2">
+									<span><strong>{sessionStorage.getItem('table_name')}</strong></span>
+								</div>
+								<table className="w-full text-left border-collapse mb-2">
+									<thead>
+										<tr className="border-b">
+											<th className="py-1">Item</th>
+											<th className="py-1 text-center">Qty</th>
+											<th className="py-1 text-right">Rate</th>
+										</tr>
+									</thead>
+									<tbody>
+										{
+											Cart.map((items, index) => {
+												return (
+													<tr key={index} className="border-b">
+														<td className="py-1">{items.Dish.DishName}</td>
+														<td className="py-1 text-center">{items.quantity}</td>
+														<td className="py-1 text-right">{items.Price}</td>
+													</tr>
+												);
+											})
+										}
+									</tbody>
+								</table>
+								<div className="w-full p-1 inline-flex justify-between items-center">
+									<div>
+										Cgst
+									</div>
+									<div>{cgstAmt}</div>
+								</div>
+								<div className="w-full p-1 inline-flex justify-between items-center">
+									<div>
+										Sgst
+									</div>
+									<div>{sgstAmt}</div>
+								</div>
+								<div className="w-full p-1 inline-flex justify-between items-center">
+									<div>
+										Vat %
+									</div>
+									<div>{VatAmt}</div>
+								</div>
+								<div className="w-full p-1 inline-flex justify-between items-center">
+									<div>
+										Discount %
+									</div>
+									<div>{discount}</div>
+								</div>
+								<div className="w-full p-1 inline-flex justify-between items-center">
+									<div>
+										Total Amount
+									</div>
+									<div>{totalAmt}</div>
+								</div>
 
+								<div className="text-center m-6">
+									<span>!!! Thank You !!!</span>
+								</div>
+
+							</div>
 						</div>
-
-						<div ref={bill} className="max-w-md mx-auto p-4 border border-zinc-300 rounded-md bg-white text-black fixed top-[50dvh] left-0 z-[-150]">
-							<div className="flex flex-col justify-between mb-2">
-								<span>Bill No: {billId.slice(0, 12)}</span>
-								<span>Date: {formattedDate}</span>
-							</div>
-							<div className="mb-2">
-								<span><strong>{sessionStorage.getItem('table_name')}</strong></span>
-							</div>
-							<table className="w-full text-left border-collapse mb-2">
-								<thead>
-									<tr className="border-b">
-										<th className="py-1">Item</th>
-										<th className="py-1 text-center">Qty</th>
-										<th className="py-1 text-right">Rate</th>
-									</tr>
-								</thead>
-								<tbody>
-									{
-										OldCart.map((items, index) => {
-											return (
-												<tr key={index} className="border-b">
-													<td className="py-1">{items.Menu.Dish.DishName}</td>
-													<td className="py-1 text-center">{items.Quantity}</td>
-													<td className="py-1 text-right">{items.Menu.Price}</td>
-												</tr>
-											);
-										})
-									}
-									{
-										Cart.map((items, index) => {
-											return (
-												<tr key={index} className="border-b">
-													<td className="py-1">{items.Dish.DishName}</td>
-													<td className="py-1 text-center">{items.quantity}</td>
-													<td className="py-1 text-right">{items.Price}</td>
-												</tr>
-											);
-										})
-									}
-								</tbody>
-							</table>
-							<div className="w-full p-1 inline-flex justify-between items-center">
-								<div>
-									Cgst
-								</div>
-								<div>{cgstAmt}</div>
-							</div>
-							<div className="w-full p-1 inline-flex justify-between items-center">
-								<div>
-									Sgst
-								</div>
-								<div>{sgstAmt}</div>
-							</div>
-							<div className="w-full p-1 inline-flex justify-between items-center">
-								<div>
-									Vat %
-								</div>
-								<div>{VatAmt}</div>
-							</div>
-							<div className="w-full p-1 inline-flex justify-between items-center">
-								<div>
-									Discount %
-								</div>
-								<div>{discount}</div>
-							</div>
-							<div className="w-full p-1 inline-flex justify-between items-center">
-								<div>
-									Total Amount
-								</div>
-								<div>{totalAmt}</div>
-							</div>
-
-							<div className="text-center m-6">
-								<span>!!! Thank You !!!</span>
-							</div>
-
-						</div>
-					</div>
 			}
 		</>
 	)
