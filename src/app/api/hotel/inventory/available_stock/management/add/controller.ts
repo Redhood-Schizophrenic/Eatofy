@@ -1,6 +1,6 @@
 import { ApiResponse } from "@/types/ApiResponse";
 import { create_available_stock } from "@/db/crud/inventory/available_stock/create";
-import { it } from "node:test";
+import { check_available_stock } from "@/db/crud/inventory/available_stock/read";
 
 export async function add_available_stock(data: any): Promise<ApiResponse> {
 	try {
@@ -19,20 +19,37 @@ export async function add_available_stock(data: any): Promise<ApiResponse> {
 			}
 
 		}
-		
-		// Inserting the Available Stock
-		const result = await create_available_stock({
+
+		const check = await check_available_stock({
 			item_id,
-			quantity,
-			unit,
 			hotel_id
 		});
 
-		return {
-			returncode: 200,
-			message: "Available Stock Added",
-			output: result.output
-		};
+		if ( check.output.length == 0 ) {
+
+			// Inserting the Available Stock
+			const result = await create_available_stock({
+				item_id,
+				quantity,
+				unit,
+				hotel_id
+			});
+
+			return {
+				returncode: 200,
+				message: "Available Stock Added",
+				output: result.output
+			};
+		}
+		else {
+			return {
+				returncode: 500,
+				message: "Item Available use Edit",
+				output: []
+			}
+		}
+
+
 
 	} catch (error: any) {
 		return {

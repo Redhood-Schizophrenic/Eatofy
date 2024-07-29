@@ -54,34 +54,30 @@ const Widget = () => {
           setIsLogged(false);
         }, timeout);
 
-        if (userData.Role === role) {
-          switch (role) {
-            case 'Owner':
-              sessionStorage.setItem('waiter_id', JSON.parse(id));
-              route.push('/hotels/dashboard');
-              break;
+        switch (role) {
+          case 'owner':
+            sessionStorage.setItem('waiter_id', JSON.parse(id));
+            route.push('/hotels/dashboard');
+            break;
 
-            case 'Backoffice':
-              route.push('/hotels/backoffice');
-              break;
+          case 'backoffice':
+            route.push('/hotels/backoffice');
+            break;
 
-            case 'Waiter':
-              sessionStorage.setItem('waiter_id', JSON.parse(id));
-              route.push('/hotels/home');
-              break;
+          case 'waiter':
+            sessionStorage.setItem('waiter_id', JSON.parse(id));
+            route.push('/hotels/home');
+            break;
 
-            default:
-              setIsLogged(true);
-              setMessage('Please select the role');
-              setTimeout(() => {
-                setIsLogged(false);
-              }, timeout);
-              break;
-          }
-          sessionStorage.setItem('role', role);
-        }else{
-          alert("The account you entered is not Authorized for the role you selected, \n Please select proper role for account");
+          default:
+            setIsLogged(true);
+            setMessage('Please select the role');
+            setTimeout(() => {
+              setIsLogged(false);
+            }, timeout);
+            break;
         }
+        sessionStorage.setItem('role', role);
 
       } else {
         console.error('Login failed:', response.statusText);
@@ -179,9 +175,9 @@ const Widget = () => {
                 onChange={handleChange}
               >
                 <option value="">--Select--</option>
-                <option value="Owner">Owner</option>
-                <option value="Backoffice">Backoffice</option>
-                <option value="Waiter">Waiter</option>
+                <option value="owner">Owner</option>
+                <option value="backoffice">Backoffice</option>
+                <option value="waiter">Waiter</option>
               </select>
             </div>
             {/* Login Button */}

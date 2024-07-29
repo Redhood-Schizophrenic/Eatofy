@@ -15,7 +15,9 @@ interface BillPaymentInterface {
 	payment_mode: string,
 	payment_status: string,
 	vat_rate: string | null,
-	vat_amount: number | null
+	vat_amount: number | null,
+	delivery_rate: string | null,
+	delivery_amount: number | null
 }
 
 export async function bill_payment({
@@ -32,24 +34,10 @@ export async function bill_payment({
 	payment_mode,
 	payment_status,
 	vat_rate,
-	vat_amount
+	vat_amount,
+	delivery_rate,
+	delivery_amount
 }: BillPaymentInterface) {
-	console.log(
-		bill_id,
-		total_amount,
-		cgst_rate,
-		sgst_rate,
-		cgst_amount,
-		sgst_amount,
-		menu_total,
-		balance_amount,
-		discount_rate,
-		discount_amount,
-		payment_mode,
-		payment_status,
-		vat_rate,
-		vat_amount
-	);
 	try {
 
 		// Updating the Payment
@@ -70,7 +58,9 @@ export async function bill_payment({
 				PaymentMode: payment_mode,
 				Status: payment_status,
 				VatRate: vat_rate,
-				VatAmount: vat_amount
+				VatAmount: vat_amount,
+				DeliveryChargesRate: delivery_rate,
+				DeliveryChargesAmount: delivery_amount
 			}
 		});
 

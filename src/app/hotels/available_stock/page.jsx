@@ -9,15 +9,15 @@ import { MdOutlineEdit } from "react-icons/md";
 export default function Available_stock() {
 
   const [isLoading, setLoading] = useState(false);
-  const [fetchstock, setfetchstock]: any = useState([]);
-  const [fetchitems, setfetchitems]: any = useState([]);
+  const [fetchstock, setfetchstock] = useState([]);
+  const [fetchitems, setfetchitems] = useState([]);
   const [ShowTableForm, setShowTableForm] = useState(false);
   const [ShowEditTableForm, setShowEditTableForm] = useState(false);
   const hotel_id = sessionStorage.getItem('hotel_id');
-  const [quantity, setquantity]: any = useState('');
-  const [available_stock_id, set_available_stock_id]: any = useState('');
-  const [unit, setunit]: any = useState('');
-  const [itemId, setitemId]: any = useState('');
+  const [quantity, setquantity] = useState('');
+  const [available_stock_id, set_available_stock_id] = useState('');
+  const [unit, setunit] = useState('');
+  const [itemId, setitemId] = useState('');
 
   const fetchItems = async () => {
     try {
@@ -39,7 +39,7 @@ export default function Available_stock() {
         console.log("Failed to fetch");
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.error(e);
     } finally {
       setLoading(false);
@@ -66,7 +66,7 @@ export default function Available_stock() {
         console.log("Failed to fetch");
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.log(e);
     } finally {
       setLoading(false);
@@ -102,7 +102,7 @@ export default function Available_stock() {
         console.log("Failed to fetch");
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.log(e);
     } finally {
       setLoading(false);
@@ -133,7 +133,7 @@ export default function Available_stock() {
         console.log("Failed to fetch");
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.log(e);
     } finally {
       setLoading(false);
@@ -168,8 +168,8 @@ export default function Available_stock() {
           </div>
           :
           <div className="ml-[70px]">
+            <h2 className="p-4 text-center w-full bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Available Stock</h2>
             <div className="text-right">
-              <h1 className="text-3xl text-red-500 text-center my-1 mt-6">Available Stock</h1>
               <button onClick={() => { setShowTableForm(!ShowTableForm) }} className="text-xl bg-red-500 text-white p-2 rounded-lg m-4 text-right">
                 Add Purchase
               </button>
@@ -204,7 +204,7 @@ export default function Available_stock() {
                           >
                             <option value="">-- Select --</option>
                             {
-                              fetchitems.map((items: any) => (
+                              fetchitems.map((items) => (
                                 <option key={items.id} value={items.id}>{items.ItemName}</option>
                               ))
                             }
@@ -324,7 +324,7 @@ export default function Available_stock() {
                 </thead>
                 <tbody className="text-center">
                   {
-                    fetchstock.map((items: any) => (
+                    fetchstock.map((items) => (
                       <tr key={items.id}>
                         <td className="p-4">{items.Items.Category.CategoryName}</td>
                         <td className="p-4">{items.Items.ItemName}</td>

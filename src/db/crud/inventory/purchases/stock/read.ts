@@ -18,6 +18,11 @@ export async function read_purchased_stock ({
 					Status: "Inactive"
 				},
 			},
+			orderBy: {
+				Items: {
+					ItemName: "asc"
+				}
+			},
 			include: {
 				Items: true
 			}

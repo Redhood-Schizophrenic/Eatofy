@@ -18,6 +18,9 @@ export async function read_invoices ({
 					Status: "Inactive"
 				},
 			},
+			orderBy: {
+				createdAt: "desc"
+			},
 			include: {
 				Suppliers: true
 			}

@@ -2,13 +2,20 @@
 
 import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Dashboard = () => {
 
+  // For A Week before
+  const today = new Date();
+  const weekbefore = new Date(today);
+  weekbefore.setDate(today.getDate() - 7);
+  const from_default = weekbefore.toISOString().split('T')[0];
+  const to_default = today.toISOString().split('T')[0];
+
   //Request Params
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
+  const [from, setFrom] = useState(from_default);
+  const [to, setTo] = useState(to_default);
 
   // Orders
   const [DineOrders, setDineOrders] = useState(0);
@@ -73,7 +80,9 @@ const Dashboard = () => {
     }
   }
 
-  console.log("Table", Table);
+  useEffect(() => {
+    fetchAllOrders();  
+  }, [])
 
   return (
     <>
@@ -81,7 +90,7 @@ const Dashboard = () => {
       <div className="ml-[70px] bg-zinc-200 flex h-auto">
         <div className="flex-1 p-4">
           <div className="flex justify-between items-center mb-4">
-            <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-2xl uppercase font-bold pb-6">
+            <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold pb-6">
               Sales Report
             </h1>
             <div className="flex items-center space-x-4">
@@ -128,7 +137,7 @@ const Dashboard = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-16 mb-4">
             <div
-              className="bg-white p-4 rounded-lg shadow-md border-t-4 border-red-500 cursor-pointer"
+              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer"
               onClick={() => {
                 setTable(FullTable.Dine_In)
                 setTotalSales(FullSales.Dine_In)
@@ -138,44 +147,39 @@ const Dashboard = () => {
               <p className="text-2xl font-bold">{DineOrders}</p>
             </div>
             <div
-              className="bg-white p-4 rounded-lg shadow-md border-t-4 border-red-500 cursor-pointer"
+              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer"
               onClick={() => {
                 setTable(FullTable.Takeaway)
                 setTotalSales(FullSales.Takeaway)
               }}
-
             >
               <h2 className="text-zinc-500">Takeaway Orders</h2>
               <p className="text-2xl font-bold">{TakeawayOrders}</p>
             </div>
             <div
-              className="bg-white p-4 rounded-lg shadow-md border-t-4 border-red-500 cursor-pointer"
+              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer"
               onClick={() => {
                 setTable(FullTable.Delivery)
                 setTotalSales(FullSales.Delivery)
               }}
-
             >
               <h2 className="text-zinc-500">Delivery Orders</h2>
               <p className="text-2xl font-bold">{DeliveryOrders}</p>
             </div>
             <div
-              className="bg-white p-4 rounded-lg shadow-md border-t-4 border-red-500"
+              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500"
             >
               <h2 className="text-zinc-500">Total Sales</h2>
-              <p className="text-2xl font-bold">₹ {TotalSales}</p>
+              <p className="text-2xl font-bold">₹ {TotalSales | 0}</p>
             </div>
           </div>
 
-
-
           <div className='mt-[5dvh]'>
-            <div className="bg-white p-4 rounded-lg shadow-md mt-5" >
-              <h2 className="text-lg font-semibold text-card-foreground text-zinc-500">
+            <div className="bg-white p-4 rounded-lg shadow-md mt-5 border-l-4 border-red-500" >
+              <h2 className="text-lg font-semibold text-card-foreground text-zinc-500 pb-4">
                 Sales Data
               </h2>
               <div className=' flex justify-center items-center'>
-
                 <table className="min-w-full text-black border-collapse">
                   <thead>
                     <tr className="bg-gray-500 text-white font-bold">

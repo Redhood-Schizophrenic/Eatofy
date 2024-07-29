@@ -1,6 +1,6 @@
 import { fetch_bill_info } from "./controller";
 
-export async function POST(request: Request) {
+export async function POST(request) {
 	try {
 		const data = await request.json();
 		const result = await fetch_bill_info(data);
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
 			}
 		);
 	}
-	catch (error: any) {
+	catch (error) {
 		return Response.json(
 			{
 				returncode: 500,

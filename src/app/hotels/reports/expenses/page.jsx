@@ -2,16 +2,23 @@
 
 import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "chart.js/auto";
 import { Doughnut } from 'react-chartjs-2';
 import { FaWallet } from 'react-icons/fa6';
 
 const Dashboard = () => {
 
+  // For A Week before
+  const today = new Date();
+  const weekbefore = new Date(today);
+  weekbefore.setDate(today.getDate() - 7);
+  const from_default = weekbefore.toISOString().split('T')[0];
+  const to_default = today.toISOString().split('T')[0];
+
   //Request Params
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
+  const [from, setFrom] = useState(from_default);
+  const [to, setTo] = useState(to_default);
 
   // Expense-Wise
   const [Data, setData] = useState({});
@@ -56,6 +63,10 @@ const Dashboard = () => {
     }
   }
 
+  useEffect(() => {
+    fetchExpenses();
+  }, [])
+
   const dataPie = {
     labels: Category,
     datasets: [
@@ -74,7 +85,7 @@ const Dashboard = () => {
       <div className="ml-[70px] bg-zinc-200 flex h-auto">
         <div className="flex-1 p-4">
           <div className="flex justify-between items-center mb-4">
-            <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-2xl uppercase font-bold pb-6">
+            <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold pb-6">
               Expenses Report
             </h1>
             <div className="flex items-center space-x-4">
@@ -126,8 +137,8 @@ const Dashboard = () => {
               <div className="flex justify-between items-center mb-4 w-full">
                 <h2 className="text-3xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Expenses Distribution</h2>
               </div>
-              
-              <div className="flex gap-20 mb-4">  
+
+              <div className="flex gap-20 mb-4">
                 <div className="w-full mr-2 flex">
                   <div className='w-1/2 h-[40dvh] flex justify-center items-center p-2'>
                     <Doughnut data={dataPie} />
@@ -151,7 +162,7 @@ const Dashboard = () => {
                         {(Data.Category && Data.Category.length !== 0 && Data.Amount && Data.Amount.length !== 0) && Data.Category.map((category, index) => (
                           <div key={index} className='w-[19dvw] flex flex-col text-2xl text-left px-[75px]'>
                             <h1 className='font-semibold text-black'>
-                               {category}
+                              {category}
                             </h1>
                             {index < Data.Amount.length && (
                               <p className='text-black'>
@@ -163,15 +174,15 @@ const Dashboard = () => {
                       </div>
                     </div>
                   </div>
-                </div>  
+                </div>
               </div>
 
               <div>
 
               </div>
-            
+
             </div>
-          
+
           </div>
 
 

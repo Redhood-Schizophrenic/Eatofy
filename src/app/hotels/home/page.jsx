@@ -2,6 +2,7 @@
 
 import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
@@ -78,11 +79,13 @@ const Eatofy = () => {
       ) : (
         <div className="ml-[70px]">
           <div className="w-full p-4 h-full bg-white">
+            <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Eatofy</h2>
             <div className="flex justify-between items-center my-8 p-4">
+              <div></div>
               <div className='flex items-center gap-8'>
                 <Link
-                    href="/hotels/takeaway"
-                  className="bg-red-500 text-white px-4 py-2 rounded-[30px]"
+                  href="/hotels/takeaway"
+                  className="bg-red-600 text-white px-4 py-2 rounded-[30px]"
                   onClick={() => {
                     sessionStorage.setItem('order_type', "TakeAway");
                     sessionStorage.setItem('section_id', sections[0].id);
@@ -91,8 +94,8 @@ const Eatofy = () => {
                   TakeAway
                 </Link>
                 <Link
-                    href="/hotels/delivery"
-                  className="bg-red-500 text-white px-4 py-2 rounded-[30px]"
+                  href="/hotels/delivery"
+                  className="bg-red-600 text-white px-4 py-2 rounded-[30px]"
                   onClick={() => {
                     sessionStorage.setItem('order_type', "Delivery");
                     sessionStorage.setItem('section_id', sections[0].id);
@@ -100,12 +103,49 @@ const Eatofy = () => {
                 >
                   Delivery
                 </Link>
+                <Link
+                  href="/hotels/swiggy"
+                  className="inline-flex flex-row-reverse gap-2 items-center bg-gradient-to-r from-orange-400 to-orange-800 text-white px-4 py-2 rounded-[30px]"
+                  onClick={() => {
+                    sessionStorage.setItem('order_type', "Swiggy");
+                    sessionStorage.setItem('section_id', sections[0].id);
+                  }}
+                >
+                  <Image src={'/swiggy.svg'} width={15} height={15} alt="Help"/>  
+                    Swiggy
+                </Link>
+                <Link
+                  href="/hotels/zomato"
+                  className="bg-gradient-to-r from-red-400 to-red-800 text-white px-4 py-2 rounded-[30px]"
+                  onClick={() => {
+                    sessionStorage.setItem('order_type', "Zomato");
+                    sessionStorage.setItem('section_id', sections[0].id);
+                  }}
+                >
+                  Zomato
+                </Link>
               </div>
-              <div className='inline-flex gap-4'>
-                <div className='flex gap-2 justify-center items-center'>
-                  <span className="bg-red-500 w-3 h-3 block border border-black"></span>
-                  <span>Booked</span>
-                </div>
+              <div className='flex flex-col gap-4'>
+                <Link
+                  href="/hotels/table_reservation"
+                  className='px-4 py-2 bg-red-500 text-white rounded-2xl font-bold'
+                >
+                  Reservation +
+                </Link>
+              </div>
+            </div>
+            <div className='flex gap-4 justify-end items-center w-full px-4'>
+              <div className='flex gap-2 justify-center items-center'>
+                <span className="bg-black w-3 h-3 block border border-black rounded-2xl"></span>
+                <span>Available</span>
+              </div>
+              <div className='flex gap-2 justify-center items-center'>
+                <span className="bg-red-500 w-3 h-3 block border border-black rounded-2xl"></span>
+                <span>Booked</span>
+              </div>
+              <div className='flex gap-2 justify-center items-center'>
+                <span className="bg-green-500 w-3 h-3 block border border-black rounded-2xl"></span>
+                <span>Bill Printed</span>
               </div>
             </div>
 
@@ -125,10 +165,10 @@ const Eatofy = () => {
                             sessionStorage.setItem('type', "Dine-In")
                             route.push('/hotels/menu');
                           }}
-                          className={`w-full h-40 inline-flex flex-col justify-center items-center p-4 rounded-lg border ${table.Status === 'Booked' ? 'border-red-500' : 'border-black'}`}
+                          className={`w-full h-40 inline-flex flex-col justify-center items-center p-4 rounded-lg border-2 ${table.Status === 'Booked' ? 'border-4 border-red-500' : 'border-black'}`}
                         >
                           <div className="font-bold">{table.TableName}</div>
-                          <span className='block'>{table.PersonsOccupiable} Person&apos;s</span>
+                          <span className='block'>{table.PersonsOccupiable} Persons</span>
                         </div>
                       ))}
                   </div>

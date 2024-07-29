@@ -20,6 +20,9 @@ export async function read_customer({
 					Status: "Inactive"
 				},
 			},
+			orderBy:{
+				CustomerName: 'asc'
+			}
 		});
 
 		// Database is disconnected
@@ -67,6 +70,9 @@ export async function read_customers ({
 					Status: "Inactive"
 				},
 			},
+			orderBy:{
+				CustomerName: 'asc'
+			}
 		});
 
 		// Database is disconnected
@@ -96,4 +102,3 @@ export async function read_customers ({
 
 	}
 }
-

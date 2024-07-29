@@ -39,18 +39,18 @@ export async function hotel_dashboard(data) {
 			}
 		}
 
-		const from_date = new Date(from);
-		const to_date = new Date(to);
+		// Convert input dates to local time Date objects
+		const from_date = new Date(`${from}T00:00:00`);
+		const to_date = new Date(`${to}T23:59:59`);
 
-		const orders_response = await read_hotel_bills({
-			hotel_id
-		});
-
+		// Hotel's Order Fetch
+		const orders_response = await read_hotel_bills({ hotel_id });
 		const orders_res = orders_response.output;
+
+		// Filter orders within the date range
 		let orders = orders_res.filter((order) => {
-			order.createdAt = new Date(order.createdAt);
 			order.Date = order.createdAt.toISOString().split('T')[0];
-			return from_date <= order.createdAt && order.createdAt <= to_date;
+			return order.createdAt >= from_date && order.createdAt <= to_date;
 		});
 
 		// Total Orders
@@ -124,7 +124,6 @@ export async function hotel_dashboard(data) {
 		};
 
 	} catch (error) {
-		console.error(error)
 		return {
 			returncode: 500,
 			message: error.message,

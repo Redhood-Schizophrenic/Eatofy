@@ -17,6 +17,9 @@ export async function read_item_categories ({
 				NOT: {
 					Status: "Inactive"
 				}
+			},
+			orderBy: {
+				CategoryName: "asc"
 			}
 		});
 

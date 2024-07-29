@@ -154,7 +154,7 @@ const ReservationGrid = () => {
       <HotelSideNav />
       <div className="ml-[70px] flex flex-col p-4 text-black min-h-screen bg-white">
         <div className="flex flex-col items-center md:flex-row justify-between mb-8">
-          <h2 className="text-xl font-bold  text-center mb-2 md:mb-0">
+          <h2 className="text-3xl font-bold  text-center mb-2 md:mb-0">
             Table <span className="text-red-500">Reservation</span>
           </h2>
           <button
@@ -168,7 +168,7 @@ const ReservationGrid = () => {
 
         <div className="flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-4 mb-4">
           <div className="border border-green-500 text-center p-4 rounded">
-            <p className="font-bold">Total Reservation</p>
+            <p className=" font-bold">Total Reservation</p>
             <p className="text-2xl">{data.length}</p>
           </div>
         </div>

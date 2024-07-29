@@ -69,6 +69,9 @@ export async function order_display({
 				}
 
 			},
+			orderBy: {
+				createdAt: "desc"
+			},
 			include: {
 				Menu: {
 					include: {
@@ -120,6 +123,9 @@ export async function kot_display({
 				NOT: {
 					Status: "Inactive"
 				}
+			},
+			orderBy: {
+				createdAt: "desc"
 			},
 			include: {
 				Menu: {

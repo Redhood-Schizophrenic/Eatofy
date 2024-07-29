@@ -16,6 +16,9 @@ export async function read_compliances({
 				NOT: {
 					Status: "Inactive"
 				}
+			},
+			orderBy: {
+				ComplianceName: "asc"
 			}
 		});
 

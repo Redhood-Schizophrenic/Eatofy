@@ -109,6 +109,9 @@ export async function read_staff_attendance({
 		const result = await db.staffAttendance.findMany({
 			where: {
 				StaffId: staff_id,
+			},
+			orderBy: {
+				createdAt: "desc"
 			}
 		});
 
@@ -158,6 +161,9 @@ export async function read_staffs_attendance({
 						Status: "Inactive"
 					}
 				},
+			},
+			orderBy: {
+				createdAt: "desc"
 			},
 			include: {
 				Staff: true

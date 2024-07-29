@@ -2,9 +2,6 @@
 import HotelSideNav from '@/components/SideNavHotel';
 import Link from 'next/link';
 import React, { useState } from 'react';
-import { FcSalesPerformance } from "react-icons/fc";
-import { BiPurchaseTag } from "react-icons/bi";
-import { GiExpense } from "react-icons/gi";
 
 const EatofyApp = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -18,25 +15,22 @@ const EatofyApp = () => {
     {
       'name': 'Sales Report',
       'href': '/hotels/reports/sales',
-      'img_tag': FcSalesPerformance
     },
     {
       'name': 'Purchases Report',
       'href': '/hotels/reports/purchases',
-      'img_tag': BiPurchaseTag
     },
     {
       'name': 'Expenses Report',
       'href': '/hotels/reports/expenses',
-      'img_tag': GiExpense
     }
   ]);
 
   return (
     <>
       <HotelSideNav />
-      <div className="ml-[70px] h-screen flex items-center justify-center">
-        <div className="w-screen h-screen px-6 rounded-lg shadow-lg bg-gray-200" >
+      <div className="ml-[70px] h-screen flex items-center justify-center bg-gray-200">
+        <div className="w-screen h-screen px-6 bg-white rounded-lg shadow-lg" >
           <div className="flex justify-center items-center my-8">
             <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Reports</h2>
           </div>
@@ -49,9 +43,6 @@ const EatofyApp = () => {
                   }`}
                 onClick={() => handleItemClick(index)}
               >
-                <item.img_tag
-                  className="w-10 h-10 mb-2 text-gray-700"
-                />
                 <span className='font-semibold'>{item.name}</span>
               </Link>
             ))}

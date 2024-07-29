@@ -1,37 +1,23 @@
 "use client";
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
-import React, { useState, useEffect, FormEvent } from "react";
+import React, { useState, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
-import { IoIosAdd, IoIosAddCircleOutline } from "react-icons/io";
+import { IoIosAddCircleOutline } from "react-icons/io";
 
-interface WidgetProps { }
 
-interface Table {
-  id: string;
-  TableName: string;
-  PersonsOccupiable: string;
-  SectionId: string; // Ensure SectionId is present in Table
-}
-
-interface Section {
-  id: string;
-  SectionName: string;
-  Status: string;
-}
-
-const Widget: React.FC<WidgetProps> = () => {
-  const [showTableForm, setShowTableForm] = useState<boolean>(false);
-  const [showSectionForm, setShowSectionForm] = useState<boolean>(false);
-  const [sectionName, setSectionName] = useState<string>("");
-  const [tablePersons, setTablePersons] = useState<number>(0);
-  const [sectionId, setSectionId]: any = useState("");
-  const [tablename, setTablename] = useState<string>("");
-  const [tableno, setTableno] = useState<number>(0);
-  const [autocheck, setAutocheck] = useState<boolean>(false);
+const Widget = () => {
+  const [showTableForm, setShowTableForm] = useState(false);
+  const [showSectionForm, setShowSectionForm] = useState(false);
+  const [sectionName, setSectionName] = useState("");
+  const [tablePersons, setTablePersons] = useState(0);
+  const [sectionId, setSectionId] = useState("");
+  const [tablename, setTablename] = useState("");
+  const [tableno, setTableno] = useState(0);
+  const [autocheck, setAutocheck] = useState(false);
   const hotelId = sessionStorage.getItem("hotel_id");
-  const [tables, setTables] = useState<Table[]>([]);
-  const [sections, setSections] = useState<Section[]>([]);
+  const [tables, setTables] = useState([]);
+  const [sections, setSections] = useState([]);
   const [message, setMessage] = useState("");
   const [isExist, setIsExist] = useState(false);
 
@@ -104,8 +90,8 @@ const Widget: React.FC<WidgetProps> = () => {
     setIsExist(false);
   }
 
-  function ifTableExist(tablenaeme: any, tableexist: any) {
-    tableexist.forEach((exist: any) => {
+  function ifTableExist(tablenaeme, tableexist) {
+    tableexist.forEach((exist) => {
       if (tablenaeme === exist.TableName) {
         console.log("Table Exist");
         setIsExist(true);
@@ -120,7 +106,7 @@ const Widget: React.FC<WidgetProps> = () => {
     });
   }
 
-  const handleTableFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleTableFormSubmit = async (e) => {
     e.preventDefault();
 
     setSectionId(sessionStorage.getItem('section_id'))
@@ -196,7 +182,7 @@ const Widget: React.FC<WidgetProps> = () => {
 
   };
 
-  const handleSectionFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSectionFormSubmit = async (e) => {
     e.preventDefault();
 
     const requestData = {
@@ -252,7 +238,7 @@ const Widget: React.FC<WidgetProps> = () => {
         alert("Failed to delete section");
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.error(e);
 
     }
@@ -284,19 +270,11 @@ const Widget: React.FC<WidgetProps> = () => {
         alert("Failed to delete table");
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.error(e);
 
     }
   }
-
-  // console.log("tables -> ", tables);
-  // console.log("sections", sections);
-  // console.log(sectionId);
-  console.log(sectionName);
-  // console.log(tablename);
-  // console.log(autocheck);
-  // console.log(tableno);
 
   return (
     <>
@@ -431,7 +409,8 @@ const Widget: React.FC<WidgetProps> = () => {
           </div>
         )}
 
-        <div className="flex gap-4 mt-10 justify-center flex-wrap">
+        <div className="flex gap-4 mt-10 justify-between flex-wrap">
+            <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Table Management</h2> 
           <button
             onClick={handleShowSectionForm}
             className="bg-red-500 text-white px-4 py-2 rounded-full flex items-center space-x-2"
@@ -439,15 +418,6 @@ const Widget: React.FC<WidgetProps> = () => {
             <span>Add Section</span>
           </button>
 
-          {sections.map((section) => (
-            <button
-              key={section.id}
-              onClick={() => { sessionStorage.setItem('section_id', section.id); handleShowTableForm() }}
-              className=" bg-red-200 text-red-600 px-4 py-2 rounded-full flex items-center space-x-2"
-            >
-              <span>{section.SectionName}</span>
-            </button>
-          ))}
         </div>
 
         {sections.map((section) => (

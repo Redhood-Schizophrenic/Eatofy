@@ -16,7 +16,7 @@ export async function read_sections({
 				NOT: {
 					Status: "Inactive"
 				}
-			}
+			},
 		});
 
 		// Database is disconnected

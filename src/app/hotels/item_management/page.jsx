@@ -7,13 +7,13 @@ import { FaXmark } from "react-icons/fa6";
 
 export default function Item_management() {
 
-  const [isLoading, setLoading]: any = useState(false);
-  const [showTableForm, setShowTableForm] = useState<boolean>(false);
+  const [isLoading, setLoading] = useState(false);
+  const [showTableForm, setShowTableForm] = useState(false);
   const [fetcedcategory, setfetcedcategory] = useState([]);
   const [items, setitems] = useState([]);
   const [item_name, setitem_name] = useState('');
   // const [category_id, setcategory_id] = useState('');
-  const [addcategory, setAddCategory] = useState<string>('');
+  const [addcategory, setAddCategory] = useState('');
   const [description, setdescription] = useState('');
   const hotel_id = sessionStorage.getItem('hotel_id');
 
@@ -47,7 +47,7 @@ export default function Item_management() {
         console.log('Failed to fetch');
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.error(e);
     } finally {
       setLoading(false);
@@ -75,14 +75,14 @@ export default function Item_management() {
         console.log('Failed to fetch');
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.error(e);
     } finally{
       setLoading(false);
     }
   }
 
-  const handleAddCategory = async (e: any) => {
+  const handleAddCategory = async (e) => {
     e.preventDefault();
 
     try {
@@ -105,12 +105,12 @@ export default function Item_management() {
         fetchItemCategory();
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.error(e);
     }
   }
 
-  const handleAddItems = async (e: any) => {
+  const handleAddItems = async (e) => {
     e.preventDefault();
 
     const category_id = sessionStorage.getItem('category_id');
@@ -138,7 +138,7 @@ export default function Item_management() {
         console.log("Failed to add item");
       }
 
-    } catch (e: any) {
+    } catch (e) {
       throw console.error(e);
     }
   }
@@ -173,8 +173,8 @@ export default function Item_management() {
           </div>
           :
           <div className="ml-[70px]">
+            <h2 className="pt-4 w-full text-center bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Item Management</h2>
             <div className="text-right">
-              <h1 className="text-3xl text-red-500 text-center my-1 mt-6">Item Management</h1>
               <button onClick={() => { setShowTableForm(!showTableForm) }} className="text-xl bg-black text-white p-2 rounded-lg m-4 text-right">
                 Add Category
               </button>
@@ -237,7 +237,7 @@ export default function Item_management() {
                     >
                       <option value="">-- Select --</option>
                       {
-                        fetcedcategory.map((items: any) => (
+                        fetcedcategory.map((items) => (
                           <option key={items.id} value={items.id} onClick={() => { sessionStorage.setItem('category_id', items.id) }}>{items.CategoryName}</option>
                         ))
                       }
@@ -286,7 +286,7 @@ export default function Item_management() {
                   </thead>
                   <tbody className="bg-zinc-100">
                     {
-                      items.map((items: any) => (
+                      items.map((items) => (
                         <tr key={items.id} className="p-2">
                           <td className="p-2">{items.Category.CategoryName}</td>
                           <td className="p-2">{items.ItemName}</td>

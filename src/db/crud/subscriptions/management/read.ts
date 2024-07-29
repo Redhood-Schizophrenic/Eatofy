@@ -8,6 +8,9 @@ export async function read_subscriptions() {
 				NOT:{
 					Status: "Inactive"
 				}
+			},
+			orderBy: {
+				SubscriptionName: "asc"
 			}
 		});
 
@@ -76,4 +79,3 @@ export async function read_subscription({
 
 	}
 }
-

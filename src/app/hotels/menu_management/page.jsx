@@ -191,10 +191,16 @@ const MenuManagement = () => {
 
   const handleAddMenu = () => {
     setShowaddmenu(!showaddmenu);
+    setDishName('');
+    setCategoryName('');
+    setDishCode("");
+    setDishType('');
+    setPrice(0);
   }
 
   const handleEditMenu = () => {
     setShoweditmenu(!showeditmenu);
+    setPrice(0);
   }
 
   return (
@@ -416,7 +422,7 @@ const MenuManagement = () => {
       <div className="ml-[70px] flex-1 p-4">
         <div className='flex m-6 justify-center gap-2 flex-col'>
           <div className='flex justify-between'>
-            <h1 className="text-2xl  font-bold mb-4">
+            <h1 className="text-3xl  font-bold mb-4">
               Menu <span className="text-red-500">Management</span>
             </h1>
             <div>

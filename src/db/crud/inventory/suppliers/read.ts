@@ -18,6 +18,9 @@ export async function read_suppliers({
 					Status: "Inactive"
 				},
 			},
+			orderBy: {
+				SupplierName: "asc"
+			}
 		});
 
 		// Database is disconnected

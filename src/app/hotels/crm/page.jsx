@@ -1,22 +1,12 @@
 "use client";
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
-import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import React, { useState, useEffect } from "react";
 
-interface Customer {
-  id: string;
-  customer_name: string;
-  contact: string;
-  email: string;
-  occassion: string;
-  date: string;
-  hotel_id: string;
-}
+const CustomerTable = () => {
 
-const CustomerTable: React.FC = () => {
-
-  const hotel_id: any = sessionStorage.getItem('hotel_id');
-  const [customerList, setCustomerList] = useState<Customer[]>([]);
+  const hotel_id = sessionStorage.getItem('hotel_id');
+  const [customerList, setCustomerList] = useState([]);
   const [isFormVisible, setFormVisible] = useState(false);
   const [formData, setFormData] = useState({
     customer_name: "",
@@ -41,7 +31,7 @@ const CustomerTable: React.FC = () => {
         const result = await response.json();
         if (result.returncode === 200 && Array.isArray(result.output)) {
           // Map the output objects to Staff interface
-          const mappedCustomerList = result.output.map((item: any) => ({
+          const mappedCustomerList = result.output.map((item) => ({
             id: item.id,
             customer_name: item.CustomerName,
             contact: item.Contact,
@@ -68,7 +58,7 @@ const CustomerTable: React.FC = () => {
     setFormVisible(!isFormVisible);
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -76,7 +66,7 @@ const CustomerTable: React.FC = () => {
     });
   };
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newCustomer = {
@@ -93,7 +83,7 @@ const CustomerTable: React.FC = () => {
       });
 
       if (response.ok) {
-        const result: Customer = await response.json();
+        const result = await response.json();
         setCustomerList([...customerList, result]);
         setFormData({
           customer_name: "",
@@ -116,7 +106,7 @@ const CustomerTable: React.FC = () => {
     <>
       <HotelSideNav />
       <div className={`ml-[70px] flex-1 h-screen p-4 bg-white ${isFormVisible ? "" : ""}`}>
-        <h2 className="text-red-500 text-3xl mb-4">Customer Relationship Management</h2>
+            <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Customer Relationship Management</h2>
 
         <div className="flex justify-end space-x-4 mb-4">
           <button className="bg-zinc-800 text-white px-4 py-2 rounded" onClick={toggleFormVisibility}>

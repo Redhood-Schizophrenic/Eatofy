@@ -61,6 +61,9 @@ export async function cancelled_orders({
 					Status: "Inactive"
 				},
 			},
+			orderBy: {
+				createdAt: "desc"
+			},
 			include: {
 				Order: {
 					include: {

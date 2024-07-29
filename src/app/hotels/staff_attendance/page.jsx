@@ -26,35 +26,6 @@ const StaffTable = () => {
     day: 'numeric'
   });
 
-  const fetch_attendances = async () => {
-    try {
-
-      const response = await fetch(`${ApiHost}/api/hotel/staff/attendance/fetch/multiple`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          'hotel_id': hotel_id,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.returncode === 200) {
-        setAttendances(data.output);
-      }
-
-    } catch (e) {
-      console.error(e);
-    }
-  }
-
-  useEffect(() => {
-    fetch_attendances();
-    fetchStaffForId();
-  }, []);
-
   const fetch_attendance = async () => {
     try {
       const date = new Date(dateFilter);
@@ -155,6 +126,12 @@ const StaffTable = () => {
       console.error(e);
     }
   }
+
+  useEffect(() => {
+    fetch_attendance();
+    fetchStaffForId();
+  }, []);
+
 
   return (
     <>

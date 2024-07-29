@@ -18,6 +18,9 @@ export async function read_items ({
 					Status: "Inactive"
 				}
 			},
+			orderBy: {
+				ItemName: "asc"
+			},
 			include: {
 				Category: true
 			}

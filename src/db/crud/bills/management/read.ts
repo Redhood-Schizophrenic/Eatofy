@@ -20,6 +20,9 @@ export async function read_hotel_bills_by_type({
 					Status: "Inactive"
 				},
 			},
+			orderBy:{
+				createdAt: 'desc'
+			},
 			include: {
 				Customer: true,
 				Waiter: true,
@@ -63,6 +66,9 @@ export async function read_hotel_bills({
 				NOT: {
 					Status: "Inactive"
 				},
+			},
+			orderBy: {
+				createdAt: 'desc'
 			},
 			include: {
 				Customer: true,
@@ -108,6 +114,9 @@ export async function read_bill_info_by_table({
 					Status: "Booked"
 				},
 				Status: "Booked",
+			},
+			orderBy: {
+				createdAt: 'desc'
 			}
 		});
 
@@ -148,11 +157,14 @@ export async function read_bill_info({
 					Status: "Inactive"
 				},
 			},
+			orderBy: {
+				createdAt: 'desc'
+			},
 			include: {
 				Customer: true,
 				Waiter: true,
 				Table: true,
-				Hotels: true,
+				// Hotels: true,
 			}
 		});
 

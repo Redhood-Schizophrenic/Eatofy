@@ -2,16 +2,23 @@
 
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import { FaEye, FaXmark } from "react-icons/fa6";
 
 export default function Purchase_management() {
 
+  // For A Week before
+  const today = new Date();
+  const weekbefore = new Date(today);
+  weekbefore.setDate(today.getDate() - 7);
+  const from_default = weekbefore.toISOString().split('T')[0];
+  const to_default = today.toISOString().split('T')[0];
+
   //Request Params
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
+  const [from, setFrom] = useState(from_default);
+  const [to, setTo] = useState(to_default);
 
   // Expense-Wise
   const [Amount, setAmount] = useState([]);
@@ -88,6 +95,10 @@ export default function Purchase_management() {
     setInvoice(invoice_info);
   }
 
+  useEffect(() => {
+    fetchPurchaseData();
+  }, [])
+
   const dataLine = {
     labels: Dates_Filter,
     datasets: [
@@ -155,7 +166,7 @@ export default function Purchase_management() {
       <div className="ml-[70px] bg-zinc-200 flex h-auto">
         <div className="flex-1 p-4">
           <div className="flex justify-between items-center mb-4">
-            <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-2xl uppercase font-bold pb-6">
+            <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold pb-6">
               Purchase Reports
             </h1>
 
@@ -203,7 +214,7 @@ export default function Purchase_management() {
 
           <div className="flex w-full">
             <div
-              className="mt-10 bg-white p-4 rounded-lg shadow-md border-t-4 border-red-500"
+              className="mt-10 bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500"
             >
               <h2 className="text-xl text-zinc-500"> Total Purchases </h2>
               <p className="text-xl font-bold">Rs. {TotalAmount}</p>
@@ -212,7 +223,7 @@ export default function Purchase_management() {
 
           <div className='w-full flex gap-4 pt-6'>
 
-            <div className="w-full bg-white p-4 rounded-lg shadow-md">
+            <div className="w-full bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500">
               <div className="flex justify-between items-center mb-4 w-full">
                 <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Purchases Chart</h2>
               </div>
@@ -230,13 +241,13 @@ export default function Purchase_management() {
 
           {/* Table */}
           <div className='mt-[5dvh]'>
-            <div className="bg-white p-4 rounded-lg shadow-md mt-5" >
+            <div className="bg-white p-4 rounded-lg shadow-md mt-5 border-l-4 border-red-500" >
               <div className="flex justify-between items-center mb-4 w-full">
                 <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Purchases Data</h2>
               </div>
               <div className=' flex justify-center items-center'>
                 <table className="table-fixed w-full p-2">
-                  <thead className="bg-red-500 text-white">
+                  <thead className="bg-gray-500 text-white">
                     <tr className="font-bold text-left">
                       <th className="p-4">From</th>
                       <th className="p-4">Total</th>
@@ -250,16 +261,20 @@ export default function Purchase_management() {
                   <tbody className="bg-zinc-100">
                     {
                       fetchedpurchase.map((items, index) => (
-                        <tr key={index} className="text-left">
-                          <td className="p-3">{items.Suppliers.SupplierName}</td>
-                          <td className="p-3">{items.TotalAmount}</td>
-                          <td className="p-3">{items.BalanceAmount}</td>
-                          <td className="p-3">{items.PaymentMode}</td>
-                          <td className="p-3 inline-flex justify-center items-center">
+                        <tr
+                          key={index}
+                          className={index % 2 === 0 ? "bg-zinc-100 text-black font-light" : "text-black font-light"}
+                        >
+
+                          <td className="border px-4 py-2">{items.Suppliers.SupplierName}</td>
+                          <td className="border px-4 py-2">{items.TotalAmount}</td>
+                          <td className="border px-4 py-2">{items.BalanceAmount}</td>
+                          <td className="border px-4 py-2">{items.PaymentMode}</td>
+                          <td className="border px-4 py-2 inline-flex justify-center items-center">
                             <div className={`px-4 p-2`}>{items.PaymentStatus}</div>
                           </td>
-                          <td className="p-3">{items.Date}</td>
-                          <td className="p-3">
+                          <td className="border px-4 py-2">{items.Date}</td>
+                          <td className="border px-4 py-2">
                             <button
                               onClick={() => { displayPurchasedStock(items) }}
                             >

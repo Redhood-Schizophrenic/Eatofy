@@ -1,11 +1,11 @@
 import db from "@/db/connector";
 
 // Fetch Reservations
-interface ReservationInterface { 
+interface ReservationInterface {
 	hotel_id: string,
-} 
+}
 
-export async function read_reservations ({
+export async function read_reservations({
 	hotel_id,
 }: ReservationInterface) {
 	try {
@@ -17,6 +17,14 @@ export async function read_reservations ({
 					Status: "Inactive"
 				}
 			},
+			orderBy: [
+				{
+					Date: "desc"
+				},
+				{
+					Time: "asc"
+				}
+			],
 			include: {
 				Customer: true
 			}

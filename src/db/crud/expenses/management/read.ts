@@ -16,6 +16,9 @@ export async function read_expenses({
 				NOT: {
 					Status: "Inactive"
 				}
+			},
+			orderBy: {
+				createdAt: 'desc'
 			}
 		});
 

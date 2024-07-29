@@ -16,6 +16,9 @@ export async function read_tables({
 					Status: "Inactive"
 				}
 			},
+			orderBy: {
+				TableName: 'asc'
+			}
 		});
 
 		// Database is disconnected
@@ -55,6 +58,9 @@ export async function read_table({
 				SectionId: section_id,
 				Status: "Active"
 			},
+			orderBy: {
+
+			}
 		});
 
 		// Database is disconnected

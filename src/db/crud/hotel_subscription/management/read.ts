@@ -15,6 +15,9 @@ export async function read_existing_subscription({
 				HotelId: hotel_id,
 				isValid: true
 			},
+			orderBy: {
+				createdAt: 'desc'
+			}
 		});
 
 		// Database is disconnected
@@ -26,7 +29,7 @@ export async function read_existing_subscription({
 				message: "No current subscription",
 				output: result
 			};
-		}
+		},
 
 		return {
 			returncode: 200,

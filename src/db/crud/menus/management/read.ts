@@ -33,6 +33,11 @@ export async function read_hotel_menus({
 					Status: "Inactive"
 				}
 			},
+			orderBy: {
+				Dish: {
+					DishName: "asc"
+				}
+			},
 			include: {
 				Dish: {
 					include: {
@@ -89,6 +94,11 @@ export async function read_menus({
 					NOT: {
 						Status: "Inactive"
 					}
+				}
+			},
+			orderBy: {
+				Dish: {
+					DishName: "asc"
 				}
 			},
 			include: {
@@ -241,4 +251,3 @@ export async function read_menu_for_order({
 
 	}
 }
-

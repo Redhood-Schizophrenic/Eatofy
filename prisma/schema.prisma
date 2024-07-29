@@ -326,32 +326,34 @@ model Orders {
 }
 
 model Bills {
-  id            String     @id @unique @default(uuid())
-  Type          String
-  TableId       String?
-  Table         Tables?    @relation(fields: [TableId], references: [id])
-  WaiterId      String
-  Waiter        Staffs     @relation(fields: [WaiterId], references: [id])
-  HotelId       String
-  Hotels        Hotels?    @relation(fields: [HotelId], references: [id])
-  CustomerId    String?
-  Customer      Customers? @relation(fields: [CustomerId], references: [id])
-  VatRate       String?
-  VatAmount     Float?
-  TotalAmount   Float      @default(0.0)
-  CGSTRate      String     @default("2.5 %")
-  SGSTRate      String     @default("2.5 %")
-  SGSTAmount    Float      @default(0.0)
-  CGSTAmount    Float      @default(0.0)
-  MenuTotal     Float      @default(0.0)
-  BalanceAmount Float      @default(0.0)
-  DiscountRate  String?
-  DiscountPrice Float?
-  PaymentMode   String     @default("None")
-  Status        String     @default("Active")
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
-  Orders        Orders[]
+  id                    String     @id @unique @default(uuid())
+  Type                  String
+  TableId               String?
+  Table                 Tables?    @relation(fields: [TableId], references: [id])
+  WaiterId              String
+  Waiter                Staffs     @relation(fields: [WaiterId], references: [id])
+  HotelId               String
+  Hotels                Hotels?    @relation(fields: [HotelId], references: [id])
+  CustomerId            String?
+  Customer              Customers? @relation(fields: [CustomerId], references: [id])
+  VatRate               String?
+  VatAmount             Float?
+  TotalAmount           Float      @default(0.0)
+  CGSTRate              String     @default("2.5 %")
+  SGSTRate              String     @default("2.5 %")
+  SGSTAmount            Float      @default(0.0)
+  CGSTAmount            Float      @default(0.0)
+  MenuTotal             Float      @default(0.0)
+  BalanceAmount         Float      @default(0.0)
+  DeliveryChargesRate   String?
+  DeliveryChargesAmount Float?
+  DiscountRate          String?
+  DiscountPrice         Float?
+  PaymentMode           String     @default("None")
+  Status                String     @default("Active")
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+  Orders                Orders[]
 }
 
 model CancelledOrders {

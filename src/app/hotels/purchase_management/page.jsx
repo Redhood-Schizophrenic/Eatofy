@@ -190,8 +190,8 @@ export default function Purchase_management() {
           </div>
           :
           <div className="ml-[70px]">
+            <h2 className="w-full text-center pt-4 bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Purchase Management</h2>
             <div className="text-right">
-              <h1 className="text-3xl text-red-500 text-center my-1 mt-6">Purchase Management</h1>
               <button onClick={() => { setShowTableForm(!showtableform) }} className="text-xl bg-red-500 text-white px-4 py-2 rounded-lg m-4 text-right">
                 Add Purchase
               </button>

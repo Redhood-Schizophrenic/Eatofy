@@ -22,7 +22,6 @@ export function values_mapper(orders, key) {
 	const dates = [];
 
 	for (const [date, data] of Object.entries(groupByOrders)) {
-		console.log(data);
 		totalAmt.push(data.TotalAmount);
 		counts.push(data.count);
 		dates.push(date);

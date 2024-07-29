@@ -162,7 +162,20 @@ const ExpenseTracking = () => {
 
           <button
             className="bg-red-500 text-white w-30 h-10 px-4 py-2 rounded"
-            onClick={() => setShowAddExpenseForm(!showAddExpenseForm)}
+            onClick={() => {
+              setShowAddExpenseForm(!showAddExpenseForm);
+              setExpenseDetails(
+                {
+                  bearer: "",
+                  date: "",
+                  amount_payable: 0,
+                  amount_paid: 0,
+                  category: "",
+                  description: "",
+                  status: "",
+                }
+              )
+            }}
           >
             Add Expenses
           </button>
@@ -174,7 +187,9 @@ const ExpenseTracking = () => {
               <div className="flex justify-between">
                 <h3 className="text-xl font-bold mb-4 h-[100%] flex items-center">Add Expense</h3>
                 <button
-                  onClick={() => setShowAddExpenseForm(!showAddExpenseForm)}
+                  onClick={() => {
+                    setShowAddExpenseForm(!showAddExpenseForm);
+                  }}
                 >
                   <AiOutlineCloseCircle size={35} />
                 </button>
@@ -305,7 +320,7 @@ const ExpenseTracking = () => {
           <div className="fixed w-[100dvw] h-[100dvh] bg-black bg-opacity-40 backdrop-blur-md top-0 left-0 flex flex-col justify-center items-center">
             <div className="ml-[70px] w-full md:w-1/2 p-8 border border-red-500 rounded-lg mb-8 bg-white flex flex-col">
               <div className="flex justify-between">
-                <h3 className="text-xl font-bold mb-4 h-[100%] flex items-center">Add Expense</h3>
+                <h3 className="text-xl font-bold mb-4 h-[100%] flex items-center">Update Expense</h3>
                 <button
                   onClick={() => {
                     setShowUpdateExpenseForm(false);
@@ -430,7 +445,7 @@ const ExpenseTracking = () => {
                 </div>
 
                 <button className="bg-red-500 text-white px-4 py-2 rounded">
-                  Update 
+                  Update
                 </button>
               </form>
             </div>

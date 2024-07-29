@@ -1,4 +1,4 @@
-import { bill_payment, bill_status_update } from "@/db/crud/bills/management/update";
+import { bill_payment } from "@/db/crud/bills/management/update";
 import { update_table_status } from "@/db/crud/tables/management/update";
 import { ApiResponse } from "@/types/ApiResponse";
 
@@ -18,6 +18,8 @@ export async function pay_bill(data: any): Promise<ApiResponse> {
 		const balance_amount: number | null = data['balance_amount'];
 		const discount_rate: string | null = data['discount_rate'];
 		const discount_amount: number | null = data['discount_amount'];
+		const delivery_rate: string | null = data['delivery_rate'];
+		const delivery_amount: number | null = data['delivery_amount'];
 		const payment_mode: string | null = data['payment_mode'];
 		const payment_status: string | null = data['payment_status'];
 
@@ -45,7 +47,9 @@ export async function pay_bill(data: any): Promise<ApiResponse> {
 			payment_mode,
 			payment_status,
 			vat_rate,
-			vat_amount
+			vat_amount,
+			delivery_rate,
+			delivery_amount
 		});
 
 		// Update Table Status as Booked
