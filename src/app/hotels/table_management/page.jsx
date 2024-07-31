@@ -20,6 +20,8 @@ const Widget = () => {
   const [sections, setSections] = useState([]);
   const [message, setMessage] = useState("");
   const [isExist, setIsExist] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
 
   useEffect(() => {
     fetchTables();
@@ -71,6 +73,10 @@ const Widget = () => {
   };
 
   const handleShowTableForm = () => {
+    setTablePersons(0);
+    setTablename("");
+    setTableno(0);
+    setAutocheck(false);
     setShowTableForm(true);
   };
 
@@ -79,6 +85,7 @@ const Widget = () => {
   };
 
   const handleShowSectionForm = () => {
+    setSectionName("");
     setShowSectionForm(true);
   };
 
@@ -276,6 +283,15 @@ const Widget = () => {
     }
   }
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredTables = tables.filter((table) =>
+    table.TableName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+
   return (
     <>
       <HotelSideNav />
@@ -409,8 +425,17 @@ const Widget = () => {
           </div>
         )}
 
+        <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Table Management</h2>
         <div className="flex gap-4 mt-10 justify-between flex-wrap">
-            <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Table Management</h2> 
+          <div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search tables..."
+              className="px-4 py-2 border rounded-lg w-full mb-4"
+            />
+          </div>
           <button
             onClick={handleShowSectionForm}
             className="bg-red-500 text-white px-4 py-2 rounded-full flex items-center space-x-2"
@@ -450,26 +475,26 @@ const Widget = () => {
 
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-black">
-              {tables
-                .filter((table) => table.SectionId === section.id)
-                .map((table) => (
-                  <div
-                    key={table.id}
-                    className="border-2 border-gray-500 p-4 rounded-lg flex flex-col items-center justify-center h-32 relative"
-                  >
-                    <div className="text-lg font-bold">{table.TableName}</div>
-                    <div>Persons: {table.PersonsOccupiable}</div>
-                    <FaTrash
-                      size={20}
-                      onClick={
-                        () => {
-                          sessionStorage.setItem('table_id', table.id);
-                          handleDeleteTable();
+              {
+                filteredTables.filter((table) => table.SectionId === section.id)
+                  .map((table) => (
+                    <div
+                      key={table.id}
+                      className="border-2 border-gray-500 p-4 rounded-lg flex flex-col items-center justify-center h-32 relative"
+                    >
+                      <div className="text-lg font-bold">{table.TableName}</div>
+                      <div>Persons: {table.PersonsOccupiable}</div>
+                      <FaTrash
+                        size={20}
+                        onClick={
+                          () => {
+                            sessionStorage.setItem('table_id', table.id);
+                            handleDeleteTable();
+                          }
                         }
-                      }
-                    />
-                  </div>
-                ))}
+                      />
+                    </div>
+                  ))}
             </div>
           </div>
         ))}

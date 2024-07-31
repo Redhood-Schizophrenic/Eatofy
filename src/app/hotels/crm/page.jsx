@@ -16,6 +16,7 @@ const CustomerTable = () => {
     date: "",
     hotel_id: hotel_id
   });
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchCustomerList = async () => {
     try {
@@ -102,13 +103,30 @@ const CustomerTable = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredCustomers = customerList.filter((customer) =>
+    customer.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) || customer.contact.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <HotelSideNav />
       <div className={`ml-[70px] flex-1 h-screen p-4 bg-white ${isFormVisible ? "" : ""}`}>
             <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Customer Relationship Management</h2>
 
-        <div className="flex justify-end space-x-4 mb-4">
+        <div className="flex justify-between space-x-4 mb-4">
+          <div className="">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search Name or Contact..."
+              className="px-4 py-2 border rounded-lg w-full"
+            />
+          </div>
           <button className="bg-zinc-800 text-white px-4 py-2 rounded" onClick={toggleFormVisibility}>
             Add +
           </button>
@@ -126,7 +144,8 @@ const CustomerTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {customerList.map((customer, index) => (
+                {
+                  filteredCustomers.map((customer, index) => (
                   <tr key={customer.id} className={index % 2 === 0 ? "bg-zinc-200" : ""}>
                     <td className="border px-4 py-2">{index + 1}</td>
                     <td className="border px-4 py-2">{customer.customer_name}</td>

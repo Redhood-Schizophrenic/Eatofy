@@ -90,3 +90,44 @@ export async function read_table({
 
 	}
 }
+
+interface Table_Interface {
+	table_id: string
+}
+
+export async function read_table_info({
+	table_id
+}: Table_Interface) {
+	try {
+
+		const result = await db.tables.findMany({
+			where: {
+				id: table_id,
+				NOT:{
+					Status: "Inactive"
+				}
+			},
+			orderBy: {
+				TableName: 'asc'
+			}
+		});
+
+		// Database is disconnected
+		db.$disconnect();
+
+		return {
+			returncode: 200,
+			message: "Data Fetched",
+			output: result
+		};
+
+	} catch (error: any) {
+
+		return {
+			returncode: 500,
+			message: error.message,
+			output: []
+		};
+
+	}
+}

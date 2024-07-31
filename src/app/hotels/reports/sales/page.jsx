@@ -32,6 +32,8 @@ const Dashboard = () => {
   const [FullTable, setFullTable] = useState({});
   const [FullSales, setFullSales] = useState([]);
 
+  // Search 
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchAllOrders = async () => {
     if (from == "" || to == "") {
@@ -81,8 +83,24 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    fetchAllOrders();  
-  }, [])
+    fetchAllOrders();
+  }, []);
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredTable = Table.filter((bill) =>
+    bill.Table?.TableName.toLowerCase().includes(searchQuery.toLowerCase())
+    ||
+    bill.Waiter.FirstName.toLowerCase().includes(searchQuery.toLowerCase())
+    ||
+    bill.Waiter.LastName.toLowerCase().includes(searchQuery.toLowerCase())
+    ||
+    bill.Customer?.CustomerName.toLowerCase().includes(searchQuery.toLowerCase())
+    ||
+    bill.Status.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -93,6 +111,9 @@ const Dashboard = () => {
             <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold pb-6">
               Sales Report
             </h1>
+          </div>
+
+          <div className="w-full flex justify-between">
             <div className="flex items-center space-x-4">
               <div className='flex flex-col text-sm font-semibold text-zinc-700 items-center'>
                 <label htmlFor="from">
@@ -133,9 +154,18 @@ const Dashboard = () => {
                 </button>
               </div>
             </div>
+            <div className='w-1/2 flex justify-end items-end'>
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search Table, Waiter, Payment Status or Customer..."
+                className="px-4 py-2 border rounded-lg w-full"
+              />
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-16 mb-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8 mb-4">
             <div
               className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer"
               onClick={() => {
@@ -195,9 +225,9 @@ const Dashboard = () => {
                   </thead>
                   <tbody>
                     {
-                      Table.length != 0 || Table[0] != null || Table[0] != undefined || Table != 0
+                      filteredTable.length != 0 || filteredTable[0] != null || filteredTable[0] != undefined || filteredTable != 0
                         ?
-                        Table.map((row, index) => (
+                        filteredTable.map((row, index) => (
                           <tr
                             key={index}
                             className={index % 2 === 0 ? "bg-zinc-100 text-black font-light" : "text-black font-light"}

@@ -32,6 +32,9 @@ export default function Purchase_management() {
   const [invoice, setInvoice] = useState({});
   const [Stock, setStock] = useState([]);
 
+  // Search 
+  const [searchQuery, setSearchQuery] = useState('');
+
 
   // Fetch Values 
   const fetchPurchaseData = async () => {
@@ -160,6 +163,16 @@ export default function Purchase_management() {
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredPurchases = fetchedpurchase.filter((item) =>
+    item.Suppliers?.SupplierName.toLowerCase().includes(searchQuery.toLowerCase()) 
+      ||
+    item.PaymentStatus?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <HotelSideNav />
@@ -212,12 +225,22 @@ export default function Purchase_management() {
             </div>
           </div>
 
-          <div className="flex w-full">
+          <div className="flex w-full mt-10 justify-between">
             <div
-              className="mt-10 bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500"
+              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500"
             >
               <h2 className="text-xl text-zinc-500"> Total Purchases </h2>
               <p className="text-xl font-bold">Rs. {TotalAmount}</p>
+            </div>
+
+            <div className="flex justify-end items-end w-1/2">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search Supplier Name or Payment Status..."
+                className="px-4 py-2 border rounded-lg w-full"
+              />
             </div>
           </div>
 
@@ -260,7 +283,7 @@ export default function Purchase_management() {
                   </thead>
                   <tbody className="bg-zinc-100">
                     {
-                      fetchedpurchase.map((items, index) => (
+                      filteredPurchases.map((items, index) => (
                         <tr
                           key={index}
                           className={index % 2 === 0 ? "bg-zinc-100 text-black font-light" : "text-black font-light"}

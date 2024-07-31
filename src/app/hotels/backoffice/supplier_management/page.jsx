@@ -8,13 +8,14 @@ import { FaXmark } from "react-icons/fa6";
 
 export default function Supplier_management() {
 
-  const [supplier, setsupplier] = useState([]);
+  const [suppliers, setsupplier] = useState([]);
   const [supplier_name, setsupplier_name] = useState('');
   const [contact, setcontact] = useState('');
   const [email, setemail] = useState('');
   const [gstin, setgstin] = useState('');
   const [showaddmenu, setShowaddmenu] = useState(false);
   const hotel_id = sessionStorage.getItem('hotel_id');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchSuppliers();
@@ -38,7 +39,6 @@ export default function Supplier_management() {
       if (data.returncode === 200) {
         console.log("Suppliers Fetched", data);
         setsupplier(data.output);
-        console.log(supplier)
       } else {
         alert("Failed to fetch Suppliers data");
       }
@@ -88,6 +88,15 @@ export default function Supplier_management() {
     setgstin('');
     setShowaddmenu(!showaddmenu);
   }
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredSuppliers = suppliers.filter((supplier) =>
+    supplier.SupplierName.toLowerCase().includes(searchQuery.toLowerCase()) || supplier.Contact.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
 
   return (
     <>
@@ -202,10 +211,20 @@ export default function Supplier_management() {
           <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Supplier Management</h2>
         </div>
         <div className="flex justify-between items-center">
-          <button onClick={handleAddMenu} className="bg-red-500 inline-flex justify-center items-center gap-4 p-2 rounded-lg">
+          <button onClick={handleAddMenu} className="bg-red-500 font-semibold inline-flex justify-center items-center gap-4 p-2 rounded-lg">
             Add <FaPlus size={20} />
           </button>
+          <div className="">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search Name or Contact..."
+              className="px-4 py-2 border rounded-lg w-full"
+            />
+          </div>
         </div>
+
         <div className="my-6">
           <table className="min-w-full border-collapse rounded-lg table-auto">
             <thead>
@@ -226,7 +245,7 @@ export default function Supplier_management() {
             </thead>
             <tbody>
               {
-                supplier?.map((items) => (
+                filteredSuppliers?.map((items) => (
                   <tr key={items.id}>
                     <td className="p-2">
                       <div className="flex flex-col sm:flex-row items-center">

@@ -21,6 +21,7 @@ const ExpenseTracking = () => {
     description: "",
     status: "",
   });
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchExpenses();
@@ -142,6 +143,17 @@ const ExpenseTracking = () => {
 
   const totalExp = expenses.reduce((sum, total) => sum + total.AmountPaid, 0);
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredExpenses = expenses.filter((expense) =>
+    expense.PayableTo.toLowerCase().includes(searchQuery.toLowerCase())
+    ||
+    expense.PaymentStatus.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+
   return (
     <div className="flex h-screen flex-col md:flex-row">
       <HotelSideNav />
@@ -150,18 +162,8 @@ const ExpenseTracking = () => {
           <h2 className="text-3xl font-bold">
             Expenses <span className="text-red-500">Tracking</span>
           </h2>
-        </div>
-
-        <div className="mb-8 justify-between flex ">
-          <div className="flex items-center space-y-4">
-            <div className="p-4 border border-red-500 rounded-md">
-              <h3 className="text-red-500 text-xl font-bold">Total Expenses</h3>
-              <p className="text-xl">Rs. {totalExp}</p>
-            </div>
-          </div>
-
           <button
-            className="bg-red-500 text-white w-30 h-10 px-4 py-2 rounded"
+            className="bg-red-500 text-white w-30 h-10 px-4 py-2 rounded font-semibold"
             onClick={() => {
               setShowAddExpenseForm(!showAddExpenseForm);
               setExpenseDetails(
@@ -179,6 +181,25 @@ const ExpenseTracking = () => {
           >
             Add Expenses
           </button>
+        </div>
+
+        <div className="mb-8 justify-between flex w-full">
+          <div className="flex items-center space-y-4">
+            <div className="p-4 border border-red-500 rounded-md">
+              <h3 className="text-red-500 text-xl font-bold">Total Expenses</h3>
+              <p className="text-xl">Rs. {totalExp}</p>
+            </div>
+          </div>
+
+          <div className="w-1/3 flex items-end ">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search Bearer or Payment Status..."
+              className="px-4 py-2 border rounded-lg w-full"
+            />
+          </div>
         </div>
 
         {showAddExpenseForm && (
@@ -468,7 +489,8 @@ const ExpenseTracking = () => {
                 </tr>
               </thead>
               <tbody>
-                {expenses.map((expense, index) => (
+                {
+                  filteredExpenses.map((expense, index) => (
                   <tr className="bg-zinc-100 border-black" key={expense.id}>
                     <td className="border px-4 py-2">{index + 1}</td>
                     <td className="border px-4 py-2">{expense.PayableTo}</td>

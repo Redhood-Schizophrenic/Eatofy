@@ -26,6 +26,8 @@ const StaffTable = () => {
     incentives: "",
     hotel_id: hotel_id
   });
+  const [searchQuery, setSearchQuery] = useState('');
+
 
   // Delete
   const handleDelete = async () => {
@@ -273,12 +275,31 @@ const StaffTable = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+
+  const filteredStaffs = staffList.filter((staff) =>
+    staff.first_name.toLowerCase().includes(searchQuery.toLowerCase()) || staff.last_name.toLowerCase().includes(searchQuery.toLowerCase()) || staff.contact.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <>
       <HotelSideNav />
       <div className={`ml-[70px] flex-1 h-screen p-4 bg-white ${isFormVisible ? "" : ""}`}>
         <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Staff</h2>
-        <div className="flex justify-end space-x-4 mb-4">
+        <div className="flex justify-between space-x-4 mb-4">
+          <div className="">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search Name or Contact..."
+              className="px-4 py-2 border rounded-lg w-full"
+            />
+          </div>
+
           <button className="bg-zinc-800 text-white px-4 py-2 rounded" onClick={toggleFormVisibility}>
             Staff Add +
           </button>
@@ -301,33 +322,34 @@ const StaffTable = () => {
                 </tr>
               </thead>
               <tbody>
-                {staffList.map((staff, index) => (
-                  <tr key={index} className={index % 2 === 0 ? "bg-zinc-200" : ""}>
-                    <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">{staff.first_name} {staff.last_name}</td>
-                    <td className="border px-4 py-2">{staff.contact}</td>
-                    <td className="border px-4 py-2">{staff.email}</td>
-                    <td className="border px-4 py-2">{staff.department_name}</td>
-                    <td className="border px-4 py-2">{staff.designation}</td>
-                    <td className="border px-4 py-2">{staff.salary}</td>
-                    <td className="border px-4 py-2">{staff.incentives}</td>
-                    <td className="border px-4 py-2">
-                      <div className="cursor-pointer">
-                        <button onClick={() => { handleupdate(staff) }} className="">
-                          <MdOutlineEdit size={25} />
-                        </button>
-                        <button
-                          onClick={() => {
-                            sessionStorage.setItem("staff_id", staff.id);
-                            handleDelete()
-                          }}
-                          className="">
-                          <MdOutlineDeleteOutline size={25} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {
+                  filteredStaffs.map((staff, index) => (
+                    <tr key={index} className={index % 2 === 0 ? "bg-zinc-200" : ""}>
+                      <td className="border px-4 py-2">{index + 1}</td>
+                      <td className="border px-4 py-2">{staff.first_name} {staff.last_name}</td>
+                      <td className="border px-4 py-2">{staff.contact}</td>
+                      <td className="border px-4 py-2">{staff.email}</td>
+                      <td className="border px-4 py-2">{staff.department_name}</td>
+                      <td className="border px-4 py-2">{staff.designation}</td>
+                      <td className="border px-4 py-2">{staff.salary}</td>
+                      <td className="border px-4 py-2">{staff.incentives}</td>
+                      <td className="border px-4 py-2">
+                        <div className="cursor-pointer">
+                          <button onClick={() => { handleupdate(staff) }} className="">
+                            <MdOutlineEdit size={25} />
+                          </button>
+                          <button
+                            onClick={() => {
+                              sessionStorage.setItem("staff_id", staff.id);
+                              handleDelete()
+                            }}
+                            className="">
+                            <MdOutlineDeleteOutline size={25} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

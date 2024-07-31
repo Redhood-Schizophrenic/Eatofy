@@ -49,8 +49,8 @@ export default function Inventory() {
   return (
     <>
       <HotelSideNav />
-      <div className="ml-[70px] h-screen flex items-center justify-center bg-gray-100">
-        <div className="w-screen h-screen px-6 bg-white rounded-lg shadow-lg">
+      <div className="ml-[70px] h-screen flex items-center justify-center">
+        <div className="w-screen h-screen px-6 bg-gray-200 rounded-lg shadow-lg">
           <div className="flex justify-center items-center my-8">
             <h2 className="w-full text-center pt-4 bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Inventory Management</h2>
           </div>

@@ -3,6 +3,7 @@ import { read_bill_info_by_table } from "@/db/crud/bills/management/read";
 import { read_menus } from "@/db/crud/menus/management/read";
 import { read_menu_categories } from "@/db/crud/menus/category/read";
 import { order_display } from "@/db/crud/orders/management/read";
+import { read_table_info } from "@/db/crud/tables/management/read";
 
 export async function fetch_hotel_bill_data(data: any): Promise<ApiResponse> {
 	try {
@@ -55,6 +56,9 @@ export async function fetch_hotel_bill_data(data: any): Promise<ApiResponse> {
 			hotel_id
 		});
 
+		// Table
+		const table_info = await read_table_info({table_id}); 
+
 		return {
 			returncode: 200,
 			message: "Hotel's Bills Side Fetched",
@@ -62,7 +66,8 @@ export async function fetch_hotel_bill_data(data: any): Promise<ApiResponse> {
 				ExistingBill: existing_bill.output,
 				Menus: menus.output,
 				Categories: categories.output,
-				Orders: fetched_orders
+				Orders: fetched_orders,
+				TableInfo: table_info.output
 			}]
 		};
 

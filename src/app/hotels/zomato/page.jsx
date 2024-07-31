@@ -1,4 +1,5 @@
 'use client';
+
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import { useEffect, useRef, useState } from "react";
@@ -31,9 +32,8 @@ export default function Menu() {
 	const [PaymentStatus, setPaymentStatus] = useState('Paid');
 	const [IsOrderSaved, setIsOrderSaved] = useState(false);
 	const [IsOrderFailed, setIsOrderFailed] = useState(false);
-	const [DeliveryChr, setDeliveryChr] = useState('');
 	const route = useRouter();
-	const Type = sessionStorage.getItem('type');
+	const Type = sessionStorage.getItem('order_type');
 	const billkot = useRef();
 	const bill = useRef();
 	const today = new Date();
@@ -160,7 +160,6 @@ export default function Menu() {
 		} finally {
 			setLoading(false);
 		}
-
 	}
 
 
@@ -315,9 +314,8 @@ export default function Menu() {
 	const cgstAmt = (cgstRateNum / 100) * parseFloat(menutotal);
 	const sgstAmt = (sgstRateNum / 100) * parseFloat(menutotal);
 	const VatAmt = vatAmt === '' ? 0 : (parseFloat(vatAmt.replace('%', '')) / 100) * parseFloat(menutotal);
-	const Deliverychr = parseFloat(DeliveryChr.replace('%', ''));
 	console.log(menutotal)
-	const grosstotal = parseFloat(menutotal) + cgstAmt + sgstAmt + VatAmt + Deliverychr;
+	const grosstotal = parseFloat(menutotal) + cgstAmt + sgstAmt + VatAmt;
 	console.log("Gross", grosstotal, "Cgst", cgstAmt, "sgst", sgstAmt)
 	const discount = disAmt === '' ? 0 : (parseFloat(disAmt.replace('%', '')) / 100) * grosstotal;
 	const totalAmt = discount === 0 ? grosstotal : grosstotal - discount;
@@ -341,8 +339,6 @@ export default function Menu() {
 					'cgst_amount': cgstAmt,
 					'sgst_rate': sgstRate,
 					'sgst_amount': sgstAmt,
-					'delivery_rate': DeliveryChr,
-					'delivery_amounti': Deliverychr,
 					'vat_rate': vatAmt,
 					'vat_amount': VatAmt,
 					'menu_total': parseFloat(menutotal),
@@ -418,7 +414,7 @@ export default function Menu() {
 											size={45}
 										/>
 									</Link>
-									<h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Delivery</h1>
+									<h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Zomato</h1>
 								</div>
 								<div className="flex gap-3">
 									<input
@@ -471,74 +467,74 @@ export default function Menu() {
 
 								<div className="flex gap-6 px-6 flex-wrap">
 									{
-									ShowAllDishes
-										?
-										Menus.filter((menu) => {
-											const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
-											return searchMatch;
-										}).map((menu, index) => (
-											<div
-												key={index}
-												onClick={() => { handleAddToCart(menu) }}
-												id="menu"
-												className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
-													menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
-														menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
-															menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
-													}`}
-											>
-												<p className="flex flex-wrap text-lg font-semibold">
-													{menu.Dish.DishName}
-												</p>
-												<p className="flex justify-center items-center">
-													&#35;{menu.Dish.Code}
-												</p>
-												<p className="flex justify-center items-center">
-													{menu.Dish.Category.CategoryName}
-												</p>
+										ShowAllDishes
+											?
+											Menus.filter((menu) => {
+												const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+												return searchMatch;
+											}).map((menu, index) => (
+												<div
+													key={index}
+													onClick={() => { handleAddToCart(menu) }}
+													id="menu"
+													className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
+														menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
+															menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
+																menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
+														}`}
+												>
+													<p className="flex flex-wrap text-lg font-semibold">
+														{menu.Dish.DishName}
+													</p>
+													<p className="flex justify-center items-center">
+														&#35;{menu.Dish.Code}
+													</p>
+													<p className="flex justify-center items-center">
+														{menu.Dish.Category.CategoryName}
+													</p>
 
-											</div>
-										))
-										:
-										Menus.filter((menu) => {
-											// Check if the category matches or if no category is selected (show all)
-											const categoryMatch = ClickedCategory === null || menu.Dish.Category.id === ClickedCategory;
-											// Check if the dish name or code includes the search text
-											const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
-											// Return true if both conditions are met
-											return categoryMatch && searchMatch;
+												</div>
+											))
+											:
+											Menus.filter((menu) => {
+												// Check if the category matches or if no category is selected (show all)
+												const categoryMatch = ClickedCategory === null || menu.Dish.Category.id === ClickedCategory;
+												// Check if the dish name or code includes the search text
+												const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+												// Return true if both conditions are met
+												return categoryMatch && searchMatch;
 
-										}).map((menu, index) => (
-											<div
-												key={index}
-												onClick={() => { handleAddToCart(menu) }}
-												id="menu"
-												className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
-													menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
-														menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
-															menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
-													}`}
-											>
-												<p className="flex flex-wrap text-lg font-semibold">
-													{menu.Dish.DishName}
-												</p>
-												<p className="flex justify-center items-center">
-													&#35;{menu.Dish.Code}
-												</p>
-												<p className="flex justify-center items-center">
-													{menu.Dish.Category.CategoryName}
-												</p>
-											</div>
-										))
+											}).map((menu, index) => (
+												<div
+													key={index}
+													onClick={() => { handleAddToCart(menu) }}
+													id="menu"
+													className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
+														menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
+															menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
+																menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
+														}`}
+												>
+													<p className="flex flex-wrap text-lg font-semibold">
+														{menu.Dish.DishName}
+													</p>
+													<p className="flex justify-center items-center">
+														&#35;{menu.Dish.Code}
+													</p>
+													<p className="flex justify-center items-center">
+														{menu.Dish.Category.CategoryName}
+													</p>
+												</div>
+											))
 
-								}
+									}
 								</div>
 
 							</div>
 
 						</div>
 
-						<div className={`bg-black text-white h-screen transition-transform duration-500 max-h-dvh ${isMenuOpen || OldCart.length !== 0 ? 'fixed w-[35dvw] top-0 right-0' : 'fixed top-0 right-[-100%]'}`}>
+						<div className={`bg-black text-white h-auto transition-transform duration-500 max-h-dvh ${isMenuOpen || OldCart.length !== 0 ? 'fixed w-[35dvw] top-0 right-0' : 'fixed top-0 right-[-100%]'}`}>
 
 							{
 								IsOrderSaved ? (
@@ -552,7 +548,7 @@ export default function Menu() {
 								) : []
 							}
 
-							<div className="flex flex-col gap-4 justify-center align-center h-auto py-2">
+							<div className="flex flex-col gap-4 justify-center align-center h-dvh overflow-y-scroll py-2">
 
 								<div className="flex px-4">
 									<div className=" flex justify-start">
@@ -566,7 +562,7 @@ export default function Menu() {
 									<div className="flex-1 inline-flex justify-start items-center gap-4 font-bold text-xl p-4">
 										{showBillInvoice ? (
 											<div className="flex flex-col gap-2">
-												<label> Delivery </label>
+												<label> Zomato </label>
 											</div>
 										) : isSettleBill ? (
 											<div className="flex justify-between w-full">
@@ -662,7 +658,7 @@ export default function Menu() {
 												<div className="font-bold mt-2 text-xl">
 													Payment mode
 												</div>
-												<div className="flex justify-between items-center gap-4 my-3">
+												<div className="flex justify-between items-center gap-2">
 													<div className={`p-3 rounded-md w-full gap-2 inline-grid place-items-center ${PaymentMode === 'Credit-card' ? 'bg-[#252836] border-2 font-semibold border-white text-white' : 'bg-[#252836] hover:font-semibold hover:text-white text-gray-300'}`} onClick={() => { handlePaymentModeClick('Credit-card') }}>
 														<FaCreditCard size={25} />
 														<span className="text-sm">Credit-card</span>
@@ -705,10 +701,6 @@ export default function Menu() {
 														<label className="w-1/2">Enter Balance Amount</label>
 														<input type="text" value={BalanceAmt} onChange={(e) => { setBalanceAmt(e.target.value) }} className="w-1/2 p-1 bg-[#252836] text-base text-white" placeholder="Balance amount" />
 													</div>
-													<div className="w-full inline-flex justify-end items-center mb-2 ">
-														<label className="w-1/2">Enter Delivery Charges</label>
-														<input type="text" value={DeliveryChr} onChange={(e) => { setDeliveryChr(e.target.value) }} className="w-1/2 p-1 bg-[#252836] text-base text-white" placeholder="Delivery charges" />
-													</div>
 													<div className="w-full inline-flex justify-between items-center border-t border-zinc-500">
 														<h1 className="text-right my-2 text-xl ">Total:- </h1>
 														<p className="font-semibold text-xl">
@@ -740,7 +732,7 @@ export default function Menu() {
 											(
 												<div id="CRM_Form" className="h-auto">
 													<div className="bg-gray-500 h-[0.2dvh] w-full"></div>
-													<div className="h-full p-6 flex flex-col gap-4 justify-center items-center">
+													<div className="mt-[-9dvh] h-full p-6 flex flex-col gap-4 justify-center items-center">
 														<div className="w-full flex flex-col gap-3">
 															<label
 																htmlFor="CustomerName"

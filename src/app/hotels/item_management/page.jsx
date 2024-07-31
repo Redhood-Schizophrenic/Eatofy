@@ -15,6 +15,7 @@ export default function Item_management() {
   // const [category_id, setcategory_id] = useState('');
   const [addcategory, setAddCategory] = useState('');
   const [description, setdescription] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const hotel_id = sessionStorage.getItem('hotel_id');
 
   useEffect(() => {
@@ -77,7 +78,7 @@ export default function Item_management() {
 
     } catch (e) {
       throw console.error(e);
-    } finally{
+    } finally {
       setLoading(false);
     }
   }
@@ -143,162 +144,156 @@ export default function Item_management() {
     }
   }
 
-  console.log(addcategory, " category_id", sessionStorage.getItem('category_id'));
-  console.log(item_name);
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredItems = items.filter((item) =>
+    item.ItemName.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
       <HotelSideNav />
       {
-        isLoading
-          ?
-          <div aria-label="Loading..." role="status" className="flex justify-center items-center w-full h-screen">
-            <svg className="h-20 w-20 animate-spin stroke-gray-500" viewBox="0 0 256 256">
-              <line x1="128" y1="32" x2="128" y2="64" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line>
-              <line x1="195.9" y1="60.1" x2="173.3" y2="82.7" stroke-linecap="round" stroke-linejoin="round"
-                stroke-width="24"></line>
-              <line x1="224" y1="128" x2="192" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24">
-              </line>
-              <line x1="195.9" y1="195.9" x2="173.3" y2="173.3" stroke-linecap="round" stroke-linejoin="round"
-                stroke-width="24"></line>
-              <line x1="128" y1="224" x2="128" y2="192" stroke-linecap="round" stroke-linejoin="round" stroke-width="24">
-              </line>
-              <line x1="60.1" y1="195.9" x2="82.7" y2="173.3" stroke-linecap="round" stroke-linejoin="round"
-                stroke-width="24"></line>
-              <line x1="32" y1="128" x2="64" y2="128" stroke-linecap="round" stroke-linejoin="round" stroke-width="24"></line>
-              <line x1="60.1" y1="60.1" x2="82.7" y2="82.7" stroke-linecap="round" stroke-linejoin="round" stroke-width="24">
-              </line>
-            </svg>
-            <span className="text-4xl font-medium text-gray-500">Loading...</span>
-          </div>
-          :
-          <div className="ml-[70px]">
-            <h2 className="pt-4 w-full text-center bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Item Management</h2>
-            <div className="text-right">
-              <button onClick={() => { setShowTableForm(!showTableForm) }} className="text-xl bg-black text-white p-2 rounded-lg m-4 text-right">
+        <div className="ml-[70px]">
+          <h2 className="pt-4 w-full text-center bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Item Management</h2>
+          <div className="flex items-center justify-between p-4">
+            <div className="">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search Item Name..."
+                className="px-4 py-2 border rounded-lg w-full"
+              />
+            </div>
+            <div className="">
+              <button onClick={() => { setShowTableForm(!showTableForm) }} className="text-xl bg-black text-white p-2 rounded-lg text-right">
                 Add Category
               </button>
             </div>
+          </div>
 
-            {showTableForm ?
-              <div className="fixed z-10 inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                <div className="bg-white p-6 rounded-lg w-full max-w-md relative">
-                  <button
-                    onClick={handleCloseTableForm}
-                    className="absolute top-2 right-2 p-2 text-gray-500 rounded-full hover:bg-zinc-200 hover:text-gray-700"
-                  >
-                    <FaXmark size={20} />
-                  </button>
-                  <h2 className="text-lg mb-4">Add a Category</h2>
-                  <form onSubmit={handleAddCategory}>
-                    <div className="mb-4">
-                      <label
-                        className="block text-gray-700 text-sm font-bold mb-2"
-                        htmlFor="Category"
-                      >
-                        Category
-                      </label>
-                      <input
-                        type="text"
-                        id="addcategory"
-                        value={addcategory}
-                        onChange={
-                          (e) => {
-                            setAddCategory(e.target.value)
-                          }
-                        }
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        required
-                      />
-                    </div>
-                    <button
-                      type="submit"
-                      className="bg-black hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          {showTableForm ?
+            <div className="fixed z-10 inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+              <div className="bg-white p-6 rounded-lg w-full max-w-md relative">
+                <button
+                  onClick={handleCloseTableForm}
+                  className="absolute top-2 right-2 p-2 text-gray-500 rounded-full hover:bg-zinc-200 hover:text-gray-700"
+                >
+                  <FaXmark size={20} />
+                </button>
+                <h2 className="text-lg mb-4">Add a Category</h2>
+                <form onSubmit={handleAddCategory}>
+                  <div className="mb-4">
+                    <label
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                      htmlFor="Category"
                     >
-                      Add Category
-                    </button>
-                  </form>
-                </div>
-              </div>
-              :
-              <div className="hidden"></div>
-            }
-            <hr />
-            <div className="flex justify-between items-start h-auto">
-              <div className="w-[30%] p-4">
-                <form onSubmit={handleAddItems} className="h-auto flex flex-col gap-8 justify-between items-center p-4 border-zinc-400 border rounded-lg">
-                  <div className="w-full">
-                    <label htmlFor="category" className="text-xl">Category<span className="text-red-500">*</span></label>
-                    <select
-                      id="category"
-                      name="raw materials"
-                      className="w-full rounded-lg"
-                      required
-                    >
-                      <option value="">-- Select --</option>
-                      {
-                        fetcedcategory.map((items) => (
-                          <option key={items.id} value={items.id} onClick={() => { sessionStorage.setItem('category_id', items.id) }}>{items.CategoryName}</option>
-                        ))
-                      }
-                    </select>
-                  </div>
-                  <div className="w-full">
-                    <label htmlFor="itemname" className="text-xl">Item name<span className="text-red-500">*</span></label>
+                      Category
+                    </label>
                     <input
                       type="text"
-                      required
+                      id="addcategory"
+                      value={addcategory}
                       onChange={
                         (e) => {
-                          setitem_name(e.target.value);
+                          setAddCategory(e.target.value)
                         }
                       }
-                      className="w-full focus:outline-none p-2 text-xl rounded-lg"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                      required
                     />
                   </div>
-                  <div className="w-full">
-                    <label htmlFor="description" className="text-xl">Description</label>
-                    <textarea
-                      id="description"
-                      className="w-full text-xl rounded-lg"
-                      onChange={
-                        (e) => {
-                          setdescription(e.target.value);
-                        }
-                      }
-                    ></textarea>
-                  </div>
-                  <div className="w-full text-center">
-                    <button className="bg-black text-white text-xl p-2 rounded-lg">
-                      Add Item
-                    </button>
-                  </div>
+                  <button
+                    type="submit"
+                    className="bg-black hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    Add Category
+                  </button>
                 </form>
               </div>
-              <div className="w-[70%] p-4">
-                <table className="table-auto w-full">
-                  <thead className="text-left bg-red-500 text-white">
-                    <tr className="p-2">
-                      <th className="p-2">Category</th>
-                      <th className="p-2">Item name</th>
-                      <th className="p-2">Description</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-zinc-100">
+            </div>
+            :
+            <div className="hidden"></div>
+          }
+          <hr />
+          <div className="flex justify-between items-start h-auto">
+            <div className="w-[30%] p-4">
+              <form onSubmit={handleAddItems} className="h-auto flex flex-col gap-8 justify-between items-center p-4 border-zinc-400 border rounded-lg">
+                <div className="w-full">
+                  <label htmlFor="category" className="text-xl">Category<span className="text-red-500">*</span></label>
+                  <select
+                    id="category"
+                    name="raw materials"
+                    className="w-full rounded-lg"
+                    required
+                  >
+                    <option value="">-- Select --</option>
                     {
-                      items.map((items) => (
-                        <tr key={items.id} className="p-2">
-                          <td className="p-2">{items.Category.CategoryName}</td>
-                          <td className="p-2">{items.ItemName}</td>
-                          <td className="p-2">{items.Description}</td>
-                        </tr>
+                      fetcedcategory.map((items) => (
+                        <option key={items.id} value={items.id} onClick={() => { sessionStorage.setItem('category_id', items.id) }}>{items.CategoryName}</option>
                       ))
                     }
-                  </tbody>
-                </table>
-              </div>
+                  </select>
+                </div>
+                <div className="w-full">
+                  <label htmlFor="itemname" className="text-xl">Item name<span className="text-red-500">*</span></label>
+                  <input
+                    type="text"
+                    required
+                    onChange={
+                      (e) => {
+                        setitem_name(e.target.value);
+                      }
+                    }
+                    className="w-full focus:outline-none p-2 text-xl rounded-lg"
+                  />
+                </div>
+                <div className="w-full">
+                  <label htmlFor="description" className="text-xl">Description</label>
+                  <textarea
+                    id="description"
+                    className="w-full text-xl rounded-lg"
+                    onChange={
+                      (e) => {
+                        setdescription(e.target.value);
+                      }
+                    }
+                  ></textarea>
+                </div>
+                <div className="w-full text-center">
+                  <button className="bg-black text-white text-xl p-2 rounded-lg">
+                    Add Item
+                  </button>
+                </div>
+              </form>
+            </div>
+            <div className="w-[70%] p-4">
+              <table className="table-auto w-full">
+                <thead className="text-left bg-red-500 text-white">
+                  <tr className="p-2">
+                    <th className="p-2">Category</th>
+                    <th className="p-2">Item name</th>
+                    <th className="p-2">Description</th>
+                  </tr>
+                </thead>
+                <tbody className="bg-zinc-100">
+                  {
+                    filteredItems.map((items) => (
+                      <tr key={items.id} className="p-2">
+                        <td className="p-2">{items.Category.CategoryName}</td>
+                        <td className="p-2">{items.ItemName}</td>
+                        <td className="p-2">{items.Description}</td>
+                      </tr>
+                    ))
+                  }
+                </tbody>
+              </table>
             </div>
           </div>
+        </div>
       }
     </>
   )

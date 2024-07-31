@@ -110,13 +110,13 @@ export async function read_bill_info_by_table({
 		const result = await db.bills.findMany({
 			where: {
 				TableId: table_id,
-				Table: {
-					Status: "Booked"
-				},
 				Status: "Booked",
 			},
 			orderBy: {
 				createdAt: 'desc'
+			},
+			include: {
+				Table: true
 			}
 		});
 

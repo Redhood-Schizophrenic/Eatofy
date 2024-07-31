@@ -65,8 +65,8 @@ const EatofyApp = () => {
   return (
     <>
       <HotelSideNav />
-      <div className="ml-[70px] h-screen flex items-center justify-center bg-gray-100">
-        <div className="w-screen h-screen px-6 bg-white rounded-lg shadow-lg" >
+      <div className="ml-[70px] h-screen flex items-center justify-center">
+        <div className="w-screen h-screen bg-gray-200 px-6 rounded-lg shadow-lg" >
           <div className="flex justify-center items-center my-8">
             <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Backoffice</h2>
           </div>

@@ -17,6 +17,7 @@ const ReservationGrid = () => {
   const [contact, setcontact] = useState('');
   const [customer, setcustomer] = useState('');
   const [no_of_persons, setNo_of_persons] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   function handleClick(e) {
     const name = e.target.name;
@@ -147,7 +148,13 @@ const ReservationGrid = () => {
     }
   }
 
-  console.log(submitData.date, " ", submitData.time)
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredReservation = data.filter((data_var) =>
+    data_var.Customer.CustomerName.toLowerCase().includes(searchQuery.toLowerCase()) || data_var.Customer.Contact.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -157,19 +164,32 @@ const ReservationGrid = () => {
           <h2 className="text-3xl font-bold  text-center mb-2 md:mb-0">
             Table <span className="text-red-500">Reservation</span>
           </h2>
-          <button
-            onClick={() => {
-              setisOpen(true);
-            }}
-            className="bg-red-500 text-white p-2 rounded">
-            Add Reservation +
-          </button>
+
+          <div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search reservations..."
+              className="px-4 py-2 border rounded-lg w-full mb-4"
+            />
+          </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-4 mb-4">
+        <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4 mb-4">
           <div className="border border-green-500 text-center p-4 rounded">
             <p className=" font-bold">Total Reservation</p>
             <p className="text-2xl">{data.length}</p>
+          </div>
+          <div className='flex justify-end items-end'>
+            <button
+              onClick={() => {
+                setisOpen(true);
+              }}
+              className="bg-red-500 text-white p-2 rounded">
+              Add Reservation +
+            </button>
+
           </div>
         </div>
 
@@ -204,7 +224,7 @@ const ReservationGrid = () => {
               </thead>
               <tbody>
                 {
-                  data.map((items) => (
+                  filteredReservation.map((items) => (
                     <tr key={items.id}>
                       <td className="p-2">
                         <div className="flex flex-col sm:flex-row items-center">

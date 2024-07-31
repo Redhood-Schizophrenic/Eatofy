@@ -29,6 +29,11 @@ const Dashboard = () => {
   // Table
   const [Table, setTable] = useState([]);
 
+  // Search 
+  const [searchQuery, setSearchQuery] = useState('');
+
+
+  // Fetch Expenses
   const fetchExpenses = async () => {
     if (from == "" || to == "") {
       alert("Please Select Filter");
@@ -78,6 +83,16 @@ const Dashboard = () => {
       },
     ],
   };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredExpenses = Table.filter((row) =>
+    row.PayableTo.toLowerCase().includes(searchQuery.toLowerCase())
+    ||
+    row.PaymentStatus.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <>
@@ -130,6 +145,15 @@ const Dashboard = () => {
             </div>
           </div>
 
+          <div className="w-1/3 flex items-end ">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search Bearer or Payment Status..."
+              className="px-4 py-2 border rounded-lg w-full"
+            />
+          </div>
 
           <div className='w-full flex gap-4 pt-6'>
 
@@ -208,7 +232,7 @@ const Dashboard = () => {
                   </thead>
                   <tbody>
                     {
-                      Table.map((row, index) => (
+                      filteredExpenses.map((row, index) => (
                         <tr
                           key={index}
                           className={index % 2 === 0 ? "bg-zinc-100 text-black font-light" : "text-black font-light"}

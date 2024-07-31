@@ -11,6 +11,7 @@ const BillTable = () => {
   const [displayBillInfo, setDisplayBillInfo] = useState(false);
   const [billInfo, setBillInfo] = useState({});
   const [ordersInfo, setOrdersInfo] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const fetchBillList = async () => {
     try {
@@ -99,12 +100,40 @@ const BillTable = () => {
     }
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredOrders = billList.filter((bill) =>
+    bill.Table?.TableName.toLowerCase().includes(searchQuery.toLowerCase()) 
+    || 
+    bill.Waiter.FirstName.toLowerCase().includes(searchQuery.toLowerCase())
+    ||
+    bill.Waiter.LastName.toLowerCase().includes(searchQuery.toLowerCase()) 
+    ||
+    bill.Customer?.CustomerName.toLowerCase().includes(searchQuery.toLowerCase()) 
+    ||
+    bill.Status.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+
   return (
     <>
       <HotelSideNav />
       <div className="ml-[70px] flex-1 h-screen p-4 bg-white">
-        <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Order History</h2>
+        
+          <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Order History</h2>
 
+          <div className="">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search Table, Waiter, Payment Status or Customer..."
+              className="px-4 py-2 border rounded-lg w-full mb-4"
+            />
+          </div>
+        
         <div className="flex">
           <div className="flex-1">
             <table className="min-w-full text-black border-collapse">
@@ -117,12 +146,13 @@ const BillTable = () => {
                   <th className="border px-4 py-2">Type</th>
                   <th className="border px-4 py-2">Balance</th>
                   <th className="border px-4 py-2">Total</th>
-                  <th className="border px-4 py-2">Status</th>
+                  <th className="border px-4 py-2">Payment Status</th>
                   <th className="border px-4 py-2">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {billList.map((bill, index) => (
+                {
+                  filteredOrders.map((bill, index) => (
                   <tr key={bill.id} className={index % 2 === 0 ? "bg-zinc-200" : ""}>
                     <td className="border px-4 py-2">{index + 1}</td>
                     <td className="border px-4 py-2">
@@ -254,30 +284,30 @@ const BillTable = () => {
                   </div>
 
                   <div className="flex flex-col justify-between w-full">
-                      <h3 className="bg-zinc-200 text-black font-bold p-2 border-2 border-white text-center w-full rounded-lg" > Order Details </h3>
-                      <table className="min-w-full bg-white text-center">
-                        <thead>
-                          <tr className="bg-gray-500 text-white rounded-lg">
-                            <th className="py-2 border-2 border-white">Item</th>
-                            <th className="py-2 border-2 border-white">Quantity</th>
-                            <th className="py-2 border-2 border-white">Price</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {
-                            ordersInfo.map((order, index)=>(
-                              <tr key={index} className="bg-gray-200 text-black rounded-lg">
-                                <td className="py-2 border-2 border-white">{order.Menu.Dish.DishName}</td>
-                                <td className="py-2 border-2 border-white">{order.Quantity}</td>
-                                <td className="py-2 border-2 border-white">
-                                  <h1 className="">Rs. {order.TotalAmount | 0}</h1>
-                                  <p className="text-xs font-extralight">{order.Menu.Price} per</p>
-                                </td>
-                              </tr>
-                            ))
-                          }
-                        </tbody>
-                      </table>
+                    <h3 className="bg-zinc-200 text-black font-bold p-2 border-2 border-white text-center w-full rounded-lg" > Order Details </h3>
+                    <table className="min-w-full bg-white text-center">
+                      <thead>
+                        <tr className="bg-gray-500 text-white rounded-lg">
+                          <th className="py-2 border-2 border-white">Item</th>
+                          <th className="py-2 border-2 border-white">Quantity</th>
+                          <th className="py-2 border-2 border-white">Price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {
+                          ordersInfo.map((order, index) => (
+                            <tr key={index} className="bg-gray-200 text-black rounded-lg">
+                              <td className="py-2 border-2 border-white">{order.Menu.Dish.DishName}</td>
+                              <td className="py-2 border-2 border-white">{order.Quantity}</td>
+                              <td className="py-2 border-2 border-white">
+                                <h1 className="">Rs. {order.TotalAmount | 0}</h1>
+                                <p className="text-xs font-extralight">{order.Menu.Price} per</p>
+                              </td>
+                            </tr>
+                          ))
+                        }
+                      </tbody>
+                    </table>
                   </div>
 
 

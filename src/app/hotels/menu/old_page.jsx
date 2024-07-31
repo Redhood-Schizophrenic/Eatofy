@@ -20,7 +20,7 @@ export default function Menu() {
 	const [ClickedCategory, setClickedCategory] = useState(null);
 	const [ShowAllDishes, setShowAllDishes] = useState(true);
 	const [HotelId, setHotelId] = useState('');
-	const [TableId, setTableId] = useState('fc09332c-76d5-497a-8185-2da23ac48ec2');
+	const [TableId, setTableId] = useState('');
 	const [WaiterId, setWaiterId] = useState('');
 	const [isSettleBill, setisSettleBill] = useState(false);
 	const [ShowError, setShowError] = useState(false);
@@ -31,7 +31,6 @@ export default function Menu() {
 	const [PaymentStatus, setPaymentStatus] = useState('Paid');
 	const [IsOrderSaved, setIsOrderSaved] = useState(false);
 	const [IsOrderFailed, setIsOrderFailed] = useState(false);
-	const [DeliveryChr, setDeliveryChr] = useState('');
 	const route = useRouter();
 	const Type = sessionStorage.getItem('type');
 	const billkot = useRef();
@@ -132,23 +131,31 @@ export default function Menu() {
 
 	const fetch_bill = async () => {
 		const section_id = sessionStorage.getItem('section_id');
+		const table_id = sessionStorage.getItem('table_id');
 
 		try {
 
 			setLoading(true);
-			const response = await fetch(`${ApiHost}/api/hotel/takeaway_bill`, {
+			const response = await fetch(`${ApiHost}/api/hotel/bill_order`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ 'section_id': section_id }),
+				body: JSON.stringify({ 'section_id': section_id, 'table_id': table_id }),
 			});
 
 			const data = await response.json();
 			if (data.returncode === 200) {
 				const response_data = await data.output[0];
+				setExistingBill(response_data.ExistingBill);
 				setMenus(response_data.Menus);
 				setCategories(response_data.Categories);
+				if (response_data.ExistingBill.length != 0) {
+					setBillId(response_data.ExistingBill[0].id);
+					setdoesBillExists(true);
+					setExistingBill(response_data.ExistingBill);
+					setOldCart(response_data.Orders);
+				}
 				return
 			} else {
 				console.log("Failed to fetch Dishes");
@@ -160,7 +167,6 @@ export default function Menu() {
 		} finally {
 			setLoading(false);
 		}
-
 	}
 
 
@@ -183,6 +189,7 @@ export default function Menu() {
 					},
 					body: JSON.stringify({
 						'type': Type,
+						'table_id': TableId,
 						'hotel_id': HotelId,
 						'waiter_id': WaiterId,
 						'menu_data': OrderData,
@@ -202,7 +209,7 @@ export default function Menu() {
 					},
 					body: JSON.stringify({
 						'type': Type,
-						'table_id': TableId,
+						'table_id': "",
 						'hotel_id': HotelId,
 						'waiter_id': WaiterId,
 						'menu_data': OrderData,
@@ -218,7 +225,6 @@ export default function Menu() {
 			if (response.status === 200) {
 				const data = await response.json();
 				console.log("Order Saved", data);
-				setBillId(data.output[0].Bill.id);
 				setIsOrderSaved(true);
 				setTimeout(() => {
 					setIsOrderSaved(false);
@@ -315,9 +321,8 @@ export default function Menu() {
 	const cgstAmt = (cgstRateNum / 100) * parseFloat(menutotal);
 	const sgstAmt = (sgstRateNum / 100) * parseFloat(menutotal);
 	const VatAmt = vatAmt === '' ? 0 : (parseFloat(vatAmt.replace('%', '')) / 100) * parseFloat(menutotal);
-	const Deliverychr = parseFloat(DeliveryChr.replace('%', ''));
 	console.log(menutotal)
-	const grosstotal = parseFloat(menutotal) + cgstAmt + sgstAmt + VatAmt + Deliverychr;
+	const grosstotal = parseFloat(menutotal) + cgstAmt + sgstAmt + VatAmt;
 	console.log("Gross", grosstotal, "Cgst", cgstAmt, "sgst", sgstAmt)
 	const discount = disAmt === '' ? 0 : (parseFloat(disAmt.replace('%', '')) / 100) * grosstotal;
 	const totalAmt = discount === 0 ? grosstotal : grosstotal - discount;
@@ -341,8 +346,6 @@ export default function Menu() {
 					'cgst_amount': cgstAmt,
 					'sgst_rate': sgstRate,
 					'sgst_amount': sgstAmt,
-					'delivery_rate': DeliveryChr,
-					'delivery_amounti': Deliverychr,
 					'vat_rate': vatAmt,
 					'vat_amount': VatAmt,
 					'menu_total': parseFloat(menutotal),
@@ -418,7 +421,7 @@ export default function Menu() {
 											size={45}
 										/>
 									</Link>
-									<h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Delivery</h1>
+									<h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Order</h1>
 								</div>
 								<div className="flex gap-3">
 									<input
@@ -449,7 +452,7 @@ export default function Menu() {
 													key={index}
 													onClick={
 														() => {
-															handleCategoryClick(category.id)
+															handleCategoryClick(category.CategoryId)
 														}
 													}
 													className="text-black font-semibold cursor-pointer"
@@ -471,67 +474,67 @@ export default function Menu() {
 
 								<div className="flex gap-6 px-6 flex-wrap">
 									{
-									ShowAllDishes
-										?
-										Menus.filter((menu) => {
-											const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
-											return searchMatch;
-										}).map((menu, index) => (
-											<div
-												key={index}
-												onClick={() => { handleAddToCart(menu) }}
-												id="menu"
-												className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
-													menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
-														menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
-															menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
-													}`}
-											>
-												<p className="flex flex-wrap text-lg font-semibold">
-													{menu.Dish.DishName}
-												</p>
-												<p className="flex justify-center items-center">
-													&#35;{menu.Dish.Code}
-												</p>
-												<p className="flex justify-center items-center">
-													{menu.Dish.Category.CategoryName}
-												</p>
+										ShowAllDishes
+											?
+											Menus.filter((menu) => {
+												const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+												return searchMatch;
+											}).map((menu, index) => (
+												<div
+													key={index}
+													onClick={() => { handleAddToCart(menu) }}
+													id="menu"
+													className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
+														menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
+															menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
+																menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
+														}`}
+												>
+													<p className="flex flex-wrap text-lg font-semibold">
+														{menu.Dish.DishName}
+													</p>
+													<p className="flex justify-center items-center">
+														&#35;{menu.Dish.Code}
+													</p>
+													<p className="flex justify-center items-center">
+														{menu.Dish.Category.CategoryName}
+													</p>
 
-											</div>
-										))
-										:
-										Menus.filter((menu) => {
-											// Check if the category matches or if no category is selected (show all)
-											const categoryMatch = ClickedCategory === null || menu.Dish.Category.id === ClickedCategory;
-											// Check if the dish name or code includes the search text
-											const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
-											// Return true if both conditions are met
-											return categoryMatch && searchMatch;
+												</div>
+											))
+											:
+											Menus.filter((menu) => {
+												// Check if the category matches or if no category is selected (show all)
+												const categoryMatch = ClickedCategory === null || menu.Dish.Category.CategoryName === ClickedCategory;
+												// Check if the dish name or code includes the search text
+												const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+												// Return true if both conditions are met
+												return categoryMatch && searchMatch;
 
-										}).map((menu, index) => (
-											<div
-												key={index}
-												onClick={() => { handleAddToCart(menu) }}
-												id="menu"
-												className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
-													menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
-														menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
-															menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
-													}`}
-											>
-												<p className="flex flex-wrap text-lg font-semibold">
-													{menu.Dish.DishName}
-												</p>
-												<p className="flex justify-center items-center">
-													&#35;{menu.Dish.Code}
-												</p>
-												<p className="flex justify-center items-center">
-													{menu.Dish.Category.CategoryName}
-												</p>
-											</div>
-										))
+											}).map((menu, index) => (
+												<div
+													key={index}
+													onClick={() => { handleAddToCart(menu) }}
+													id="menu"
+													className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
+														menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
+															menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
+																menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
+														}`}
+												>
+													<p className="flex flex-wrap text-lg font-semibold">
+														{menu.Dish.DishName}
+													</p>
+													<p className="flex justify-center items-center">
+														&#35;{menu.Dish.Code}
+													</p>
+													<p className="flex justify-center items-center">
+														{menu.Dish.Category.CategoryName}
+													</p>
+												</div>
+											))
 
-								}
+									}
 								</div>
 
 							</div>
@@ -566,7 +569,7 @@ export default function Menu() {
 									<div className="flex-1 inline-flex justify-start items-center gap-4 font-bold text-xl p-4">
 										{showBillInvoice ? (
 											<div className="flex flex-col gap-2">
-												<label> Delivery </label>
+												<label>Bill no. <span className="text-base font-normal"> {billId.slice(0, 12)}</span></label>
 											</div>
 										) : isSettleBill ? (
 											<div className="flex justify-between w-full">
@@ -583,11 +586,11 @@ export default function Menu() {
 											billId.length === 0 ?
 												<button
 													id="crm_display"
-													className="h-10 p-1 px-2 w-auto bg-red-900 border border-white rounded"
+													className="h-10 p-1 px-2 w-[100px] bg-red-900 border border-white rounded"
 													onClick={toggleDisplay}
 												>
 													{showBillInvoice ? (
-														<label>Add Customer</label>
+														<label>Add Crm</label>
 													) : (
 														<label>Back</label>
 													)}
@@ -657,7 +660,7 @@ export default function Menu() {
 									)
 										:
 										isSettleBill ? (
-											<div className="w-full h-auto max-h-[75dvh] overflow-y-scroll overflow-x-hidden bg-black px-4 mb-10 flex flex-col gap-4">
+											<div className="w-full h-[150dvh] overflow-y-scroll bg-black px-4 mb-10 flex flex-col gap-4">
 												<p className={`border-2 border-zinc-500 text-center ${Message === 'Payment Successful' ? 'bg-green-200 border-green-500 text-green-500 p-2' : ''} ${Message === 'Payment Failed' ? 'bg-red-200 border-red-500 text-red-500 p-2' : ''}`}>{Message}</p>
 												<div className="font-bold mt-2 text-xl">
 													Payment mode
@@ -704,10 +707,6 @@ export default function Menu() {
 													<div className="w-full inline-flex justify-end items-center mb-2 ">
 														<label className="w-1/2">Enter Balance Amount</label>
 														<input type="text" value={BalanceAmt} onChange={(e) => { setBalanceAmt(e.target.value) }} className="w-1/2 p-1 bg-[#252836] text-base text-white" placeholder="Balance amount" />
-													</div>
-													<div className="w-full inline-flex justify-end items-center mb-2 ">
-														<label className="w-1/2">Enter Delivery Charges</label>
-														<input type="text" value={DeliveryChr} onChange={(e) => { setDeliveryChr(e.target.value) }} className="w-1/2 p-1 bg-[#252836] text-base text-white" placeholder="Delivery charges" />
 													</div>
 													<div className="w-full inline-flex justify-between items-center border-t border-zinc-500">
 														<h1 className="text-right my-2 text-xl ">Total:- </h1>
@@ -833,7 +832,7 @@ export default function Menu() {
 															/>
 														</div>
 													</div>
-													<div className="w-full pb-20 inline-flex justify-between items-center gap-4 p-6">
+													<div className="w-full inline-flex justify-between items-center gap-4 p-6">
 														<button onClick={toggleDisplay} className="w-full bg-red-500 p-2 text-white rounded-md">Save</button>
 														<button type="reset" className="w-full border border-red-500 p-2 text-white rounded-md">Cancel</button>
 													</div>
@@ -876,7 +875,7 @@ export default function Menu() {
 										)
 									}
 									<div
-										onClick={() => { handleKotPrint(); handleSaveMenu(); }}
+										onClick={() => { handleKotPrint(); }}
 										className="w-full p-1.5 bg-red-500 font-semibold text-white text-center rounded-md cursor-pointer"
 									>Kot & Print</div>
 								</div>
@@ -908,7 +907,7 @@ export default function Menu() {
 									}
 								</tbody>
 							</table>
-							{/*
+{/*
 
 							<div className="text-center m-6">
 								<span>!!! Thank You !!!</span>
