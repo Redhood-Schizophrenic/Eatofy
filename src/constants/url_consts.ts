@@ -1,1 +1,1 @@
-export const ApiHost = 'http://localhost:3000'; 
+export const ApiHost = 'https://eatofy.in'; 
