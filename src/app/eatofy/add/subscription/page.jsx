@@ -15,21 +15,21 @@ export default function Subscription() {
 	const [subscription_name, setsubname] = useState('');
 	const [price, setprice] = useState('');
 	const [validity, setvalidity] = useState(0);
-	const [sub, setSubscription]: any = useState([]);
-	const [enddate, setenddate]: any = useState([]);
-	const limit: any = sub.slice(0, 5);
-	const form: any = useRef();
-	const task: any = useRef();
+	const [sub, setSubscription] = useState([]);
+	const [enddate, setenddate] = useState([]);
+	const limit = sub.slice(0, 5);
+	const form = useRef();
+	const task = useRef();
 	const route = useRouter();
 	const closetoEndDate = 4;
-	const [data1, setData1]: any = useState([]);
-	const [tasks, settasks]: any = useState([]);
-	const [tasknote, settasknote]: any = useState('');
-	const [date, setdate]: any = useState('');
-	const [status, setstatus]: any = useState('');
-	const [remove, setRemove]: any = useState('');
-	const [SubscriptionSuccess, setSubscriptionSuccess]: any = useState('');
-	const [SubscriptionError, setSubscriptionError]: any = useState('');
+	const [data1, setData1] = useState([]);
+	const [tasks, settasks] = useState([]);
+	const [tasknote, settasknote] = useState('');
+	const [date, setdate] = useState('');
+	const [status, setstatus] = useState('');
+	const [remove, setRemove] = useState('');
+	const [SubscriptionSuccess, setSubscriptionSuccess] = useState('');
+	const [SubscriptionError, setSubscriptionError] = useState('');
 
 	// console.log(subscription_name, " ", price, " ", typeof validity);
 
@@ -167,9 +167,9 @@ export default function Subscription() {
 		setenddate(data.output);
 	}
 
-	const today: any = new Date();
-	const filteredData: any = enddate.filter((items: any) => {
-		const endDate: any = new Date(items.EndDate);
+	const today = new Date();
+	const filteredData = enddate.filter((items) => {
+		const endDate = new Date(items.EndDate);
 		const diffInDays = Math.abs((endDate - today) / (1000 * 3600 * 24));
 		console.log(diffInDays, " ", closetoEndDate);
 		return diffInDays <= closetoEndDate;
@@ -295,7 +295,7 @@ export default function Subscription() {
 								<div className="mb-8">
 									<h2 className="text-xl mb-4">Upcoming payment this month</h2>
 									{
-										filteredData.map((items: any) => (
+										filteredData.map((items) => (
 											<div key={items.id}>
 												<div className="backdrop-blur-xl bg-black/30 p-4 rounded-lg mb-4">
 													<div className="flex justify-between items-center">
@@ -317,7 +317,7 @@ export default function Subscription() {
 								</button>
 								<div className="bg-black/30 w-full h-[50%] my-2 p-3 rounded-lg">
 									{
-										tasks.map((items: any, i: any) => (
+										tasks.map((items, i) => (
 											<div key={items.id} className="flex items-center justify-between my-4">
 												<div className="bg-black text-white w-[30px] h-[30px] rounded-full inline-flex justify-center items-center">{++i}</div>
 												<div>{items.Task}</div>
@@ -472,4 +472,3 @@ export default function Subscription() {
 		</>
 	)
 }
-

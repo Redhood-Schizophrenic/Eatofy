@@ -257,7 +257,7 @@ model Staffs {
   LastName       String
   Address        String
   Contact        String
-  Email          String
+  Email          String            @unique
   HashedPassword String
   SaltPassword   String
   DepartmentName String
