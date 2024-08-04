@@ -226,7 +226,7 @@ export default function Subscription() {
 													</thead>
 													<tbody>
 														{
-															limit.map((items: any, i: any) => (
+															limit.map((items, i) => (
 																<tr className="px-4 py-4 border border-black" key={items.id}>
 																	<td className="px-4 py-4">{++i}</td>
 																	<td className="px-4 py-4">{items.SubscriptionName}</td>
