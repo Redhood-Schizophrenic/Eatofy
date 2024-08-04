@@ -53,7 +53,7 @@ export default function Subscription() {
 		],
 	};
 
-	async function handleSubmit(e: any) {
+	async function handleSubmit(e) {
 		e.preventDefault();
 		try {
 			const response = await fetch(`${ApiHost}/api/eatofy/subscriptions/management/add`, {
@@ -103,7 +103,7 @@ export default function Subscription() {
 		settasks(data.output);
 	}
 
-	const fetchTasksadd = async (e: any) => {
+	const fetchTasksadd = async (e) => {
 		e.preventDefault();
 		const res = await fetch(`${ApiHost}/api/eatofy/tasks/add`, {
 			method: 'POST',
