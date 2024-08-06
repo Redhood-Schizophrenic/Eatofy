@@ -8,7 +8,7 @@ const StaffTable = () => {
 
   const [displayForm, setDisplayForm] = useState(false);
   const [attendances, setAttendances] = useState([]);
-  const hotel_id = sessionStorage.getItem('hotel_id');
+  const [hotel_id, sethotel_id] = useState('');
   const [Staff, setStaff] = useState([]);
   const [staffId, setstaffId] = useState('');
   const [arrival_time, setarrival_time] = useState('');
@@ -128,9 +128,12 @@ const StaffTable = () => {
   }
 
   useEffect(() => {
-    fetch_attendance();
-    fetchStaffForId();
-  }, []);
+    sethotel_id(sessionStorage.getItem('hotel_id'));
+    if (hotel_id) {
+      fetch_attendance();
+      fetchStaffForId();
+    }
+  }, [hotel_id]);
 
 
   return (

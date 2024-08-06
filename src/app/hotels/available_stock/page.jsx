@@ -11,9 +11,9 @@ export default function Available_stock() {
   const [isLoading, setLoading] = useState(false);
   const [fetchstock, setfetchstock] = useState([]);
   const [fetchitems, setfetchitems] = useState([]);
+  const [hotel_id, sethotel_id] = useState('');
   const [ShowTableForm, setShowTableForm] = useState(false);
   const [ShowEditTableForm, setShowEditTableForm] = useState(false);
-  const hotel_id = sessionStorage.getItem('hotel_id');
   const [quantity, setquantity] = useState('');
   const [available_stock_id, set_available_stock_id] = useState('');
   const [unit, setunit] = useState('');
@@ -75,9 +75,12 @@ export default function Available_stock() {
   }
 
   useEffect(() => {
-    fetchItems();
-    fetchStock();
-  }, []);
+    sethotel_id(sessionStorage.getItem('hotel_id'));
+    if (hotel_id) {
+      fetchItems();
+      fetchStock();
+    }
+  }, [hotel_id]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);

@@ -16,12 +16,15 @@ export default function Item_management() {
   const [addcategory, setAddCategory] = useState('');
   const [description, setdescription] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const hotel_id = sessionStorage.getItem('hotel_id');
+  const [hotel_id, sethotel_id] = useState('');
 
   useEffect(() => {
-    fetchItemCategory();
-    fetchItems();
-  }, []);
+    sethotel_id(sessionStorage.getItem('hotel_id'));
+    if (hotel_id) {
+      fetchItemCategory();
+      fetchItems();
+    }
+  }, [hotel_id]);
 
   const handleCloseTableForm = () => {
     setShowTableForm(false);

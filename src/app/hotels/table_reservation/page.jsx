@@ -18,6 +18,7 @@ const ReservationGrid = () => {
   const [customer, setcustomer] = useState('');
   const [no_of_persons, setNo_of_persons] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [hotel_id, sethotel_id] = useState('');
 
   function handleClick(e) {
     const name = e.target.name;
@@ -29,7 +30,7 @@ const ReservationGrid = () => {
   }
 
   const requestdata = {
-    'hotelId': sessionStorage.getItem('hotel_id')
+    'hotelId': hotel_id
   }
 
   const date = new Date();
@@ -76,10 +77,11 @@ const ReservationGrid = () => {
   }
 
   useEffect(() => {
-
-    handleFetchReservations();
-
-  }, [])
+    sethotel_id(sessionStorage.getItem('hotel_id'));
+    if (hotel_id) {
+      handleFetchReservations();
+    }
+  }, [hotel_id])
 
   async function handleSubmit(e) {
     e.preventDefault();

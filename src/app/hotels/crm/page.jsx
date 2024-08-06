@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 
 const CustomerTable = () => {
 
-  const hotel_id = sessionStorage.getItem('hotel_id');
+  const [hotel_id, sethotel_id] = useState('');
   const [customerList, setCustomerList] = useState([]);
   const [isFormVisible, setFormVisible] = useState(false);
   const [formData, setFormData] = useState({
@@ -52,8 +52,11 @@ const CustomerTable = () => {
   };
 
   useEffect(() => {
-    fetchCustomerList();
-  }, []);
+    sethotel_id(sessionStorage.getItem('hotel_id'));
+    if (hotel_id){
+      fetchCustomerList();
+    }
+  }, [hotel_id]);
 
   const toggleFormVisibility = () => {
     setFormVisible(!isFormVisible);

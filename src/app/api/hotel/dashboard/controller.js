@@ -62,7 +62,7 @@ export async function hotel_dashboard(data) {
 		const orders_amount = amount;
 
 		// Dine In Orders
-		const dine_in_orders = orders.filter(order => order.Type === 'Dine-in');
+		const dine_in_orders = orders.filter(order => order.Type === 'Dine-In');
 		const dine_in_data = values_mapper(dine_in_orders, "Date");
 		amount = 0, count = 0;
 		dine_in_data.Orders.map((order) => { count += order });

@@ -125,7 +125,7 @@ export default function Subscription() {
 		setData1(data.output);
 
 	}
-	console.log(tasks)
+	// console.log(tasks)
 
 	const fetchTasksedit = async () => {
 		const res = await fetch(`${ApiHost}/api/eatofy/tasks/update`);
@@ -182,8 +182,8 @@ export default function Subscription() {
 	}, [])
 
 	// console.log(data);
-	console.log(enddate);
-	console.log("hi", filteredData);
+	// console.log(enddate);
+	// console.log("hi", filteredData);
 
 
 	return (
@@ -472,3 +472,4 @@ export default function Subscription() {
 		</>
 	)
 }
+

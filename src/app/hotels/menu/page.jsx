@@ -3,7 +3,7 @@ import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import { useEffect, useRef, useState } from "react";
 import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
-import { FaCreditCard, FaMinus, FaPlus, FaTrash, FaXmark } from "react-icons/fa6";
+import { FaCreditCard, FaMinus, FaPlus, FaTrash } from "react-icons/fa6";
 import { useReactToPrint } from "react-to-print";
 import { IoIosArrowBack } from "react-icons/io";
 import Link from "next/link";
@@ -12,7 +12,6 @@ import { FaCashRegister, FaGooglePay } from "react-icons/fa";
 
 
 export default function Menu() {
-	const [isLoading, setLoading] = useState(false);
 	const [isMenuOpen, setMenuOpen] = useState(false);
 	const [Search, setSearch] = useState('');
 	const [isDishDisplayFullWidth, setDishDisplayFullWidth] = useState(false);
@@ -23,7 +22,7 @@ export default function Menu() {
 	const [TableId, setTableId] = useState('');
 	const [WaiterId, setWaiterId] = useState('');
 	const [isSettleBill, setisSettleBill] = useState(false);
-	const [ShowError, setShowError] = useState(false);
+	// const [ShowError, setShowError] = useState(false);
 	const [disAmt, setdisAmt] = useState('');
 	const [vatAmt, setvatAmt] = useState('');
 	const [BalanceAmt, setBalanceAmt] = useState(0);
@@ -31,8 +30,9 @@ export default function Menu() {
 	const [PaymentStatus, setPaymentStatus] = useState('Paid');
 	const [IsOrderSaved, setIsOrderSaved] = useState(false);
 	const [IsOrderFailed, setIsOrderFailed] = useState(false);
+	// const [TableName, setTableName] = useState('');
 	const route = useRouter();
-	const Type = sessionStorage.getItem('type');
+	const [Type, setType] = useState('');
 	const billkot = useRef();
 	const bill = useRef();
 	const today = new Date();
@@ -43,7 +43,6 @@ export default function Menu() {
 	});
 
 	// Bill Management
-	const [doesBillExists, setdoesBillExists] = useState(false);
 	const [billId, setBillId] = useState("");
 	const [OldCart, setOldCart] = useState([]);
 	const [Cart, setCart] = useState([]);
@@ -60,10 +59,9 @@ export default function Menu() {
 
 
 	// Fetch Display Data
-	const [ExistingBill, setExistingBill] = useState([]);
 	const [Menus, setMenus] = useState([]);
 	const [Categories, setCategories] = useState([]);
-	const [TableName, setTableName] = useState("");
+	const [TableName, setTableName] = useState('');
 
 	// Search Dishes
 	const handleSearch = (element) => {
@@ -75,7 +73,6 @@ export default function Menu() {
 	const handleCategoryClick = (category_id) => {
 		setShowAllDishes(false);
 		setClickedCategory(category_id);
-		console.log(category_id);
 	}
 
 	// Display Cart
@@ -135,7 +132,6 @@ export default function Menu() {
 
 		try {
 
-			setLoading(true);
 			const response = await fetch(`${ApiHost}/api/hotel/bill_order`, {
 				method: 'POST',
 				headers: {
@@ -147,14 +143,14 @@ export default function Menu() {
 			const data = await response.json();
 			if (data.returncode === 200) {
 				const response_data = await data.output[0];
-				setExistingBill(response_data.ExistingBill);
 				setMenus(response_data.Menus);
 				setCategories(response_data.Categories);
 				if (response_data.ExistingBill.length != 0) {
 					setBillId(response_data.ExistingBill[0].id);
-					setdoesBillExists(true);
-					setExistingBill(response_data.ExistingBill);
-					setOldCart(response_data.Orders);
+					if (response_data.Orders || response_data.Orders?.length == 0) {
+
+						setOldCart(response_data.Orders);
+					}
 				}
 				setTableName(response_data.TableInfo[0].TableName);
 				return
@@ -166,7 +162,7 @@ export default function Menu() {
 			console.error(e);
 			return
 		} finally {
-			setLoading(false);
+
 		}
 	}
 
@@ -176,7 +172,7 @@ export default function Menu() {
 
 		try {
 
-			setLoading(true);
+
 			await fetch(`${ApiHost}/api/hotel/tables/management/update/status`, {
 				method: 'PUT',
 				headers: {
@@ -189,7 +185,7 @@ export default function Menu() {
 			console.error(e);
 			return
 		} finally {
-			setLoading(false);
+
 		}
 	}
 
@@ -246,14 +242,13 @@ export default function Menu() {
 			}
 
 			if (response.status === 200) {
-				const data = await response.json();
 				setIsOrderSaved(true);
 				setTimeout(() => {
 					setIsOrderSaved(false);
 				}, 2000);
-				location.href = "/hotels/home";
+				// location.href = "/hotels/home";
 			} else {
-				console.log("Lavde Lagle BCC000000D");
+				console.log("Order Failed");
 				setIsOrderFailed(true);
 				fetch_bill();
 				setTimeout(() => {
@@ -287,14 +282,14 @@ export default function Menu() {
 			});
 
 			if (response.status === 200) {
-				const data = await response.json();
+				// const data = await response.json();
 				setIsOrderSaved(true);
 				fetch_bill();
 				setTimeout(() => {
 					setIsOrderSaved(false);
 				}, 2000);
 			} else {
-				console.log("Lavde Lagle BCC000000D");
+				console.log("Order Failed");
 				setIsOrderFailed(true);
 				setTimeout(() => {
 					setIsOrderFailed(false);
@@ -316,7 +311,7 @@ export default function Menu() {
 		};
 
 		// if (OldCart.length != 0) {
-		oldcartTotal = (OldCart.reduce((total, item) => total + (item.Menu.Price * parseInt(item.Quantity)), 0));
+		// 	oldcartTotal = (OldCart.reduce((total, item) => total + (item.Menu.Price * parseInt(item.Quantity)), 0));
 		// } else {
 		// 	oldcartTotal = 0;
 		// }
@@ -375,7 +370,7 @@ export default function Menu() {
 			});
 
 			if (response.status === 200) {
-				const data = await response.json();
+				// const data = await response.json();
 				setMessage('Payment Successful');
 				setTimeout(() => {
 					route.push('/hotels/home');
@@ -392,12 +387,14 @@ export default function Menu() {
 
 	useEffect(() => {
 
+		setType(sessionStorage.getItem('type'));
 		setHotelId(sessionStorage.getItem('hotel_id'));
 		setTableId(sessionStorage.getItem('table_id'));
 		setWaiterId(sessionStorage.getItem('waiter_id'));
+		// setTableName(sessionStorage.getItem('table_name'));
 
 		fetch_bill()
-	}, []);
+	}, [HotelId, Type]);
 
 
 	return (
@@ -878,7 +875,14 @@ export default function Menu() {
 									)
 								}
 								<div
-									onClick={() => { handleSaveMenu(); handleKotPrint(); }}
+									onClick={() => {
+										if (Cart.length !== 0) {
+											handleSaveMenu();
+											handleKotPrint();
+										} else {
+											handleKotPrint();
+										}
+									}}
 									className="w-full p-1.5 bg-red-500 font-semibold text-white text-center rounded-md cursor-pointer"
 								>Kot & Print</div>
 							</div>
@@ -888,7 +892,7 @@ export default function Menu() {
 
 					<div ref={billkot} className="max-w-md mx-auto p-4 border border-zinc-300 rounded-md bg-white text-black fixed left-0 top-[50dvh] z-[-500]">
 						<div className="mb-2">
-							<span><strong>{sessionStorage.getItem('table_name')}</strong></span>
+							<span><strong>{TableName}</strong></span>
 						</div>
 						<table className="w-full text-left border-collapse mb-2 border-b border-dashed border-black">
 							<thead>
@@ -924,7 +928,7 @@ export default function Menu() {
 							<span>Date: {formattedDate}</span>
 						</div>
 						<div className="mb-2">
-							<span><strong>{sessionStorage.getItem('table_name')}</strong></span>
+							<span><strong>{TableName}</strong></span>
 						</div>
 						<table className="w-full text-left border-collapse mb-2">
 							<thead>
@@ -989,4 +993,3 @@ export default function Menu() {
 		</>
 	)
 }
-

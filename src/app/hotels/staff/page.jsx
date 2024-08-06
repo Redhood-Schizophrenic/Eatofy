@@ -8,7 +8,7 @@ import { MdOutlineDeleteOutline, MdOutlineEdit } from "react-icons/md";
 
 const StaffTable = () => {
 
-  const hotel_id = sessionStorage.getItem('hotel_id');
+  const [hotel_id, sethotel_id] = useState('');
   const [staffList, setStaffList] = useState([]);
   const [isEditFormVisible, setEditFormVisible] = useState(false);
   const [isFormVisible, setFormVisible] = useState(false);
@@ -175,8 +175,11 @@ const StaffTable = () => {
   };
 
   useEffect(() => {
-    fetchStaffList();
-  }, []);
+    sethotel_id(sessionStorage.getItem('hotel_id'));
+    if (hotel_id) {
+      fetchStaffList();
+    }
+  }, [hotel_id]);
 
   const toggleEditFormVisibility = () => {
     setEditFormVisible(!isEditFormVisible);

@@ -32,8 +32,9 @@ export default function Menu() {
 	const [IsOrderSaved, setIsOrderSaved] = useState(false);
 	const [IsOrderFailed, setIsOrderFailed] = useState(false);
 	const [DeliveryChr, setDeliveryChr] = useState('');
+	const [TableName, setTableName] = useState('');
 	const route = useRouter();
-	const Type = sessionStorage.getItem('type');
+	const [Type, setType] = useState('');
 	const billkot = useRef();
 	const bill = useRef();
 	const today = new Date();
@@ -372,16 +373,15 @@ export default function Menu() {
 	}
 
 	useEffect(() => {
-
 		setHotelId(sessionStorage.getItem('hotel_id'));
 		setTableId(sessionStorage.getItem('table_id'));
 		setWaiterId(sessionStorage.getItem('waiter_id'));
+		setType(sessionStorage.getItem('type'));
+		setTableName(sessionStorage.getItem('table_name'));
 
 		fetch_bill()
-	}, []);
+	}, [HotelId,Type]);
 
-	console.log(OldCart);
-	console.log(Menus);
 
 	return (
 		<>
@@ -886,7 +886,7 @@ export default function Menu() {
 
 						<div ref={billkot} className="max-w-md mx-auto p-4 border border-zinc-300 rounded-md bg-white text-black fixed left-0 top-[50dvh] z-[-500]">
 							<div className="mb-2">
-								<span><strong>{sessionStorage.getItem('table_name')}</strong></span>
+								<span><strong>{TableName}</strong></span>
 							</div>
 							<table className="w-full text-left border-collapse mb-2 border-b border-dashed border-black">
 								<thead>
@@ -922,7 +922,7 @@ export default function Menu() {
 								<span>Date: {formattedDate}</span>
 							</div>
 							<div className="mb-2">
-								<span><strong>{sessionStorage.getItem('table_name')}</strong></span>
+								<span><strong>{TableName}</strong></span>
 							</div>
 							<table className="w-full text-left border-collapse mb-2">
 								<thead>

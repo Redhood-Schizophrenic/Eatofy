@@ -8,7 +8,7 @@ interface ServiceCardProps {
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ title, features, imageSrc }) => {
   return (
-    <div className="w-[100%] h-auto lg:h-[300px] flex flex-col lg:flex-row justify-between items-center gap-4 bg-zinc-50 rounded-lg shadow-lg p-4">
+    <div className="w-[100%] h-auto lg:h-[300px] flex flex-col lg:flex-row justify-between items-center gap-4 bg-zinc-100 shadow-lg shadow-zinc-400 rounded-lg p-4">
       <div className="w-full md:w-1/3">
         <Image src={imageSrc} alt={title} width={500} height={300} className="rounded-lg" />
       </div>

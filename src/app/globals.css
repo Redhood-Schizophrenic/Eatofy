@@ -9,3 +9,12 @@ body{
 	font-family: "Poppins", sans-serif;
 	scroll-behavior: smooth;	
 }
+
+#Mainpagebody {
+	background-image: url('/bg.jpg');
+	position: relative;
+	background-attachment: fixed;
+	background-position: center;
+	background-repeat: no-repeat;
+	background-size: cover;
+}

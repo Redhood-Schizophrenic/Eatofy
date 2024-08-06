@@ -14,12 +14,15 @@ export default function Supplier_management() {
   const [email, setemail] = useState('');
   const [gstin, setgstin] = useState('');
   const [showaddmenu, setShowaddmenu] = useState(false);
-  const hotel_id = sessionStorage.getItem('hotel_id');
+  const [hotel_id, sethotel_id] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetchSuppliers();
-  }, []);
+    sethotel_id(sessionStorage.getItem('hotel_id'));
+    if (hotel_id) {
+      fetchSuppliers();
+    }
+  }, [hotel_id]);
 
   const fetchSuppliers = async () => {
     try {

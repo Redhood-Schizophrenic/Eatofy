@@ -15,7 +15,7 @@ const Widget = () => {
   const [tablename, setTablename] = useState("");
   const [tableno, setTableno] = useState(0);
   const [autocheck, setAutocheck] = useState(false);
-  const hotelId = sessionStorage.getItem("hotel_id");
+  const [hotelId, sethotelId] = useState('');
   const [tables, setTables] = useState([]);
   const [sections, setSections] = useState([]);
   const [message, setMessage] = useState("");
@@ -24,9 +24,12 @@ const Widget = () => {
 
 
   useEffect(() => {
-    fetchTables();
-    fetchSections();
-  }, []);
+    sethotelId(sessionStorage.getItem("hotel_id"));
+    if (hotelId){
+      fetchTables();
+      fetchSections();
+    }
+  }, [hotelId]);
 
   const fetchTables = async () => {
     try {

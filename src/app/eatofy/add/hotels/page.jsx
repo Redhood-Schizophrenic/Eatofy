@@ -180,9 +180,9 @@ export default function AddHotels() {
 											<button
 												onClick={
 													() => {
-														sessionStorage.setItem("hotel_id", items.id);
-														if (sessionStorage.getItem("hotel_id") === items.id) {
-															route.push('/eatofy/add/hotels');
+														sessionStorage.setItem("hotel_name", items.HotelName);
+														if (sessionStorage.getItem("hotel_name") === items.HotelName) {
+															route.push('/eatofy/hotel');
 														} else {
 															alert("Hotel is not selected!!")
 														}

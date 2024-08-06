@@ -21,11 +21,15 @@ const ExpenseTracking = () => {
     description: "",
     status: "",
   });
+  const [hotel_id, sethotel_id] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetchExpenses();
-  }, []);
+    sethotel_id(sessionStorage.getItem('hotel_id'));
+    if (hotel_id) {
+      fetchExpenses();
+    }
+  }, [hotel_id]);
 
   const fetchExpenses = async () => {
     try {
@@ -37,7 +41,7 @@ const ExpenseTracking = () => {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ hotel_id: sessionStorage.getItem('hotel_id') })
+          body: JSON.stringify({ 'hotel_id': hotel_id })
         }
       );
 

@@ -23,7 +23,7 @@ const EatofyApp: React.FC = () => {
 
   return (
     <div className="h-screen flex items-center justify-center bg-gray-100">
-        
+
       <div className="w-screen h-screen p-6 bg-white rounded-lg shadow-lg">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-red-500 text-2xl font-bold">EATOFY</h1>
@@ -50,17 +50,13 @@ const EatofyApp: React.FC = () => {
           {menuItems.map((item, index) => (
             <li
               key={index}
-              className={`p-4 rounded-full flex justify-between items-center cursor-pointer border ${
-                activeIndex === index ? 'bg-red-500 text-white' : 'bg-white text-zinc-700 border-zinc-300'
-              }`}
+              className={`p-4 rounded-full flex justify-between items-center cursor-pointer border ${activeIndex === index ? 'bg-red-500 text-white' : 'bg-white text-zinc-700 border-zinc-300'
+                }`}
               onClick={() => handleItemClick(index)}
             >
               <span>{item}</span>
               {item === 'KOT Setup' && (
                 <img
-                
-                 
-                 
                 />
               )}
             </li>

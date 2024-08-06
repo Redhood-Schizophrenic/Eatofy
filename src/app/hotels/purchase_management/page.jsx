@@ -20,7 +20,7 @@ export default function Purchase_management() {
   const [fetchedsupplier, setsupplier] = useState([]);
   const [fetchedpurchase, setfetchedpurchase] = useState([]);
   const [fetcheditems, setfetcheditems] = useState([]);
-  const hotel_id = sessionStorage.getItem('hotel_id');
+  const [hotel_id, sethotel_id] = useState(''); 
   const [stockDetails, setStockDetails] = useState([]);
   const [newStockItem, setNewStockItem] = useState({ item_id: '', quantity: '', unit: '' });
   const [invoice, setInvoice] = useState({});
@@ -161,8 +161,11 @@ export default function Purchase_management() {
   }
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    sethotel_id(sessionStorage.getItem('hotel_id'));
+    if (hotel_id) {
+      fetchData();
+    }
+  }, [hotel_id]);
 
   return (
     <>

@@ -18,7 +18,6 @@ export default function HotelSubscription() {
 	const [successMessage, setSuccessMessage] = useState('');
 	const route = useRouter();
 	let settime;
-	const valnum = parseInt(sessionStorage.getItem("subscription_validity") || '0');
 
 	async function handleSubmit(e) {
 		e.preventDefault();
@@ -78,13 +77,15 @@ export default function HotelSubscription() {
 
 	useEffect(() => {
 
+		const valnum = parseInt(sessionStorage.getItem("subscription_validity") || '0');
+
 		if (start_date) {
 			setend_date(incrementDate(start_date, valnum));
 			const date = new Date();
 			let minuts = date.getMinutes();
 			minuts = minuts.toString().padStart(2, '0');
 			setend_time(`${date.getHours()}:${minuts}`);
-			console.log(end_time, "hello")
+			// console.log(end_time, "hello")
 		}
 
 	}, [start_date, valnum, end_time])
@@ -103,8 +104,8 @@ export default function HotelSubscription() {
 		return `${hours.toString().padStart(2, '0')}:${minutes}`;
 	}
 
-	console.log(`${start_date}T${start_time}`);
-	console.log(isvalid)
+	// console.log(`${start_date}T${start_time}`);
+	// console.log(isvalid)
 
 	function SelectMy() {
 		isvalid ? setisvalid(false) : setisvalid(true);

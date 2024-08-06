@@ -28,7 +28,7 @@ export default function Purchase_management() {
   // Ui Elements
   const [displayStock, setDisplayStock] = useState(false);
   const [fetchedpurchase, setfetchedpurchase] = useState([]);
-  const hotel_id = sessionStorage.getItem('hotel_id');
+  const [hotel_id, sethotel_id] = useState('');
   const [invoice, setInvoice] = useState({});
   const [Stock, setStock] = useState([]);
 
@@ -99,8 +99,11 @@ export default function Purchase_management() {
   }
 
   useEffect(() => {
-    fetchPurchaseData();
-  }, [])
+    sethotel_id(sessionStorage.getItem('hotel_id'));
+    if (hotel_id) {
+      fetchPurchaseData();
+    }
+  }, [hotel_id])
 
   const dataLine = {
     labels: Dates_Filter,

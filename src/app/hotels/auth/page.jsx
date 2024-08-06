@@ -1,10 +1,11 @@
 "use client"
+
 import { ApiHost } from '@/constants/url_consts';
 import { useRouter } from 'next/navigation';
-import React, { useState, FormEvent } from 'react';
+import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
-const Widget = () => {
+const HotelAuth = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -48,8 +49,8 @@ const Widget = () => {
         const userData = data.output[0].result[0];
         const id = JSON.stringify(data.output[0].result[0].id);
         sessionStorage.setItem('userData', JSON.stringify(userData));
-        console.log('Login successful:', data);
-        console.log(id, "id")
+        // console.log('Login successful:', data);
+        // console.log(id, "id")
         setTimeout(() => {
           setIsLogged(false);
         }, timeout);
@@ -84,7 +85,7 @@ const Widget = () => {
         }
 
       } else {
-        console.error('Login failed:', response.statusText);
+        // console.error('Login failed:', response.statusText);
         setMessage(data.message);
         setIsLogged(true);
         setFailed(true);
@@ -200,5 +201,5 @@ const Widget = () => {
   );
 };
 
-export default Widget;
+export default HotelAuth;
 
