@@ -288,12 +288,7 @@ export default function Menu() {
 			return isNaN(parsedValue) ? 0 : parsedValue;
 		};
 
-		// if (OldCart.length != 0) {
 		oldcartTotal = (OldCart.reduce((total, item) => total + (item.Menu.Price * parseInt(item.Quantity)), 0));
-		console.log(oldcartTotal);
-		// } else {
-		// 	oldcartTotal = 0;
-		// }
 		newCart = (Cart.reduce((total, item) => total + (parseItemValue(item.Price) * parseItemValue(item.quantity)), 0));
 		console.log("Cart", newCart);
 		const amount = oldcartTotal + newCart;

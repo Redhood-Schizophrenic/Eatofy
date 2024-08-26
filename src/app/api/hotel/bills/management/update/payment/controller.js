@@ -22,17 +22,6 @@ export async function pay_bill(data) {
 		const payment_mode = data['payment_mode'];
 		const payment_status = data['payment_status'];
 
-		// Default Invalid Checker
-		if (bill_id == null || total_amount == null || cgst_rate == null || sgst_rate == null || cgst_amount == null || sgst_amount == null || menu_total == null || balance_amount == null || payment_mode == null || payment_status == null
-			|| bill_id == undefined || total_amount == undefined || cgst_rate == undefined || sgst_rate == undefined || cgst_amount == undefined || sgst_amount == undefined || menu_total == undefined || balance_amount == undefined || payment_mode == undefined || payment_status == undefined
-			|| bill_id == "" || total_amount == "" || cgst_rate == "" || sgst_rate == "" || cgst_amount == "" || sgst_amount == "" || menu_total == "" || balance_amount == "" || payment_mode == "" || payment_status == "") {
-			return {
-				returncode: 400,
-				message: 'Invalid Input',
-				output: []
-			}
-		}
-
 		// Paying the Bill
 		const result = await bill_payment({
 			bill_id,
