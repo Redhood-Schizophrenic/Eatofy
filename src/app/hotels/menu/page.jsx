@@ -22,7 +22,6 @@ export default function Menu() {
 	const [TableId, setTableId] = useState('');
 	const [WaiterId, setWaiterId] = useState('');
 	const [isSettleBill, setisSettleBill] = useState(false);
-	// const [ShowError, setShowError] = useState(false);
 	const [disAmt, setdisAmt] = useState('');
 	const [vatAmt, setvatAmt] = useState('');
 	const [BalanceAmt, setBalanceAmt] = useState(0);
@@ -30,7 +29,6 @@ export default function Menu() {
 	const [PaymentStatus, setPaymentStatus] = useState('Paid');
 	const [IsOrderSaved, setIsOrderSaved] = useState(false);
 	const [IsOrderFailed, setIsOrderFailed] = useState(false);
-	// const [TableName, setTableName] = useState('');
 	const route = useRouter();
 	const [Type, setType] = useState('');
 	const billkot = useRef();
@@ -55,7 +53,6 @@ export default function Menu() {
 	const [CustomerEmail, setCustomerEmail] = useState('');
 	const [CustomerOccassion, setCustomerOccassion] = useState('');
 	const [CustomerDate, setCustomerDate] = useState('' || Date.now());
-	// const [CustomerId, setCustomerId] = useState('');
 
 
 	// Fetch Display Data
@@ -111,7 +108,6 @@ export default function Menu() {
 
 	const handleCartItemDelete = (id) => {
 		setCart(Cart.filter(item => item.id !== id));
-		// setshowBillUpdate(false);
 	}
 
 	const toggleDisplay = () => {
@@ -246,7 +242,6 @@ export default function Menu() {
 				setTimeout(() => {
 					setIsOrderSaved(false);
 				}, 2000);
-				// location.href = "/hotels/home";
 			} else {
 				console.log("Order Failed");
 				setIsOrderFailed(true);
@@ -282,7 +277,6 @@ export default function Menu() {
 			});
 
 			if (response.status === 200) {
-				// const data = await response.json();
 				setIsOrderSaved(true);
 				fetch_bill();
 				setTimeout(() => {
@@ -335,7 +329,6 @@ export default function Menu() {
 	const grosstotal = parseFloat(menutotal) + cgstAmt + sgstAmt + VatAmt;
 	const discount = disAmt === '' ? 0 : (parseFloat(disAmt.replace('%', '')) / 100) * grosstotal;
 	const totalAmt = discount === 0 ? grosstotal : grosstotal - discount;
-	// const TotalAmt = CalculateTotal();
 
 	const handleSettleBill = async () => {
 
@@ -387,8 +380,6 @@ export default function Menu() {
 		setHotelId(sessionStorage.getItem('hotel_id'));
 		setTableId(sessionStorage.getItem('table_id'));
 		setWaiterId(sessionStorage.getItem('waiter_id'));
-		// setTableName(sessionStorage.getItem('table_name'));
-
 		fetch_bill()
 	}, [HotelId, Type]);
 
@@ -872,12 +863,7 @@ export default function Menu() {
 								}
 								<div
 									onClick={() => {
-										if (Cart.length !== 0) {
-											handleSaveMenu();
 											handleKotPrint();
-										} else {
-											handleKotPrint();
-										}
 									}}
 									className="w-full p-1.5 bg-red-500 font-semibold text-white text-center rounded-md cursor-pointer"
 								>Kot & Print</div>
@@ -910,12 +896,6 @@ export default function Menu() {
 								}
 							</tbody>
 						</table>
-						{/*
-
-							<div className="text-center m-6">
-								<span>!!! Thank You !!!</span>
-							</div>
-*/}
 					</div>
 
 					<div ref={bill} className="max-w-md mx-auto p-4 border border-zinc-300 rounded-md bg-white text-black fixed top-[50dvh] left-0 z-[-150]">

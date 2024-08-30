@@ -5,39 +5,22 @@ import React, { useState, useEffect } from "react";
 import { MdClose } from "react-icons/md";
 
 const StaffTable = () => {
-
   const [displayForm, setDisplayForm] = useState(false);
   const [attendances, setAttendances] = useState([]);
   const [hotel_id, sethotel_id] = useState('');
   const [Staff, setStaff] = useState([]);
   const [staffId, setstaffId] = useState('');
-  const [arrival_time, setarrival_time] = useState('');
-  const [departure_time, setdeparture_time] = useState('');
+  const [arrival_time, setarrival_time] = useState('9:00 A.M');
+  const [departure_time, setdeparture_time] = useState('5:00 P.M.');
   const [attendance_status, setattendance_status] = useState('');
   const [Message, setMessage] = useState('');
   const [isAttended, setisAttended] = useState(false);
   const [isFailed, setisFailed] = useState(false);
   const today = new Date();
-  const [formatDateFilter, setformatDateFilter] = useState(today.toISOString().split('T')[0]);
   const [dateFilter, setDateFilter] = useState(today.toISOString().split('T')[0]);
-  const formattedDate = today.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
 
   const fetch_attendance = async () => {
     try {
-      const date = new Date(dateFilter);
-      const formattedDate = date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-      console.log(formattedDate);
-
-      setformatDateFilter(formattedDate);
-
       const response = await fetch(`${ApiHost}/api/hotel/staff/attendance/fetch`, {
         method: 'POST',
         headers: {
@@ -45,17 +28,15 @@ const StaffTable = () => {
         },
         body: JSON.stringify({
           'hotel_id': hotel_id,
-          'date': formatDateFilter
+          'date': dateFilter
         }),
       });
 
       const data = await response.json();
-
+      console.log("Attendance", data);
       if (data.returncode === 200) {
-        console.log(data.output);
         setAttendances(data.output);
       }
-
     } catch (e) {
       console.error(e);
     }
@@ -63,7 +44,6 @@ const StaffTable = () => {
 
   const fetchStaffForId = async () => {
     try {
-
       const response = await fetch(`${ApiHost}/api/hotel/staff/management/fetch`, {
         method: 'POST',
         headers: {
@@ -79,7 +59,6 @@ const StaffTable = () => {
       if (data.returncode === 200) {
         setStaff(data.output);
       }
-
     } catch (e) {
       console.error(e);
     }
@@ -87,14 +66,13 @@ const StaffTable = () => {
 
   const handleAddAttendance = async () => {
     try {
-
       const response = await fetch(`${ApiHost}/api/hotel/staff/attendance/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          'date': formattedDate,
+          'date': dateFilter,
           'arrival_time': arrival_time,
           'departure_time': departure_time,
           'type': attendance_status,
@@ -103,16 +81,16 @@ const StaffTable = () => {
       });
 
       const data = await response.json();
+      console.log(data);
 
       if (data.returncode === 200) {
-        console.log(data);
-        console.log("Attendance is Done");
+        setDisplayForm(false)
         setMessage(data.message);
         setisAttended(true);
         setTimeout(() => {
           setisAttended(false);
         }, 2000);
-        location.reload();
+        fetch_attendance(); // Refresh the data
       } else {
         console.log("Attendance is failed");
         setMessage(data.message);
@@ -121,7 +99,6 @@ const StaffTable = () => {
           setisFailed(false);
         }, 2000);
       }
-
     } catch (e) {
       console.error(e);
     }
@@ -129,12 +106,14 @@ const StaffTable = () => {
 
   useEffect(() => {
     sethotel_id(sessionStorage.getItem('hotel_id'));
+  }, []);
+
+  useEffect(() => {
     if (hotel_id) {
       fetch_attendance();
       fetchStaffForId();
     }
-  }, [hotel_id]);
-
+  }, [hotel_id, dateFilter]); // Added dateFilter to dependency array
 
   return (
     <>
@@ -188,12 +167,14 @@ const StaffTable = () => {
                       >
                         <option value="">--Select--</option>
                         {
-                          Staff.map((member, index) => (
+                          Staff.filter((staff) => staff?.Role?.toLowerCase() !== "owner")
+                            .map((member, index) => (
                             <option key={index} value={member.id} onClick={() => { sessionStorage.setItem('staff_id', member.id); }}>{member.FirstName}</option>
                           ))
                         }
                       </select>
                     </div>
+                    {/*
                     <div>
                       <label htmlFor="arrivaltime">Arrival time</label>
                       <input
@@ -212,6 +193,7 @@ const StaffTable = () => {
                         onChange={(e) => { setdeparture_time(e.target.value); }}
                       />
                     </div>
+                    */}
                     <div>
                       <label htmlFor="type">Attendance status</label>
                       <select
@@ -223,6 +205,7 @@ const StaffTable = () => {
                         <option value="">--Select--</option>
                         <option value="Present">Present</option>
                         <option value="Absent">Absent</option>
+                        <option value="Half-Day">Half-Day</option>
                       </select>
                     </div>
                     <div className="w-full inline-flex justify-between items-center my-4">
@@ -266,22 +249,38 @@ const StaffTable = () => {
               <thead>
                 <tr className="bg-red-500 text-white">
                   <th className="border px-4 py-2">#SR</th>
-                  <th className="border px-4 py-2">Staff Name</th>
-                  <th className="border px-4 py-2">Arrival Time</th>
-                  <th className="border px-4 py-2">Departure Time</th>
                   <th className="border px-4 py-2">Date</th>
+                  <th className="border px-4 py-2">Staff Name</th>
+                  <th className="border px-4 py-2">Address</th>
+                  <th className="border px-4 py-2">Department</th>
+                  <th className="border px-4 py-2">Designation</th>
                   <th className="border px-4 py-2">Status</th>
                 </tr>
               </thead>
               <tbody>
-                {attendances.map((attendance, index) => (
+                {attendances
+                  .filter((attendance) => attendance?.Staff?.Role?.toLowerCase() != "owner")
+                  .map((attendance, index) => (
                   <tr className="bg-zinc-100 border-black" key={attendance.id}>
                     <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">{attendance.Staff.FirstName} {attendance.Staff.LastName}</td>
-                    <td className="border px-4 py-2">{attendance.Arrival}</td>
-                    <td className="border px-4 py-2">{attendance.Departure}</td>
                     <td className="border px-4 py-2">{attendance.Date}</td>
-                    <td className="border px-4 py-2">{attendance.Type}</td>
+                    <td className="border px-4 py-2">{attendance.Staff.FirstName} {attendance.Staff.LastName}</td>
+                    <td className="border px-4 py-2">{attendance.Staff.Address}</td>
+                    <td className="border px-4 py-2">{attendance.Staff.DepartmentName}</td>
+                    <td className="border px-4 py-2">{attendance.Staff.Designation}</td>
+                    <td className={`border px-4 py-2 `}>
+                      <label
+                        htmlFor=""
+                        className={`text-center px-2 py-1 rounded-lg font-semibold
+                            ${(attendance.Type.toLowerCase() === "present") ? 'bg-green-200 text-green-500' :
+                            (attendance.Type.toLowerCase() === "absent") ? 'bg-red-200 text-red-500' :
+                              (attendance.Type.toLowerCase() === "Half-Day") ? 'bg-yellow-200 text-yellow-500' :
+                                'text-gray-500 bg-gray-200'
+                          }`}
+                      >
+                        {attendance.Type}
+                      </label>
+                    </td>
                   </tr>
                 ))}
               </tbody>

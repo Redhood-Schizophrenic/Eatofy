@@ -24,8 +24,6 @@ export async function auth_staff_login(data) {
 			email
 		});
 
-		console.log(result);
-		
 		if (result.returncode == 200) {
 
 			for (const user of result.output) {

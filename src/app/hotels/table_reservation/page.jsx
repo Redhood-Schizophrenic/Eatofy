@@ -33,8 +33,6 @@ const ReservationGrid = () => {
     'hotelId': hotel_id
   }
 
-  const date = new Date();
-
   const getTodaysDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -44,8 +42,6 @@ const ReservationGrid = () => {
   };
 
   const today = getTodaysDate();
-
-  console.log("Date -> ", today);
 
   async function handleFetchReservations() {
     try {
@@ -64,9 +60,7 @@ const ReservationGrid = () => {
       const data = await response.json();
 
       if (data.returncode === 200) {
-        console.log("data -> ", data);
         setData(data.output);
-        console.log("output -> ", data.output);
       } else {
         alert("Fetch Failed!!! :(")
       }
@@ -105,8 +99,6 @@ const ReservationGrid = () => {
       });
 
       const data = await response.json();
-      console.log(date);
-
       if (data.returncode === 200) {
         alert("Table Reserved Succesfully");
         setisOpen(false);
@@ -114,7 +106,6 @@ const ReservationGrid = () => {
         alert("Failed to add reservation");
       }
       handleFetchReservations();
-      // location.reload();
     } catch (e) {
       throw console.error(e);
 
@@ -139,12 +130,8 @@ const ReservationGrid = () => {
 
       const data = await response.json();
       if (data.returncode === 200) {
-        console.log("deleted", data);
         handleFetchReservations();
-      } else {
-        console.log("Failed to delete");
-      }
-
+      } 
     } catch (e) {
 
     }

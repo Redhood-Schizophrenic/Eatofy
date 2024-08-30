@@ -61,6 +61,9 @@ export async function read_customers ({
 					Status: "Inactive"
 				},
 			},
+			include: {
+				CustomerOccassion: true
+			},
 			orderBy:{
 				CustomerName: 'asc'
 			}

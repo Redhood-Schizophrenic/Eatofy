@@ -12,9 +12,6 @@ export async function add_expense(data) {
 		const amount_payable = data['amount_payable'] || 0;
 		const status = data['status'] || null;
 
-		console.log(data);
-		console.log(hotel_id, expense_name, date, note, payable_to, amount_payable, amount_paid, status);
-
 		// Default Invalid Checker
 		if (
 			hotel_id == null || expense_name == null || date == null || payable_to == null || amount_payable == null || amount_paid == null || status == null

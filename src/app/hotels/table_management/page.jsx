@@ -25,7 +25,7 @@ const Widget = () => {
 
   useEffect(() => {
     sethotelId(sessionStorage.getItem("hotel_id"));
-    if (hotelId){
+    if (hotelId) {
       fetchTables();
       fetchSections();
     }
@@ -304,7 +304,7 @@ const Widget = () => {
             <div className="bg-white p-6 rounded-lg w-full max-w-md relative">
               <button
                 onClick={handleCloseTableForm}
-                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-4xl"
               >
                 &times;
               </button>
@@ -342,27 +342,28 @@ const Widget = () => {
                         id="tablename"
                         value={tablename}
                         onChange={(e) => setTablename(e.target.value)}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-4"
                         required
                       />
+
+                      <div className="mb-4">
+                        <label
+                          className="block text-gray-700 text-sm font-bold mb-2"
+                          htmlFor="tablePersons"
+                        >
+                          Persons Occupiable
+                        </label>
+                        <input
+                          type="text"
+                          id="tablePersons"
+                          value={tablePersons}
+                          onChange={(e) => setTablePersons(Number(e.target.value))}
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          required
+                        />
+                      </div>
                     </div>
                 }
-                <div className="mb-4">
-                  <label
-                    className="block text-gray-700 text-sm font-bold mb-2"
-                    htmlFor="tablePersons"
-                  >
-                    Persons Occupiable
-                  </label>
-                  <input
-                    type="text"
-                    id="tablePersons"
-                    value={tablePersons}
-                    onChange={(e) => setTablePersons(Number(e.target.value))}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    required
-                  />
-                </div>
                 <div className="mb-4">
                   <label
                     className="block text-gray-700 text-sm font-bold mb-2"

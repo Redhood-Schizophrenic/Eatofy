@@ -9,7 +9,7 @@ const Dashboard = () => {
   // For A Week before
   const today = new Date();
   const weekbefore = new Date(today);
-  weekbefore.setDate(today.getDate() - 7);
+  weekbefore.setDate(today.getDate() - 1);
   const from_default = weekbefore.toISOString().split('T')[0];
   const to_default = today.toISOString().split('T')[0];
 

@@ -115,7 +115,7 @@ export default function Supplier_management() {
               >
                 <FaXmark size={20} />
               </button>
-              <h2 className="text-lg mb-4">Add Category</h2>
+              <h2 className="text-lg mb-4 font-bold">Add Supplier</h2>
               <form onSubmit={handleAddSupplier}>
                 <div className="mb-4">
                   <label
@@ -127,6 +127,7 @@ export default function Supplier_management() {
                   <input
                     type="text"
                     id="suppliername"
+                    placeholder="Supplier Name"
                     value={supplier_name}
                     onChange={
                       (e) => {
@@ -147,6 +148,8 @@ export default function Supplier_management() {
                   <input
                     id="contact"
                     value={contact}
+                    type="number"
+                    placeholder="1234567890"
                     onChange={
                       (e) => {
                         setcontact(e.target.value)
@@ -167,6 +170,7 @@ export default function Supplier_management() {
                     type="email"
                     id="email"
                     value={email}
+                    placeholder="Email"
                     onChange={
                       (e) => {
                         setemail(e.target.value)
@@ -185,9 +189,11 @@ export default function Supplier_management() {
                   </label>
                   <input
                     type="text"
-                    minLength={27}
+                    minLength={15}
+                    maxLength={15}
                     id="gstin"
                     value={gstin}
+                    placeholder="GST In"
                     onChange={
                       (e) => {
                         setgstin(e.target.value)

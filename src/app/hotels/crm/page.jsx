@@ -37,6 +37,8 @@ const CustomerTable = () => {
             customer_name: item.CustomerName,
             contact: item.Contact,
             email: item.Email,
+            occassion: item.CustomerOccassion[0]?.Occassion || "N/A",
+            date: item.CustomerOccassion[0]?.Date || "N/A"
           }));
           setCustomerList(mappedCustomerList);
           console.log(result)
@@ -144,6 +146,8 @@ const CustomerTable = () => {
                   <th className="border px-4 py-2">Customer Name</th>
                   <th className="border px-4 py-2">Contact</th>
                   <th className="border px-4 py-2">Email</th>
+                  <th className="border px-4 py-2">Occassion</th>
+                  <th className="border px-4 py-2">Date</th>
                 </tr>
               </thead>
               <tbody>
@@ -154,6 +158,8 @@ const CustomerTable = () => {
                     <td className="border px-4 py-2">{customer.customer_name}</td>
                     <td className="border px-4 py-2">{customer.contact}</td>
                     <td className="border px-4 py-2">{customer.email}</td>
+                    <td className="border px-4 py-2">{customer.occassion}</td>
+                    <td className="border px-4 py-2">{customer.date}</td>
                   </tr>
                 ))}
               </tbody>

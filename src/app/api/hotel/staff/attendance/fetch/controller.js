@@ -21,6 +21,8 @@ export async function fetch_hotel_staff_attendance(data) {
 			date
 		});
 
+		console.log(result);
+
 		return result;
 
 	} catch (error) {

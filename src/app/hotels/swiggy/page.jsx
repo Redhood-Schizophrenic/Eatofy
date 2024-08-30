@@ -4,13 +4,12 @@ import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import { useEffect, useRef, useState } from "react";
 import { CiSquareChevLeft, CiSquareChevRight } from "react-icons/ci";
-import { FaCreditCard, FaMinus, FaPlus, FaTrash, FaXmark } from "react-icons/fa6";
+import { FaCreditCard, FaMinus, FaPlus, FaTrash } from "react-icons/fa6";
 import { useReactToPrint } from "react-to-print";
 import { IoIosArrowBack } from "react-icons/io";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FaCashRegister, FaGooglePay } from "react-icons/fa";
-
 
 export default function Menu() {
 	const [isLoading, setLoading] = useState(false);
@@ -21,10 +20,8 @@ export default function Menu() {
 	const [ClickedCategory, setClickedCategory] = useState(null);
 	const [ShowAllDishes, setShowAllDishes] = useState(true);
 	const [HotelId, setHotelId] = useState('');
-	const [TableId, setTableId] = useState('fc09332c-76d5-497a-8185-2da23ac48ec2');
 	const [WaiterId, setWaiterId] = useState('');
 	const [isSettleBill, setisSettleBill] = useState(false);
-	// const [ShowError, setShowError] = useState(false);
 	const [disAmt, setdisAmt] = useState('');
 	const [vatAmt, setvatAmt] = useState('');
 	const [BalanceAmt, setBalanceAmt] = useState(0);
@@ -32,9 +29,8 @@ export default function Menu() {
 	const [PaymentStatus, setPaymentStatus] = useState('Paid');
 	const [IsOrderSaved, setIsOrderSaved] = useState(false);
 	const [IsOrderFailed, setIsOrderFailed] = useState(false);
-	const [TableName, setTableName] = useState('');
 	const route = useRouter();
-	const [Type, setType] = useState('');
+	const [Type, setType] = useState();
 	const billkot = useRef();
 	const bill = useRef();
 	const today = new Date();
@@ -45,7 +41,6 @@ export default function Menu() {
 	});
 
 	// Bill Management
-	const [doesBillExists, setdoesBillExists] = useState(false);
 	const [billId, setBillId] = useState("");
 	const [OldCart, setOldCart] = useState([]);
 	const [Cart, setCart] = useState([]);
@@ -62,7 +57,6 @@ export default function Menu() {
 
 
 	// Fetch Display Data
-	const [ExistingBill, setExistingBill] = useState([]);
 	const [Menus, setMenus] = useState([]);
 	const [Categories, setCategories] = useState([]);
 
@@ -174,35 +168,34 @@ export default function Menu() {
 			}));
 
 			let response;
+			if (Type == "Dine-In") {
 
-			response = await fetch(`${ApiHost}/api/hotel/orders/management/add`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					'type': Type,
-					'hotel_id': HotelId,
-					'waiter_id': WaiterId,
-					'menu_data': OrderData,
-					'customer_name': CustomerName,
-					'contact': CustomerContact,
-					'email': CustomerEmail,
-					'occassion': CustomerOccassion,
-					'date': CustomerDate
-				}),
-			});
-
+				response = await fetch(`${ApiHost}/api/hotel/orders/management/add`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						'type': Type,
+						'hotel_id': HotelId,
+						'waiter_id': WaiterId,
+						'menu_data': OrderData,
+						'customer_name': CustomerName,
+						'contact': CustomerContact,
+						'email': CustomerEmail,
+						'occassion': CustomerOccassion,
+						'date': CustomerDate
+					}),
+				});
+			}
 			if (response.status === 200) {
 				const data = await response.json();
-				console.log("Order Saved", data);
 				setBillId(data.output[0].Bill.id);
 				setIsOrderSaved(true);
 				setTimeout(() => {
 					setIsOrderSaved(false);
 				}, 2000);
 			} else {
-				console.log("Lavde Lagle BCC000000D");
 				setIsOrderFailed(true);
 				fetch_bill();
 				setTimeout(() => {
@@ -350,12 +343,12 @@ export default function Menu() {
 		setHotelId(sessionStorage.getItem('hotel_id'));
 		setTableId(sessionStorage.getItem('table_id'));
 		setWaiterId(sessionStorage.getItem('waiter_id'));
-		setType(sessionStorage.getItem('order_type'));
-		setTableName(sessionStorage.getItem('table_name'));
+		setType(sessionStorage.getItem('type'));
 
-		fetch_bill()
-	}, [HotelId,Type]);
-
+		if (HotelId) {
+			fetch_bill()
+		}
+	}, [HotelId, Type]);
 
 	return (
 		<>
@@ -445,67 +438,67 @@ export default function Menu() {
 
 								<div className="flex gap-6 px-6 flex-wrap">
 									{
-									ShowAllDishes
-										?
-										Menus.filter((menu) => {
-											const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
-											return searchMatch;
-										}).map((menu, index) => (
-											<div
-												key={index}
-												onClick={() => { handleAddToCart(menu) }}
-												id="menu"
-												className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
-													menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
-														menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
-															menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
-													}`}
-											>
-												<p className="flex flex-wrap text-lg font-semibold">
-													{menu.Dish.DishName}
-												</p>
-												<p className="flex justify-center items-center">
-													&#35;{menu.Dish.Code}
-												</p>
-												<p className="flex justify-center items-center">
-													{menu.Dish.Category.CategoryName}
-												</p>
+										ShowAllDishes
+											?
+											Menus.filter((menu) => {
+												const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+												return searchMatch;
+											}).map((menu, index) => (
+												<div
+													key={index}
+													onClick={() => { handleAddToCart(menu) }}
+													id="menu"
+													className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
+														menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
+															menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
+																menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
+														}`}
+												>
+													<p className="flex flex-wrap text-lg font-semibold">
+														{menu.Dish.DishName}
+													</p>
+													<p className="flex justify-center items-center">
+														&#35;{menu.Dish.Code}
+													</p>
+													<p className="flex justify-center items-center">
+														{menu.Dish.Category.CategoryName}
+													</p>
 
-											</div>
-										))
-										:
-										Menus.filter((menu) => {
-											// Check if the category matches or if no category is selected (show all)
-											const categoryMatch = ClickedCategory === null || menu.Dish.Category.id === ClickedCategory;
-											// Check if the dish name or code includes the search text
-											const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
-											// Return true if both conditions are met
-											return categoryMatch && searchMatch;
+												</div>
+											))
+											:
+											Menus.filter((menu) => {
+												// Check if the category matches or if no category is selected (show all)
+												const categoryMatch = ClickedCategory === null || menu.Dish.Category.id === ClickedCategory;
+												// Check if the dish name or code includes the search text
+												const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+												// Return true if both conditions are met
+												return categoryMatch && searchMatch;
 
-										}).map((menu, index) => (
-											<div
-												key={index}
-												onClick={() => { handleAddToCart(menu) }}
-												id="menu"
-												className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
-													menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
-														menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
-															menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
-													}`}
-											>
-												<p className="flex flex-wrap text-lg font-semibold">
-													{menu.Dish.DishName}
-												</p>
-												<p className="flex justify-center items-center">
-													&#35;{menu.Dish.Code}
-												</p>
-												<p className="flex justify-center items-center">
-													{menu.Dish.Category.CategoryName}
-												</p>
-											</div>
-										))
+											}).map((menu, index) => (
+												<div
+													key={index}
+													onClick={() => { handleAddToCart(menu) }}
+													id="menu"
+													className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
+														menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
+															menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
+																menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
+														}`}
+												>
+													<p className="flex flex-wrap text-lg font-semibold">
+														{menu.Dish.DishName}
+													</p>
+													<p className="flex justify-center items-center">
+														&#35;{menu.Dish.Code}
+													</p>
+													<p className="flex justify-center items-center">
+														{menu.Dish.Category.CategoryName}
+													</p>
+												</div>
+											))
 
-								}
+									}
 								</div>
 
 							</div>
@@ -846,7 +839,7 @@ export default function Menu() {
 										)
 									}
 									<div
-										onClick={() => { handleKotPrint(); handleSaveMenu(); }}
+										onClick={() => { handleKotPrint();/*  handleSaveMenu(); */ }}
 										className="w-full p-1.5 bg-red-500 font-semibold text-white text-center rounded-md cursor-pointer"
 									>Kot & Print</div>
 								</div>
@@ -855,9 +848,6 @@ export default function Menu() {
 
 
 						<div ref={billkot} className="max-w-md mx-auto p-4 border border-zinc-300 rounded-md bg-white text-black fixed left-0 top-[50dvh] z-[-500]">
-							<div className="mb-2">
-								<span><strong>{TableName}</strong></span>
-							</div>
 							<table className="w-full text-left border-collapse mb-2 border-b border-dashed border-black">
 								<thead>
 									<tr className="border-b">
@@ -878,21 +868,12 @@ export default function Menu() {
 									}
 								</tbody>
 							</table>
-							{/*
-
-							<div className="text-center m-6">
-								<span>!!! Thank You !!!</span>
-							</div>
-*/}
 						</div>
 
 						<div ref={bill} className="max-w-md mx-auto p-4 border border-zinc-300 rounded-md bg-white text-black fixed top-[50dvh] left-0 z-[-150]">
 							<div className="flex flex-col justify-between mb-2">
 								<span>Bill No: {billId.slice(0, 12)}</span>
 								<span>Date: {formattedDate}</span>
-							</div>
-							<div className="mb-2">
-								<span><strong>{TableName}</strong></span>
 							</div>
 							<table className="w-full text-left border-collapse mb-2">
 								<thead>
@@ -957,4 +938,3 @@ export default function Menu() {
 		</>
 	)
 }
-

@@ -49,8 +49,6 @@ const HotelAuth = () => {
         const userData = data.output[0].result[0];
         const id = JSON.stringify(data.output[0].result[0].id);
         sessionStorage.setItem('userData', JSON.stringify(userData));
-        // console.log('Login successful:', data);
-        // console.log(id, "id")
         setTimeout(() => {
           setIsLogged(false);
         }, timeout);
@@ -85,7 +83,6 @@ const HotelAuth = () => {
         }
 
       } else {
-        // console.error('Login failed:', response.statusText);
         setMessage(data.message);
         setIsLogged(true);
         setFailed(true);

@@ -23,6 +23,7 @@ const ExpenseTracking = () => {
   });
   const [hotel_id, sethotel_id] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isFormValid, setisFormValid] = useState(true);
 
   useEffect(() => {
     sethotel_id(sessionStorage.getItem('hotel_id'));
@@ -48,7 +49,6 @@ const ExpenseTracking = () => {
       const res = await response.json();
 
       if (res.returncode === 200) {
-        console.log(res.output);
         setExpenses(res.output);
       } else {
         console.log("Expence fetched");
@@ -59,8 +59,41 @@ const ExpenseTracking = () => {
     }
   };
 
+  const statusChangeHandler = (e) => {
+    e.preventDefault();
+    const selectedStatus = e.target.value;
+    let newAmountPayable = expenseDetails.amount_payable;
+
+    if (selectedStatus === 'Paid') {
+      newAmountPayable = 0;
+    } else if (selectedStatus === 'Partpaid') {
+      if (expenseDetails.amount_payable === 0) {
+        alert('Balance cannot be zero');
+        setisFormValid(false);
+        return;
+      }
+    } else if (selectedStatus === 'Unpaid') {
+      if (expenseDetails.amount_payable === 0) {
+        alert('Balance cannot be zero');
+        setisFormValid(false);
+        return;
+      }
+    }
+
+    setExpenseDetails(prevState => ({
+      ...prevState,
+      status: selectedStatus,
+      amount_payable: newAmountPayable,
+    }));
+    setisFormValid(true);
+  };
+
   const handleAddExpense = async (e) => {
     e.preventDefault();
+    if (!isFormValid) {
+      alert("Please follow the instructions properly")
+    };
+
     try {
       const response = await fetch(`${ApiHost}/api/hotel/expenses/management/add`, {
         method: 'POST',
@@ -87,7 +120,7 @@ const ExpenseTracking = () => {
         console.log("Expense added successfully");
         setShowAddExpenseForm(false);
       } else {
-        console.log("Failed to add expence")
+        console.log("Failed to add expense");
       }
 
     } catch (error) {
@@ -164,7 +197,7 @@ const ExpenseTracking = () => {
       <div className="flex-1 ml-[70px] p-8">
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold">
-            Expenses <span className="text-red-500">Tracking</span>
+            Expenses <span className="text-red-500">Management</span>
           </h2>
           <button
             className="bg-red-500 text-white w-30 h-10 px-4 py-2 rounded font-semibold"
@@ -240,9 +273,8 @@ const ExpenseTracking = () => {
                     </div>
                     <div className="">
                       <label className="block ">Category<span className="text-red-500">*</span></label>
-                      <input
-                        type="text"
-                        placeholder="eg; Salary, Purchases"
+                      <select
+                        name="category"
                         className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
                         value={expenseDetails.category}
                         onChange={(e) =>
@@ -252,7 +284,12 @@ const ExpenseTracking = () => {
                           })
                         }
                         required
-                      />
+                      >
+                        <option value="">--Select--</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Purchases">Purchase</option>
+                        <option value="Miscellaneous">Misscellaneous (Other)</option>
+                      </select>
                     </div>
                     <div className="">
                       <label className="block text-zinc-700">Date<span className="text-red-500">*</span></label>
@@ -271,7 +308,7 @@ const ExpenseTracking = () => {
                   </div>
                   <div className="w-[100%] text-black font-medium flex flex-col gap-6">
                     <div className="">
-                      <label className="block">Balance Amount<span className="text-red-500">*</span></label>
+                      <label className="block">Balance Amount</label>
                       <input
                         type="number"
                         className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
@@ -304,12 +341,8 @@ const ExpenseTracking = () => {
                         name="status"
                         value={expenseDetails.status}
                         className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
-                        onChange={(e) =>
-                          setExpenseDetails({
-                            ...expenseDetails,
-                            status: e.target.value,
-                          })
-                        }
+                        onChange={statusChangeHandler}
+
                       >
                         <option value="">--Select--</option>
                         <option value="Paid">Paid</option>
@@ -376,9 +409,8 @@ const ExpenseTracking = () => {
                     </div>
                     <div className="">
                       <label className="block ">Category<span className="text-red-500">*</span></label>
-                      <input
-                        type="text"
-                        placeholder="eg; Salary, Purchases"
+                      <select
+                        name="category"
                         className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
                         value={expenseDetails.category}
                         onChange={(e) =>
@@ -388,7 +420,12 @@ const ExpenseTracking = () => {
                           })
                         }
                         required
-                      />
+                      >
+                        <option value="">--Select--</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Purchases">Purchase</option>
+                        <option value="Miscellaneous">Misscellaneous (Other)</option>
+                      </select>
                     </div>
                     <div className="">
                       <label className="block text-zinc-700">Date<span className="text-red-500">*</span></label>
@@ -495,25 +532,25 @@ const ExpenseTracking = () => {
               <tbody>
                 {
                   filteredExpenses.map((expense, index) => (
-                  <tr className="bg-zinc-100 border-black" key={expense.id}>
-                    <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">{expense.PayableTo}</td>
-                    <td className="border px-4 py-2">{expense.ExpenseName}</td>
-                    <td className="border px-4 py-2">₹{expense.AmountPaid}</td>
-                    <td className="border px-4 py-2">₹{expense.AmountPayable}</td>
-                    <td className="border px-4 py-2">{expense.PaymentStatus}</td>
-                    <td className="border px-4 py-2">{expense.Note}</td>
-                    <td className="border px-4 py-2">
-                      <button
-                        onClick={() => {
-                          updateParams(expense);
-                        }}
-                      >
-                        <MdOutlineEdit size={20} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                    <tr className="bg-zinc-100 border-black" key={expense.id}>
+                      <td className="border px-4 py-2">{index + 1}</td>
+                      <td className="border px-4 py-2">{expense.PayableTo}</td>
+                      <td className="border px-4 py-2">{expense.ExpenseName}</td>
+                      <td className="border px-4 py-2">₹{expense.AmountPaid}</td>
+                      <td className="border px-4 py-2">₹{expense.AmountPayable}</td>
+                      <td className="border px-4 py-2">{expense.PaymentStatus}</td>
+                      <td className="border px-4 py-2">{expense.Note}</td>
+                      <td className="border px-4 py-2">
+                        <button
+                          onClick={() => {
+                            updateParams(expense);
+                          }}
+                        >
+                          <MdOutlineEdit size={20} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

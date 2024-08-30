@@ -1,5 +1,5 @@
-import { create_available_stock } from "@/db/crud/inventory/available_stock/create";
-import { check_available_stock } from "@/db/crud/inventory/available_stock/read";
+import { create_available_stock } from "../../../../../../../db/crud/inventory/available_stock/create";
+import { check_available_stock } from "../../../../../../../db/crud/inventory/available_stock/read";
 
 export async function add_available_stock(data) {
 	try {

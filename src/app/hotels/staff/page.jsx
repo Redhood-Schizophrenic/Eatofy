@@ -334,8 +334,16 @@ const StaffTable = () => {
                       <td className="border px-4 py-2">{staff.email}</td>
                       <td className="border px-4 py-2">{staff.department_name}</td>
                       <td className="border px-4 py-2">{staff.designation}</td>
-                      <td className="border px-4 py-2">{staff.salary}</td>
-                      <td className="border px-4 py-2">{staff.incentives}</td>
+                      <td className="border px-4 py-2">
+                        {
+                          staff.role == "Owner" ? "N/A" : staff.salary
+                        }
+                      </td>
+                      <td className="border px-4 py-2">
+                        {
+                          staff.role == "Owner" ? "N/A" : staff.incentives
+                        }
+                      </td>
                       <td className="border px-4 py-2">
                         <div className="cursor-pointer">
                           <button onClick={() => { handleupdate(staff) }} className="">
