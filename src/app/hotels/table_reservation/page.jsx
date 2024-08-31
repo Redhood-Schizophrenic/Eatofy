@@ -156,9 +156,10 @@ const ReservationGrid = () => {
 
   const filteredReservation = data.filter((data_var) => {
     const reservationDate = new Date(data_var.Date);
+    const todays_date = new Date(today);
 
     // Check if the reservationDate is today or in the future
-    const isFutureOrToday = reservationDate >= today;
+    const isFutureOrToday = reservationDate >= todays_date;
 
     // Check if the CustomerName or Contact matches the search query
     const matchesQuery =
