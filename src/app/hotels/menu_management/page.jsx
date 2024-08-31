@@ -57,34 +57,35 @@ const MenuManagement = () => {
     }
   }
 
-  useEffect(() => {
+  const MenuFetch = async () => {
 
-    const MenuFetch = async () => {
+    try {
 
-      try {
+      const response = await fetch(`${ApiHost}/api/hotel/menu/fetch`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          'hotel_id': sessionStorage.getItem('hotel_id')
+        }),
+      });
 
-        const response = await fetch(`${ApiHost}/api/hotel/menu/fetch`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            'hotel_id': sessionStorage.getItem('hotel_id')
-          }),
-        });
+      const data = await response.json();
 
-        const data = await response.json();
-
-        if (data.returncode === 200) {
-          setHotelDishes(data.output[0].Menus);
-          setdisplayAllDishes(true);
-          setSection(data.output[0].Sections);
-        }
-      }
-      catch (e) {
-        throw console.error(e);
+      if (data.returncode === 200) {
+        setHotelDishes(data.output[0].Menus);
+        setdisplayAllDishes(true);
+        setSection(data.output[0].Sections);
       }
     }
+    catch (e) {
+      throw console.error(e);
+    }
+  }
+
+  useEffect(() => {
+
 
     MenuFetch();
   }, [])
@@ -115,6 +116,7 @@ const MenuManagement = () => {
         setSuccessMessage(data.message);
         setShowaddmenu(false);
         hotelDishes();
+        location.reload();
       } else {
         setErrorMessage(data.message);
       }
@@ -148,6 +150,7 @@ const MenuManagement = () => {
         setSuccessMessage(data.message);
         setShoweditmenu(false);
         hotelDishes();
+        location.reload();
       } else {
         setErrorMessage(data.message);
       }
@@ -180,6 +183,7 @@ const MenuManagement = () => {
         setSuccessMessage(data.message);
         setShoweditmenu(false);
         hotelDishes();
+        location.reload();
       } else {
         setErrorMessage(data.message);
       }
@@ -428,7 +432,7 @@ const MenuManagement = () => {
             <div>
               <input
                 type="text"
-                className="rounded-lg text-sm bg-black text-white"
+                className="rounded-lg text-sm bg-white text-black"
                 placeholder="Search by name or code"
                 value={Search}
                 onChange={handleSearch}

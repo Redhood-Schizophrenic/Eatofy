@@ -9,7 +9,7 @@ export default function HotelSubscription() {
 
 	const [data, setdata] = useState([]);
 	const [valid, setvalid] = useState(false);
-	const [isvalid, setisvalid] = useState('');
+	const [isvalid, setisvalid] = useState(true);
 	const [start_date, setstart_date] = useState('');
 	const [start_time, setstart_time] = useState('');
 	const [end_date, setend_date] = useState('');
@@ -40,7 +40,7 @@ export default function HotelSubscription() {
 				body: JSON.stringify({
 					'hotel_id': hotel_id,
 					'subscription_id': subscription_id,
-					'is_valid': valid,
+					'is_valid': true,
 					'start_date': start_date,
 					'start_time': start_time,
 					'end_date': end_date,
@@ -53,7 +53,7 @@ export default function HotelSubscription() {
 				setdata(data);
 				if (data.returncode == 200) {
 					setSuccessMessage(data.message);
-					route.push('/eatofy/add/hotels');
+					// route.push('/eatofy/add/hotels');
 				} else {
 					setErrorMessage(data.message);
 				}
@@ -88,7 +88,7 @@ export default function HotelSubscription() {
 			// console.log(end_time, "hello")
 		}
 
-	}, [start_date, valnum, end_time])
+	}, [start_date, end_time])
 
 	function convertTo24Hour(timeStr) {
 		let [time, modifier] = timeStr.split(' ');
@@ -102,13 +102,6 @@ export default function HotelSubscription() {
 		}
 
 		return `${hours.toString().padStart(2, '0')}:${minutes}`;
-	}
-
-	// console.log(`${start_date}T${start_time}`);
-	// console.log(isvalid)
-
-	function SelectMy() {
-		isvalid ? setisvalid(false) : setisvalid(true);
 	}
 
 	return (
@@ -127,11 +120,11 @@ export default function HotelSubscription() {
 							name="validation"
 							className="bg-black bg-opacity-20 rounded w-full py-2 px-3 leading-tight"
 							value={isvalid}
-							onChange={SelectMy}
+							onChange={ (e) => setisvalid(e.target.value)}
 						>
 							<option value="">--- Select ---</option>
-							<option value="true">Valid</option>
-							<option value="false">Not Valid</option>
+							<option value={true}>Valid</option>
+							<option value={false}>Not Valid</option>
 						</select>
 					</div>
 					<div className="w-[60%]">

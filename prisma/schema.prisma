@@ -17,36 +17,37 @@ model User {
 }
 
 model Hotels {
-  id                  String                @id @unique @default(uuid())
-  HotelName           String                @unique
-  Email               String                @unique
-  HashedPassword      String
-  SaltPassword        String
-  Address             String
-  Speciality          String[]
-  HotelLogo           Bytes?
-  Contacts            String[]
-  Website             String?
-  FSSAICode           String
-  createdAt           DateTime              @default(now())
-  updatedAt           DateTime              @updatedAt
-  AvailableStock      AvailableStock[]
-  Bills               Bills[]
-  ComplianceChecklist ComplianceChecklist[]
-  Customers           Customers[]
-  Dishes              Dishes[]
-  Expenses            Expenses[]
-  Subscription        Hotel_Subscription[]
-  ItemCategory        ItemCategories[]
-  Items               Items[]
-  MenuCategory        MenuCategory[]
-  Order               Orders[]
-  Invoice             PurchasedInvoice[]
-  Sections            Sections[]
-  Staff               Staffs[]
-  Supplier            Suppliers[]
-  Reservations        TableReservation[]
-  Tables              Tables[]
+  id                   String                 @id @unique @default(uuid())
+  HotelName            String                 @unique
+  Email                String                 @unique
+  HashedPassword       String
+  SaltPassword         String
+  Address              String
+  Speciality           String[]
+  HotelLogo            Bytes?
+  Contacts             String[]
+  Website              String?
+  FSSAICode            String
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  AvailableStock       AvailableStock[]
+  Bills                Bills[]
+  ComplianceChecklist  ComplianceChecklist[]
+  Customers            Customers[]
+  Dishes               Dishes[]
+  Expenses             Expenses[]
+  Subscription         Hotel_Subscription[]
+  ItemCategory         ItemCategories[]
+  Items                Items[]
+  MenuCategory         MenuCategory[]
+  Order                Orders[]
+  Invoice              PurchasedInvoice[]
+  Sections             Sections[]
+  Staff                Staffs[]
+  Supplier             Suppliers[]
+  Reservations         TableReservation[]
+  Tables               Tables[]
+  AvailableStockReport AvailableStockReport[]
 }
 
 model Subscriptions {
@@ -183,19 +184,20 @@ model ItemCategories {
 }
 
 model Items {
-  id             String           @id @unique @default(uuid())
-  ItemName       String
-  Description    String?
-  HotelId        String
-  CategoryId     String
-  Status         String           @default("Active")
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  AvailableStock AvailableStock[]
-  DailyStock     DailyStock[]
-  Category       ItemCategories   @relation(fields: [CategoryId], references: [id])
-  Hotel          Hotels           @relation(fields: [HotelId], references: [id])
-  PurchasedStock PurchasedStock[]
+  id                   String                 @id @unique @default(uuid())
+  ItemName             String
+  Description          String?
+  HotelId              String
+  CategoryId           String
+  Status               String                 @default("Active")
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  AvailableStock       AvailableStock[]
+  DailyStock           DailyStock[]
+  Category             ItemCategories         @relation(fields: [CategoryId], references: [id])
+  Hotel                Hotels                 @relation(fields: [HotelId], references: [id])
+  PurchasedStock       PurchasedStock[]
+  AvailableStockReport AvailableStockReport[]
 }
 
 model PurchasedInvoice {
@@ -236,6 +238,20 @@ model AvailableStock {
   Quantity  String
   Unit      String
   Status    String   @default("Available")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Hotel     Hotels   @relation(fields: [HotelId], references: [id])
+  Items     Items    @relation(fields: [ItemId], references: [id])
+}
+
+model AvailableStockReport {
+  id        String   @id @unique @default(uuid())
+  HotelId   String
+  ItemId    String
+  Quantity  String
+  Unit      String
+  Status    String   @default("Available")
+  Date      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Hotel     Hotels   @relation(fields: [HotelId], references: [id])

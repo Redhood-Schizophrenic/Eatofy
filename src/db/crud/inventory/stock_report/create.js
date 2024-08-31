@@ -1,10 +1,11 @@
 import db from "@/db/connector";
 
-export async function create_available_stock({
+export async function create_available_stock_report({
+	date,
 	item_id,
 	quantity,
 	hotel_id,
-	unit
+	unit,
 }) {
 	try {
 
@@ -12,24 +13,26 @@ export async function create_available_stock({
 
 		// Inserting the record
 		if (quantity <= 10) {
-			result = await db.availableStock.create({
+			result = await db.availableStockReport.create({
 				data: {
 					ItemId: item_id,
 					Quantity: quantity,
 					HotelId: hotel_id,
 					Unit: unit,
-					Status: "Low Stock"
+					Status: "Low Stock",
+					Date: date
 				}
 			});
 
 		}
 		else {
-			result = await db.availableStock.create({
+			result = await db.availableStockReport.create({
 				data: {
 					ItemId: item_id,
 					Quantity: quantity,
 					HotelId: hotel_id,
-					Unit: unit
+					Unit: unit,
+					Date: date
 				}
 			});
 

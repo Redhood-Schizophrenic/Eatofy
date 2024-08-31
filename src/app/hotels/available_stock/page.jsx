@@ -19,6 +19,12 @@ export default function Available_stock() {
   const [itemId, setitemId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Get today's date
+  const today = new Date();
+
+  // Format the date to 'mm/dd/yyyy'
+  const formattedDate = today.toLocaleDateString('en-US');
+
   const fetchItems = async () => {
     try {
       setLoading(true);
@@ -101,6 +107,27 @@ export default function Available_stock() {
     }
   };
 
+  const closingStock = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${ApiHost}/api/hotel/inventory/stock_report/management/closing_stock`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ hotel_id, date: formattedDate }),
+      });
+      const data = await response.json();
+      if (data.returncode === 200) {
+        location.href = "/hotels/home"
+      } else {
+        console.log("Failed to add stock");
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
@@ -137,9 +164,17 @@ export default function Available_stock() {
             placeholder="Search item name..."
             className="px-4 py-2 border rounded-lg"
           />
-          <button onClick={() => setShowTableForm(!ShowTableForm)} className="text-xl bg-red-500 text-white p-2 rounded-lg m-4 text-right">
-            Add Stock
-          </button>
+          <div className='flex'>
+            <button
+              className="text-xl bg-red-500 text-white p-2 rounded-lg m-4 text-right"
+              onClick={closingStock}
+            >
+              Closing Stock
+            </button>
+            <button onClick={() => setShowTableForm(!ShowTableForm)} className="text-xl bg-red-500 text-white p-2 rounded-lg m-4 text-right">
+              Add Stock
+            </button>
+          </div>
         </div>
 
         {ShowTableForm && (
@@ -183,14 +218,19 @@ export default function Available_stock() {
                     </div>
                     <div className="w-1/2 mb-4">
                       <label className="block text-gray-700 text-sm font-bold mb-2">Unit</label>
-                      <input
-                        type="text"
+                      <select
+                        className="rounded-lg w-full"
                         value={unit}
-                        placeholder="e.g. KG, LTR, etc."
                         onChange={(e) => setunit(e.target.value)}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         required
-                      />
+                      >
+                        <option value="">-- Select --</option>
+                        <option value="kg">kg (Kilograms)</option>
+                        <option value="g">g (Grams)</option>
+                        <option value="mg">mg (Milligrams)</option>
+                        <option value="l">l (Litres)</option>
+                        <option value="ml">ml (Millilitres)</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -236,7 +276,7 @@ export default function Available_stock() {
                   >
                     Edit
                   </button>
-                  </div>              
+                </div>
               </form>
             </div>
           </div>
