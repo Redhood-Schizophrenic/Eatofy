@@ -45,7 +45,9 @@ export async function add_invoice(data) {
 					invoice_id,
 					quantity: stock.quantity,
 					unit: stock.unit,
-					item_id: stock.item_id
+					item_id: stock.item_id,
+					per_price: stock.per_price,
+					total_price: `${stock.total_price}`
 				}
 
 				const stock_result = add_purchase_stock(data);

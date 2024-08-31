@@ -61,6 +61,7 @@ const StaffTable = () => {
           hotel_id
         });
         setEditFormVisible(false);
+        fetchStaffList();
       } else {
         console.error("Failed to add staff");
       }
@@ -125,6 +126,7 @@ const StaffTable = () => {
           hotel_id
         });
         setEditFormVisible(false);
+        fetchStaffList();
       } else {
         console.error("Failed to add staff");
       }
@@ -253,8 +255,6 @@ const StaffTable = () => {
       });
 
       if (response.ok) {
-        const result = await response.json();
-        setStaffList([...staffList, result]);
         setFormData({
           first_name: "",
           last_name: "",
@@ -270,6 +270,7 @@ const StaffTable = () => {
           hotel_id
         });
         setFormVisible(false);
+        fetchStaffList();
       } else {
         console.error("Failed to add staff");
       }

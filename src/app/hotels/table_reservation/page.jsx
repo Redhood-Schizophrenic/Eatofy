@@ -29,6 +29,18 @@ const ReservationGrid = () => {
     })
   }
 
+  const reset_values = () => {
+    setcustomer('');
+    setsubmitData({
+      date: '',
+      time: '',
+    });
+    setnote('');
+    setcontact('');
+    setNo_of_persons('');
+
+  }
+
   const requestdata = {
     'hotelId': hotel_id
   }
@@ -100,8 +112,8 @@ const ReservationGrid = () => {
 
       const data = await response.json();
       if (data.returncode === 200) {
-        alert("Table Reserved Succesfully");
         setisOpen(false);
+        reset_values();
       } else {
         alert("Failed to add reservation");
       }
@@ -110,6 +122,7 @@ const ReservationGrid = () => {
       throw console.error(e);
 
     }
+
   }
 
   const handleDelete = async () => {
@@ -131,7 +144,7 @@ const ReservationGrid = () => {
       const data = await response.json();
       if (data.returncode === 200) {
         handleFetchReservations();
-      } 
+      }
     } catch (e) {
 
     }
@@ -141,9 +154,20 @@ const ReservationGrid = () => {
     setSearchQuery(e.target.value);
   };
 
-  const filteredReservation = data.filter((data_var) =>
-    data_var.Customer.CustomerName.toLowerCase().includes(searchQuery.toLowerCase()) || data_var.Customer.Contact.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredReservation = data.filter((data_var) => {
+    const reservationDate = new Date(data_var.Date);
+
+    // Check if the reservationDate is today or in the future
+    const isFutureOrToday = reservationDate >= today;
+
+    // Check if the CustomerName or Contact matches the search query
+    const matchesQuery =
+      data_var.Customer.CustomerName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      data_var.Customer.Contact.toLowerCase().includes(searchQuery.toLowerCase());
+
+    // Combine both conditions
+    return isFutureOrToday && matchesQuery;
+  });
 
   return (
     <>
@@ -151,7 +175,7 @@ const ReservationGrid = () => {
       <div className="ml-[70px] flex flex-col p-4 text-black min-h-screen bg-white">
         <div className="flex flex-col items-center md:flex-row justify-between mb-8">
           <h2 className="text-3xl font-bold  text-center mb-2 md:mb-0">
-            Table <span className="text-red-500">Reservation</span>
+            Hotel <span className="text-red-500">Reservation</span>
           </h2>
 
           <div>
@@ -275,7 +299,8 @@ const ReservationGrid = () => {
           ?
           <div className="fixed top-0 left-0 w-full h-dvh bg-black bg-opacity-55 flex justify-center items-center backdrop-blur-sm">
             <div className='w-[800px] h-[600px] bg-white p-4 relative rounded-lg'>
-              <div className='absolute flex justify-end items-center z-0 top-0 left-0 w-full h-[60px] bg-red-500 rounded-lg'>
+              <div className='absolute flex justify-between items-center z-0 top-0 left-0 w-full h-[60px] rounded-lg pl-8'>
+                <h3 className='text-2xl font-bold text-red-500'> Add Reservation </h3>
                 <div
                   onClick={() => { setisOpen(false) }}
                   className='w-[30px] h-[30px] mx-4 inline-flex justify-center items-center rounded-full border-2 border-black'>
@@ -286,13 +311,13 @@ const ReservationGrid = () => {
                 <div className="w-full flex justify-evenly items-start rounded-lg p-4">
                   <div className='w-1/2'>
                     <div className='p-2 w-full'>
-                      <label htmlFor="customer">Customer Name</label>
+                      <label htmlFor="customer">Customer Name<span className="text-red-500">*</span></label>
                       <input
                         type="text"
                         placeholder="Customer name"
                         value={customer}
                         required
-                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-500 focus:outline-red-500 rounded-lg"
                         onChange={(e) => {
                           setcustomer(e.target.value)
                         }}
@@ -306,7 +331,7 @@ const ReservationGrid = () => {
                         name='date'
                         required
                         value={submitData.date}
-                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200  focus:outline-red-500 rounded-lg"
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-500  focus:outline-red-500 rounded-lg"
                         onChange={handleClick}
                       />
                     </div>
@@ -318,20 +343,20 @@ const ReservationGrid = () => {
                         name='time'
                         required
                         value={submitData.time}
-                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-500 focus:outline-red-500 rounded-lg"
                         onChange={handleClick}
                       />
                     </div>
                   </div>
                   <div className='w-1/2'>
                     <div className='p-2 w-full'>
-                      <label htmlFor="customer">Customer Contact</label>
+                      <label htmlFor="customer">Customer Contact<span className="text-red-500">*</span></label>
                       <input
                         type="text"
                         placeholder="Contact"
                         value={contact}
                         required
-                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-500 focus:outline-red-500 rounded-lg"
                         onChange={(e) => {
                           setcontact(e.target.value)
                         }}
@@ -343,7 +368,7 @@ const ReservationGrid = () => {
                         type="text"
                         placeholder="Note"
                         value={note}
-                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-500 focus:outline-red-500 rounded-lg"
                         onChange={(e) => {
                           setnote(e.target.value);
                         }}
@@ -356,7 +381,7 @@ const ReservationGrid = () => {
                         placeholder="No of Persons"
                         value={no_of_persons}
                         required
-                        className="p-2 w-full text-sm focus:outline-none border border-zinc-200 focus:outline-red-500 rounded-lg"
+                        className="p-2 w-full text-sm focus:outline-none border border-zinc-500 focus:outline-red-500 rounded-lg"
                         onChange={(e) => {
                           setNo_of_persons(e.target.value);
                         }}
@@ -364,8 +389,9 @@ const ReservationGrid = () => {
                     </div>
                   </div>
                 </div>
-                <div className='w-full my-4 p-5'>
-                  <button type='submit' className="bg-red-500 text-white text-xl p-2 rounded-lg">Submit</button>
+                <div className='w-full my-4 p-5 flex gap-4'>
+                  <button type='submit' className="bg-red-500 text-white p-2 rounded-lg">Submit</button>
+                  <button type='reset' onClick={() => { setisOpen(false); reset_values(); }} className="bg-gray-500 text-white p-2 rounded-lg">Close</button>
                 </div>
               </form>
             </div>

@@ -1,5 +1,6 @@
 import { create_reservation } from "@/db/crud/reservations/create";
 import { read_customer } from "@/db/crud/customers/management/read";
+import { ApiHost } from "@/constants/url_consts";
 
 
 export async function add_customer(data) {
@@ -9,7 +10,7 @@ export async function add_customer(data) {
 		const time = data['time'] || null;
 		const customer_name = data['customer_name'] || null;
 		const hotel_id = data['hotel_id'] || null;
-		const note = data['occassion'] || null;
+		const note = data['note'] || null;
 		const no_of_persons = data['no_of_persons'] || null;
 		const contact = data['contact'] || null;
 
@@ -28,7 +29,7 @@ export async function add_customer(data) {
 		let existingCustomer = await read_customer({ customer_name, contact });
 
 		if (existingCustomer.returncode != 200) {
-			const response = await fetch("https://eatofy.in/api/hotel/customers/management/add", {
+			const response = await fetch(`${ApiHost}/api/hotel/customers/management/add`, {
 				headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
@@ -54,7 +55,7 @@ export async function add_customer(data) {
 		try {
 			// Check if existingCustomer.output is an array or object
 			if (Array.isArray(existingCustomer.output)) {
-				customer_id = existingCustomer.output[0].id;
+				customer_id = existingCustomer?.output[0]?.id;
 			} else {
 				customer_id = existingCustomer.output.id;
 			}

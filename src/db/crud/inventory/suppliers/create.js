@@ -6,7 +6,8 @@ export async function create_supplier ({
 	email,
 	gstin,
 	address,
-	hotel_id
+	hotel_id,
+	supplier_type
 }) {
 	try {
 
@@ -18,6 +19,7 @@ export async function create_supplier ({
 				Email: email,
 				GSTIN: gstin,
 				Address: address,
+				SupplierType: supplier_type,
 				HotelId: hotel_id
 			}
 		});

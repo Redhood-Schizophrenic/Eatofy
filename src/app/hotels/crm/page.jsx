@@ -14,7 +14,7 @@ const CustomerTable = () => {
     email: "",
     occassion: "",
     date: "",
-    hotel_id: hotel_id
+    hotel_id: ''
   });
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -54,7 +54,8 @@ const CustomerTable = () => {
   };
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem('hotel_id'));
+    const hotelId = sessionStorage.getItem('hotel_id');
+    sethotel_id(hotelId);
     if (hotel_id){
       fetchCustomerList();
     }
@@ -69,6 +70,7 @@ const CustomerTable = () => {
     setFormData({
       ...formData,
       [name]: value,
+      hotel_id: hotel_id
     });
   };
 
@@ -174,7 +176,7 @@ const CustomerTable = () => {
                   <div className="flex gap-6 justify-center">
                     <div className="w-1/2">
                       <div className="mb-4">
-                        <label className="block mb-2 text-black">Customer Name</label>
+                        <label className="block mb-2 text-black">Customer Name<span className="text-red-500">*</span></label>
                         <input
                           type="text"
                           name="customer_name"
@@ -185,7 +187,7 @@ const CustomerTable = () => {
                         />
                       </div>
                       <div className="mb-4">
-                        <label className="block mb-2 text-black">Contact</label>
+                        <label className="block mb-2 text-black">Contact<span className="text-red-500">*</span></label>
                         <input
                           type="text"
                           name="contact"

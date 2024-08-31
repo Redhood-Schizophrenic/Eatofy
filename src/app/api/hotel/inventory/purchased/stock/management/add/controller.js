@@ -3,16 +3,15 @@ import { create_purchase_stock } from "@/db/crud/inventory/purchases/stock/creat
 export async function add_purchase_stock(data) {
 	try {
 
-		const invoice_id = data['invoice_id'];
-		const item_id = data['item_id'];
-		const quantity = data['quantity'];
-		const unit = data['unit'];
+		const invoice_id = data['invoice_id'] || null;
+		const item_id = data['item_id'] || null;
+		const quantity = data['quantity'] || null;
+		const unit = data['unit'] || null;
+		const per_price = data['per_price'] || null;
+		const total_price = data['total_price'] || null;
 
 		// Default Invalid Checker
-		if ( invoice_id == null || item_id == null || quantity == null || unit == null ||
-			invoice_id == undefined || item_id == undefined || quantity == undefined || unit == undefined ||
-			invoice_id == "" || item_id == "" || quantity == "" || unit == ""
-		) {
+		if ( invoice_id == null || item_id == null || quantity == null || unit == null || per_price == null || total_price == null ) {
 			return {
 				returncode: 400,
 				message: 'Invalid Input',
@@ -25,7 +24,9 @@ export async function add_purchase_stock(data) {
 			invoice_id,
 			item_id,
 			quantity,
-			unit
+			unit,
+			per_price,
+			total_price
 		});
 
 		console.log(result);

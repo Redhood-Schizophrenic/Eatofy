@@ -4,7 +4,9 @@ export async function create_purchase_stock ({
 	invoice_id,
 	item_id,
 	quantity,
-	unit
+	unit,
+	per_price,
+	total_price
 }){
 	try {
 
@@ -14,7 +16,9 @@ export async function create_purchase_stock ({
 				InvoiceId: invoice_id,
 				ItemId: item_id,
 				Quantity: quantity,
-				Unit: unit
+				Unit: unit,
+				PerPrice: per_price,
+				Price: total_price
 			}
 		});
 

@@ -159,16 +159,17 @@ model Menus {
 model Suppliers {
   id           String             @id @unique @default(uuid())
   SupplierName String
+  SupplierType String
   Contact      String
   Email        String
   GSTIN        String
-  Address      String?
+  Address      String
   Status       String             @default("Active")
   HotelId      String
   createdAt    DateTime           @default(now())
   updatedAt    DateTime           @updatedAt
   StockInvoice PurchasedInvoice[]
-  Hotel        Hotels             @relation(fields: [HotelId], references: [id])
+  Hotel        Hotels?            @relation(fields: [HotelId], references: [id])
 }
 
 model ItemCategories {
@@ -225,6 +226,8 @@ model PurchasedStock {
   Status    String           @default("Active")
   Quantity  String
   Unit      String
+  PerPrice  String
+  Price     String
   createdAt DateTime         @default(now())
   updatedAt DateTime         @updatedAt
   Invoice   PurchasedInvoice @relation(fields: [InvoiceId], references: [id])

@@ -13,6 +13,8 @@ export default function Supplier_management() {
   const [contact, setcontact] = useState('');
   const [email, setemail] = useState('');
   const [gstin, setgstin] = useState('');
+  const [address, setaddress] = useState('');
+  const [supplier_type, setsupplier_type] = useState('');
   const [showaddmenu, setShowaddmenu] = useState(false);
   const [hotel_id, sethotel_id] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -65,7 +67,9 @@ export default function Supplier_management() {
           'supplier_name': supplier_name,
           'contact': contact,
           'email': email,
-          'gstin': gstin
+          'gstin': gstin,
+          'supplier_type': supplier_type,
+          'address': address
         }),
       });
 
@@ -141,6 +145,27 @@ export default function Supplier_management() {
                 <div className="mb-4">
                   <label
                     className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="supplier_type"
+                  >
+                    Supplier Type
+                  </label>
+                  <input
+                    type="text"
+                    id="supplier_type"
+                    value={supplier_type}
+                    placeholder="eg; Groceries, Beverages, etc."
+                    onChange={
+                      (e) => {
+                        setsupplier_type(e.target.value)
+                      }
+                    }
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
                     htmlFor="contact"
                   >
                     Contact
@@ -153,6 +178,27 @@ export default function Supplier_management() {
                     onChange={
                       (e) => {
                         setcontact(e.target.value)
+                      }
+                    }
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    required
+                  />
+                </div>
+                <div className="mb-4">
+                  <label
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                    htmlFor="address"
+                  >
+                    Address
+                  </label>
+                  <input
+                    id="address"
+                    value={address}
+                    type="text"
+                    placeholder="Address"
+                    onChange={
+                      (e) => {
+                        setaddress(e.target.value)
                       }
                     }
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
@@ -242,6 +288,9 @@ export default function Supplier_management() {
                   <div>Name</div>
                 </th>
                 <th className='border p-2'>
+                  <div>Supplier Type</div>
+                </th>
+                <th className='border p-2'>
                   <div>Contact</div>
                 </th>
                 <th className='border p-2'>
@@ -249,6 +298,9 @@ export default function Supplier_management() {
                 </th>
                 <th className='border p-2'>
                   <div>GSTIN</div>
+                </th>
+                <th className='border p-2'>
+                  <div>Address</div>
                 </th>
               </tr>
             </thead>
@@ -260,6 +312,13 @@ export default function Supplier_management() {
                       <div className="flex flex-col sm:flex-row items-center">
                         {
                           <span>{items.SupplierName}</span>
+                        }
+                      </div>
+                    </td>
+                    <td className="p-2">
+                      <div className="flex flex-col sm:flex-row items-center">
+                        {
+                            <span>{items.SupplierType}</span>
                         }
                       </div>
                     </td>
@@ -281,6 +340,13 @@ export default function Supplier_management() {
                       <div className="flex flex-col sm:flex-row items-center">
                         {
                           <span>{items.GSTIN}</span>
+                        }
+                      </div>
+                    </td>
+                    <td className="p-2">
+                      <div className="flex flex-col sm:flex-row items-center">
+                        {
+                          <span>{items.Address}</span>
                         }
                       </div>
                     </td>

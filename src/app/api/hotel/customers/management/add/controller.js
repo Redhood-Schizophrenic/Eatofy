@@ -13,7 +13,7 @@ export async function add_customer(data) {
 		const date = data['date'];
 
 		// Default Invalid Checker
-		if ( hotel_id == null || customer_name == null || contact == null ) {
+		if (hotel_id == null || customer_name == null || contact == null) {
 			return {
 				returncode: 400,
 				message: 'Invalid Input',
@@ -24,7 +24,8 @@ export async function add_customer(data) {
 
 		// Existing Customer Name
 		const existingCustomer = await read_customer({ customer_name, contact });
-		if ( existingCustomer.returncode == 200 ) {
+		console.log(existingCustomer);
+		if (existingCustomer.returncode == 200) {
 			return existingCustomer;
 		}
 
@@ -36,20 +37,33 @@ export async function add_customer(data) {
 			hotel_id
 		});
 
+		let error_flag = false;
 		// If occassion exists
-		if( occassion != null && date != null ){
-			await create_customer_occassion( {
+		if (occassion != null && date != null) {
+			const occassion_date =  await create_customer_occassion({
 				customer_id: result.output.id,
 				occassion,
 				date
-			} )
+			});
+			if (occassion_date.returncode != 200) {
+				error_flag = true;
+			}
 		}
 
-		return {
-			returncode: 200,
-			message: "Customer Added",
-			output: result.output
-		};
+		if (!error_flag) {
+			return {
+				returncode: 200,
+				message: "Customer Added",
+				output: result.output
+			};
+		}
+		else {
+			return {
+				returncode: 400,
+				message: "Customer was Added",
+				output: []
+			};
+		}
 
 	} catch (error) {
 		return {

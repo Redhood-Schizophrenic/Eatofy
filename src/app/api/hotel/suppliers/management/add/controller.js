@@ -9,10 +9,11 @@ export async function add_supplier(data) {
 		const email = data['email'] || null;
 		const gstin = data['gstin'] || null;
 		const address = data['address'] || null;
+		const supplier_type = data['supplier_type'] || null;
 		const hotel_id = data['hotel_id'] || null;
 
 		// Default Invalid Checker
-		if ( supplier_name == null || contact == null || email == null || gstin == null || hotel_id == null ) {
+		if ( supplier_name == null || contact == null || email == null || gstin == null || hotel_id == null || supplier_type == null ) {
 			return {
 				returncode: 400,
 				message: 'Invalid Input',
@@ -23,6 +24,7 @@ export async function add_supplier(data) {
 
 		// Existing Suppliers
 		const existingSupplier = await check_supplier({ supplier_name, contact, hotel_id });
+		console.log(existingSupplier);
 		if ( existingSupplier.returncode == 200 ) {
 			return {
 				returncode: 400,
@@ -38,7 +40,8 @@ export async function add_supplier(data) {
 			email,
 			gstin,
 			address,
-			hotel_id
+			hotel_id,
+			supplier_type
 		});
 
 		return result;
