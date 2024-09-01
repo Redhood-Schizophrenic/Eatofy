@@ -178,12 +178,7 @@ export default function Subscription() {
 	useEffect(() => {
 		fetchSubscription();
 		filterEndDate();
-		fetchTasksfetch();
 	}, [])
-
-	// console.log(data);
-	// console.log(enddate);
-	// console.log("hi", filteredData);
 
 
 	return (
