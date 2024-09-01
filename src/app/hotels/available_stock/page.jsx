@@ -17,14 +17,11 @@ export default function Available_stock() {
   const [unit, setunit] = useState('');
   const [itemId, setitemId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const hotel_id = sessionStorage.getItem('hotel_id');
 
   useEffect(() => {
-    if (hotel_id) {
-      fetchItems();
-      fetchStock();
-    }
-  }, [hotel_id]);
+    fetchItems();
+    fetchStock();
+  }, []);
 
   // Get today's date
   const today = new Date();
@@ -34,6 +31,7 @@ export default function Available_stock() {
 
   const fetchItems = async () => {
     try {
+      const hotel_id = sessionStorage.getItem('hotel_id');
       setLoading(true);
       const response = await fetch(`${ApiHost}/api/hotel/inventory/items/management/fetch`, {
         method: 'POST',
@@ -55,6 +53,7 @@ export default function Available_stock() {
 
   const fetchStock = async () => {
     try {
+      const hotel_id = sessionStorage.getItem('hotel_id');
       setLoading(true);
       const response = await fetch(`${ApiHost}/api/hotel/inventory/available_stock/management/fetch`, {
         method: 'POST',
@@ -107,6 +106,7 @@ export default function Available_stock() {
 
   const closingStock = async () => {
     try {
+      const hotel_id = sessionStorage.getItem('hotel_id');
       setLoading(true);
       const response = await fetch(`${ApiHost}/api/hotel/inventory/stock_report/management/closing_stock`, {
         method: 'POST',
@@ -127,6 +127,7 @@ export default function Available_stock() {
   };
 
   const handleSubmit = async (event) => {
+    const hotel_id = sessionStorage.getItem('hotel_id');
     event.preventDefault();
     try {
       setLoading(true);
