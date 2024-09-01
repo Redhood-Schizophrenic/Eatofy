@@ -1,5 +1,6 @@
 import { create_available_stock } from "../../../../../../../db/crud/inventory/available_stock/create";
 import { check_available_stock } from "../../../../../../../db/crud/inventory/available_stock/read";
+import { update_available_quantity } from "../update/quantity/controller";
 
 export async function add_available_stock(data) {
 	try {
@@ -8,16 +9,6 @@ export async function add_available_stock(data) {
 		const quantity = data['quantity'] || null;
 		const unit = data['unit'] || null;
 		const hotel_id = data['hotel_id'] || null;
-
-		// Default Invalid Checker
-		if ( item_id == null || quantity == null || unit == null || hotel_id == null ) {
-			return {
-				returncode: 400,
-				message: 'Invalid Input',
-				output: []
-			}
-
-		}
 
 		const check = await check_available_stock({
 			item_id,
@@ -37,11 +28,16 @@ export async function add_available_stock(data) {
 			return result;
 		}
 		else {
-			return {
-				returncode: 500,
-				message: "Item Available use Edit",
-				output: []
+
+			const available_stock_id = check.output[0].id;
+			const request = {
+			    available_stock_id ,
+				quantity
 			}
+			const result = await update_available_quantity(request);
+			console.log("Result", result);
+
+			return result;
 		}
 
 	} catch (error) {

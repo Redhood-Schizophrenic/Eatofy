@@ -11,7 +11,7 @@ export async function create_available_stock({
 		let result;
 
 		// Inserting the record
-		if (quantity <= 10) {
+		if (quantity <= 20) {
 			result = await db.availableStock.create({
 				data: {
 					ItemId: item_id,

@@ -19,6 +19,15 @@ export default function Available_stock() {
   const [itemId, setitemId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
+  useEffect(() => {
+    const id = sessionStorage.getItem('hotel_id');
+    sethotel_id(id);
+    if (id) {
+      fetchItems();
+      fetchStock();
+    }
+  }, [hotel_id]);
+
   // Get today's date
   const today = new Date();
 
@@ -66,15 +75,6 @@ export default function Available_stock() {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    const id = sessionStorage.getItem('hotel_id');
-    sethotel_id(id);
-    if (id) {
-      fetchItems();
-      fetchStock();
-    }
-  }, [hotel_id]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);

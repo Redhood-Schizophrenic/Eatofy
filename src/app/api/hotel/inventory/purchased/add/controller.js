@@ -1,5 +1,6 @@
 import { create_invoice } from "@/db/crud/inventory/purchases/invoices/create";
 import { add_purchase_stock } from "../stock/management/add/controller";
+// import { add_expense } from "../../../expenses/management/add/controller";
 
 export async function add_invoice(data) {
 	try {
@@ -47,6 +48,7 @@ export async function add_invoice(data) {
 					unit: stock.unit,
 					item_id: stock.item_id,
 					per_price: stock.per_price,
+					hotel_id,
 					total_price: `${stock.total_price}`
 				}
 
