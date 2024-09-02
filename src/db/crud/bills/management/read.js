@@ -106,7 +106,8 @@ export async function read_bill_info_by_table({
 				createdAt: 'desc'
 			},
 			include: {
-				Table: true
+				Table: true,
+				Hotels: true
 			}
 		});
 

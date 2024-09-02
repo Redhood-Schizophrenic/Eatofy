@@ -5,6 +5,8 @@ import { FaEye, FaXmark } from "react-icons/fa6";
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import { MdOutlineEdit } from 'react-icons/md';
+import Link from 'next/link';
+import { IoIosAddCircleOutline } from 'react-icons/io';
 
 export default function Purchase_management() {
 
@@ -375,6 +377,9 @@ export default function Purchase_management() {
                           ))
                         }
                       </select>
+                      <Link href={`${ApiHost}/hotels/backoffice/supplier_management`}>
+                        <IoIosAddCircleOutline size={28}/>
+                      </Link>
                     </div>
                     <div className='flex gap-4'>
                       <div className='w-1/2'>
@@ -625,7 +630,7 @@ export default function Purchase_management() {
 
                     <div className="mt-4 flex gap-4">
                       <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded-lg">Save Purchase</button>
-                      <button type="reset" onClick={ () => { reset_values(); setShowTableForm(false) }} className="bg-gray-500 text-white px-4 py-2 rounded-lg">Cancel</button>
+                      <button type="reset" onClick={() => { reset_values(); setShowTableForm(false) }} className="bg-gray-500 text-white px-4 py-2 rounded-lg">Cancel</button>
                     </div>
                   </form>
                 </div>

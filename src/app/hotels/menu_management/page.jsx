@@ -2,9 +2,13 @@
 
 import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
+import { Button } from '@react-email/components';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { FaTrashCan, FaXmark } from 'react-icons/fa6';
+import { FiEdit } from 'react-icons/fi';
+import { IoIosAddCircleOutline } from 'react-icons/io';
 import { MdOutlineModeEdit } from 'react-icons/md';
 
 const MenuManagement = () => {
@@ -25,6 +29,9 @@ const MenuManagement = () => {
   }
 
   // Form Elements
+  const [addCategoryFlag, setaddCategoryFlag] = useState(false);
+  const [addTypeFlag, setaddTypeFlag] = useState(false);
+  const [CategoryList, setCategoryList] = useState([]);
   const [DishName, setDishName] = useState('');
   const [CategoryName, setCategoryName] = useState('');
   const [DishCode, setDishCode] = useState("");
@@ -57,6 +64,34 @@ const MenuManagement = () => {
     }
   }
 
+  // Categories Fetch
+  const fetchCategory = async () => {
+    try {
+
+      const hotel_id = sessionStorage.getItem('hotel_id');
+      const response = await fetch(`${ApiHost}/api/hotel/dish/category/fetch`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          'hotel_id': hotel_id
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.returncode === 200) {
+        console.log("Data fetched", data);
+        setCategoryList(data.output);
+      } else {
+        alert("Unable to fetch Category's");
+      }
+    } catch (e) {
+      throw console.error(e);
+    }
+  }
+
   const MenuFetch = async () => {
 
     try {
@@ -85,10 +120,9 @@ const MenuManagement = () => {
   }
 
   useEffect(() => {
-
-
+    fetchCategory();
     MenuFetch();
-  }, [])
+  }, []);
 
   // Add
   const handleAddMenuAll = async (e) => {
@@ -115,8 +149,8 @@ const MenuManagement = () => {
       if (data.returncode === 200) {
         setSuccessMessage(data.message);
         setShowaddmenu(false);
-        hotelDishes();
-        location.reload();
+        fetchCategory();
+        MenuFetch();
       } else {
         setErrorMessage(data.message);
       }
@@ -355,18 +389,56 @@ const MenuManagement = () => {
                   >
                     Dish Type
                   </label>
-                  <input
-                    type="text"
-                    className='rounded-lg w-full'
-                    placeholder='Veg / Non-Veg/ Egg / Beverages'
-                    value={DishType}
-                    onChange={
-                      (e) => {
-                        setDishType(e.target.value);
-                      }
+                  <div className='flex gap-4 items-center'>
+                    {
+                      addTypeFlag ? (
+                        <>
+                          <input
+                            type="text"
+                            className='rounded-lg w-full'
+                            placeholder='Veg / Non-Veg/ Egg / Beverages'
+                            value={DishType}
+                            onChange={
+                              (e) => {
+                                setDishType(e.target.value);
+                              }
+                            }
+                            required
+                          />
+                          <Button
+                            onClick={() => { setaddTypeFlag(!addTypeFlag) }}
+                          >
+                            <FiEdit size={23} color='red' />
+                          </Button>
+                        </>
+
+
+                      ) : (
+                        <>
+                          <select
+                            value={DishType}
+                            className="rounded-lg w-full"
+                            onChange={
+                              (e) => {
+                                setDishType(e.target.value);
+                              }
+                            }
+                            required
+                          >
+                            <option value="">--Select--</option>
+                            <option value="Veg">Veg</option>
+                            <option value="Non-Veg">Non-Veg</option>
+                            <option value="Egg">Egg</option>
+                          </select>
+                          <Button
+                            onClick={() => { setaddTypeFlag(!addTypeFlag) }}
+                          >
+                            <FiEdit size={23} />
+                          </Button>
+                        </>
+                      )
                     }
-                    required
-                  />
+                  </div>
                 </div>
                 <div className="mb-4 w-full">
                   <label
@@ -375,18 +447,64 @@ const MenuManagement = () => {
                   >
                     Category Name
                   </label>
-                  <input
-                    type="text"
-                    className='rounded-lg w-full'
-                    placeholder='eg; Starter'
-                    value={CategoryName}
-                    onChange={
-                      (e) => {
-                        setCategoryName(e.target.value);
-                      }
+                  <div className='flex gap-4 items-center'>
+                    {
+                      addCategoryFlag ? (
+                        <>
+                          <input
+                            type="text"
+                            className='rounded-lg w-full'
+                            placeholder='eg; Starter'
+                            value={CategoryName}
+                            onChange={
+                              (e) => {
+                                setCategoryName(e.target.value);
+                              }
+                            }
+                            required
+                          />
+                          <Button
+                            onClick={() => { setaddCategoryFlag(!addCategoryFlag) }}
+                          >
+                            <FiEdit size={23} color='red' />
+                          </Button>
+
+                        </>
+                      ) : (
+                        <>
+
+                          <select
+                            value={CategoryName}
+                            className="rounded-lg w-full"
+                            onChange={
+                              (e) => {
+                                setCategoryName(e.target.value);
+                              }
+                            }
+                            required
+                          >
+                            <option value="">--Select--</option>
+                            {
+                              CategoryList.map((category) => (
+                                <option
+                                  key={category?.id}
+                                  value={category?.CategoryName}>
+                                  {category?.CategoryName}
+                                </option>
+                              ))
+                            }
+                          </select>
+                          <Button
+                            onClick={() => { setaddCategoryFlag(!addCategoryFlag) }}
+                          >
+                            <FiEdit size={23} />
+                          </Button>
+
+
+                        </>
+                      )
                     }
-                    required
-                  />
+                  </div>
                 </div>
                 <div className="mb-4 w-full">
                   <label
@@ -486,7 +604,7 @@ const MenuManagement = () => {
           </div>
         </div>
         <hr className="w-[99%] mx-auto border-[1.5px] border-red-500" />
-        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-10 m-10 sm:gap-4 ">
+        <div className="flex flex-wrap gap-4 mt-4">
           {
             displayAllDishes
               ?
@@ -495,10 +613,10 @@ const MenuManagement = () => {
                 const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
                 return searchMatch;
               })
-              .map((dish) => (
+                .map((dish) => (
                   <div
                     key={dish.id}
-                    className={`relative overflow-hidden border rounded-lg bg-white shadow-lg p-12 flex flex-col items-center space-x-4 
+                    className={`relative overflow-hidden border rounded-lg bg-white shadow-lg p-8 flex flex-col items-center space-x-4 
                     ${dish.Dish.Type.startsWith('V') ? 'border-green-500' :
                         dish.Dish.Type.startsWith('N') ? 'border-red-500' :
                           dish.Dish.Type.startsWith('E') ? 'border-yellow-500' :
@@ -529,67 +647,67 @@ const MenuManagement = () => {
 
               :
               sectionDishes
-              .filter((menu) => {
-                const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
-                return searchMatch;
-              })
-              .map((dish) => (
-                <div
-                  key={dish.id}
-                  className={`relative overflow-hidden border rounded-lg bg-white shadow-lg p-8 flex flex-col items-center space-x-4 
-                    ${dish.Dish.Type.startsWith('V') ? 'border-green-500' :
-                      dish.Dish.Type.startsWith('N') ? 'border-red-500' :
-                        dish.Dish.Type.startsWith('E') ? 'border-yellow-500' :
-                          dish.Dish.Type.startsWith('B') ? 'border-blue-500' :
-                            'border-gray-500'
-                    }`}
-                >
+                .filter((menu) => {
+                  const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+                  return searchMatch;
+                })
+                .map((dish) => (
                   <div
-                    className="w-full absolute top-2 left-2"
-                    onClick={
-                      () => {
-                        sessionStorage.setItem('menu_id', dish.id);
-                        handleDeleteMenu();
-                      }
-                    }
-                  >
-                    <FaTrashCan size={20} />
-                  </div>
-
-                  <span
-                    className='absolute top-2 right-2 rounded-md'
-                    onClick={
-                      () => {
-                        sessionStorage.setItem('menu_id', dish.id);
-                        setShoweditmenu(true);
-                      }
-                    }
-                  >
-                    <MdOutlineModeEdit size={25} />
-                  </span>
-
-                  <h2 className="font-bold pt-4">{dish.Dish.DishName}</h2>
-                  <p
-                    className={`${dish.Dish.Type.startsWith('V') ? 'text-green-500' :
-                      dish.Dish.Type.startsWith('N') ? 'text-red-500' :
-                        dish.Dish.Type.startsWith('E') ? 'text-yellow-500' :
-                          dish.Dish.Type.startsWith('B') ? 'text-blue-500' :
-                            'text-gray-500'
+                    key={dish.id}
+                    className={`relative overflow-hidden border rounded-lg bg-white shadow-lg p-8 flex flex-col items-center space-x-4 
+                    ${dish.Dish.Type.startsWith('V') ? 'border-green-500' :
+                        dish.Dish.Type.startsWith('N') ? 'border-red-500' :
+                          dish.Dish.Type.startsWith('E') ? 'border-yellow-500' :
+                            dish.Dish.Type.startsWith('B') ? 'border-blue-500' :
+                              'border-gray-500'
                       }`}
+                  >
+                    <div
+                      className="w-full absolute top-2 left-2"
+                      onClick={
+                        () => {
+                          sessionStorage.setItem('menu_id', dish.id);
+                          handleDeleteMenu();
+                        }
+                      }
+                    >
+                      <FaTrashCan size={20} />
+                    </div>
 
-                  > {dish.Dish.Type} </p>
-                  <p>Rs.{dish.Price}</p>
+                    <span
+                      className='absolute top-2 right-2 rounded-md'
+                      onClick={
+                        () => {
+                          sessionStorage.setItem('menu_id', dish.id);
+                          setShoweditmenu(true);
+                        }
+                      }
+                    >
+                      <MdOutlineModeEdit size={25} />
+                    </span>
 
-                  <div className='inline-flex gap-2 justify-between items-center w-full pt-2'>
-                    <span className='w-2/3 font-semibold bg-yellow-200 text-yellow-500 border border-yellow-500 px-2 py-1 rounded-md flex justify-center items-center'>
-                      {dish.Dish.Category.CategoryName}
-                    </span>
-                    <span className='w-1/3 p-2 font-semibold bg-zinc-200 text-[12px] rounded-md flex justify-center items-center'>
-                      &#35; {dish.Dish.Code}
-                    </span>
+                    <h2 className="font-bold pt-4">{dish.Dish.DishName}</h2>
+                    <p
+                      className={`${dish.Dish.Type.startsWith('V') ? 'text-green-500' :
+                        dish.Dish.Type.startsWith('N') ? 'text-red-500' :
+                          dish.Dish.Type.startsWith('E') ? 'text-yellow-500' :
+                            dish.Dish.Type.startsWith('B') ? 'text-blue-500' :
+                              'text-gray-500'
+                        }`}
+
+                    > {dish.Dish.Type} </p>
+                    <p>Rs.{dish.Price}</p>
+
+                    <div className='inline-flex gap-2 justify-between items-center w-full pt-2'>
+                      <span className='w-2/3 font-semibold bg-yellow-200 text-yellow-500 border border-yellow-500 px-2 py-1 rounded-md flex justify-center items-center'>
+                        {dish.Dish.Category.CategoryName}
+                      </span>
+                      <span className='w-1/3 p-2 font-semibold bg-zinc-200 text-[12px] rounded-md flex justify-center items-center'>
+                        &#35; {dish.Dish.Code}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))
+                ))
           }
         </div>
         <div className="flex left-[50%] translate-[-50%] justify-center mt-6">
