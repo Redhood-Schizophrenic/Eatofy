@@ -25,6 +25,11 @@ export default function Purchase_management() {
   const [Dates_Filter, setDates_Filter] = useState([]);
   const [TotalAmount, setTotal] = useState(0);
 
+  // Payment Status Tables
+  const [PaidTable, setPaidTable] = useState([]);
+  const [UnpaidTable, setUnpaidTable] = useState([]);
+  const [PartPaidTable, setPartPaidTable] = useState([]);
+
   // Ui Elements
   const [displayStock, setDisplayStock] = useState(false);
   const [fetchedpurchase, setfetchedpurchase] = useState([]);
@@ -57,6 +62,19 @@ export default function Purchase_management() {
         setAmount(data.output.DateWise.Amount);
         setDates_Filter(data.output.DateWise.Dates);
         setTotal(data.output.TotalAmount);
+        // Separate tables by payment status
+        setPaidTable([
+          ...data.output?.Invoices,
+        ].filter(bill => bill.PaymentStatus.toLowerCase() === 'paid'));
+
+        setUnpaidTable([
+          ...data.output?.Invoices,
+        ].filter(bill => bill.PaymentStatus.toLowerCase() === 'unpaid'));
+
+        setPartPaidTable([
+          ...data.output?.Invoices,
+        ].filter(bill => bill.PaymentStatus.toLowerCase() === 'part-paid'));
+
 
       } else {
         console.log("Failed to fetch supplier");
@@ -171,8 +189,8 @@ export default function Purchase_management() {
   };
 
   const filteredPurchases = fetchedpurchase.filter((item) =>
-    item.Suppliers?.SupplierName.toLowerCase().includes(searchQuery.toLowerCase()) 
-      ||
+    item.Suppliers?.SupplierName.toLowerCase().includes(searchQuery.toLowerCase())
+    ||
     item.PaymentStatus?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -228,30 +246,62 @@ export default function Purchase_management() {
             </div>
           </div>
 
-          <div className="flex w-full mt-10 justify-between">
+          <div className="flex justify-start items-end w-full">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={handleSearchChange}
+              placeholder="Search Supplier Name or Payment Status..."
+              className="px-4 py-2 border rounded-lg w-1/2"
+            />
+          </div>
+
+          <div className="flex w-full mt-10 gap-4 pb-4">
             <div
-              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500"
+              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-green-500 cursor-pointer w-1/4"
+              onClick={() => {
+                setfetchedpurchase(PaidTable);
+                setTotal(PaidTable.reduce((sum, bill) => sum + bill.TotalAmount, 0));
+              }}
+            >
+              <h2 className="text-zinc-500">Paid Bills</h2>
+              <p className="text-2xl font-bold">{PaidTable.length}</p>
+            </div>
+            <div
+              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer w-1/4"
+              onClick={() => {
+                setfetchedpurchase(UnpaidTable);
+                setTotal(UnpaidTable.reduce((sum, bill) => sum + bill.TotalAmount, 0));
+              }}
+            >
+              <h2 className="text-zinc-500">Unpaid Bills</h2>
+              <p className="text-2xl font-bold">{UnpaidTable.length}</p>
+            </div>
+            <div
+              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-yellow-500 cursor-pointer w-1/4"
+              onClick={() => {
+                setfetchedpurchase(PartPaidTable);
+                setTotal(PartPaidTable.reduce((sum, bill) => sum + bill.TotalAmount, 0));
+              }}
+            >
+              <h2 className="text-zinc-500">Part-Paid Bills</h2>
+              <p className="text-2xl font-bold">{PartPaidTable.length}</p>
+            </div>
+
+            <div
+              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 w-1/4"
             >
               <h2 className="text-xl text-zinc-500"> Total Purchases </h2>
               <p className="text-xl font-bold">Rs. {TotalAmount}</p>
             </div>
 
-            <div className="flex justify-end items-end w-1/2">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                placeholder="Search Supplier Name or Payment Status..."
-                className="px-4 py-2 border rounded-lg w-full"
-              />
-            </div>
           </div>
 
           <div className='w-full flex gap-4 pt-6'>
 
             <div className="w-full bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500">
               <div className="flex justify-between items-center mb-4 w-full">
-                <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Purchases Chart</h2>
+                <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Overall Purchases Chart</h2>
               </div>
               <div className="flex gap-20 mb-4">
                 <div className="w-full mr-2">

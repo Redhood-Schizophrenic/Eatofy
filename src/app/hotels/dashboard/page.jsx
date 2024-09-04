@@ -37,7 +37,6 @@ const Dashboard = () => {
 
   // Chart
   const [Dates_, setDates] = useState([]);
-  const [Orders, setOrders] = useState([]);
   const [Employee, setEmployee] = useState([]);
   const [Amount, setAmount] = useState([]);
   const [EmployeeAmount, setEmployeeAmount] = useState([]);

@@ -80,6 +80,8 @@ const Attendance_Data = async (staff_id, from_date, to_date) => {
 		return from_date <= staff.Datetime && to_date >= staff.Datetime;
 	});
 
+	console.log(attendance_data);
+
 	const attendance_metrics = attendance_values_mapper(attendance_data);
 	const present = attendance_metrics.Present;
 	const absent = attendance_metrics.Absent;
@@ -130,7 +132,7 @@ const Performance_Calculator = async (staff_id, from_date, to_date) => {
 	else if ( performance_percent > 50 && performance_percent < 75 ){
 		performance_grade = "Needs Improvement";
 	}
-	else if ( performance_grade && performance_grade < 50 ){
+	else if ( performance_grade < 50 ){
 		performance_grade = "Poor Performance";
 	}
 	else {

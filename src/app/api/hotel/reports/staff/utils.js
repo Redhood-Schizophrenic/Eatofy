@@ -34,21 +34,6 @@ export function sales_values_mapper(orders, key) {
 	}
 }
 
-function groupByAttendance(arr, key) {
-	return arr.reduce((acc, obj) => {
-		const groupKey = key.split('.').reduce((o, k) => (o || {})[k], obj);
-		if (!acc[groupKey]) {
-			acc[groupKey] = {
-				items: [],
-				count: 0
-			};
-		}
-		acc[groupKey].items.push(obj);
-		acc[groupKey].count += 1;
-		return acc;
-	}, {});
-}
-
 export function attendance_values_mapper(data) {
 	const summary = {
 		'Present': 0,

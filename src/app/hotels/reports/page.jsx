@@ -5,6 +5,9 @@ import React, { useState } from 'react';
 import { FcSalesPerformance } from "react-icons/fc";
 import { BiPurchaseTag } from "react-icons/bi";
 import { GiExpense } from "react-icons/gi";
+import { MdPeopleAlt } from 'react-icons/md';
+import { IoIosPeople } from 'react-icons/io';
+import { FaBoxOpen } from 'react-icons/fa6';
 
 const EatofyApp = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -29,7 +32,23 @@ const EatofyApp = () => {
       'name': 'Expenses Report',
       'href': '/hotels/reports/expenses',
       'img_tag': GiExpense
-    }
+    },
+    {
+      'name': 'Staff Report',
+      'href': '/hotels/reports/staff',
+      'img_tag': MdPeopleAlt
+    },
+    {
+      'name': 'Customer Report',
+      'href': '/hotels/reports/customer',
+      'img_tag': IoIosPeople
+    },
+    {
+      'name': 'Supplier Report',
+      'href': '/hotels/reports/supplier',
+      'img_tag': FaBoxOpen
+    },
+
   ]);
 
   return (
