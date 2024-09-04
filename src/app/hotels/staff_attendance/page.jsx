@@ -33,7 +33,6 @@ const StaffTable = () => {
       });
 
       const data = await response.json();
-      console.log("Attendance", data);
       if (data.returncode === 200) {
         setAttendances(data.output);
       }
@@ -81,8 +80,6 @@ const StaffTable = () => {
       });
 
       const data = await response.json();
-      console.log(data);
-
       if (data.returncode === 200) {
         setDisplayForm(false)
         setMessage(data.message);
@@ -92,7 +89,6 @@ const StaffTable = () => {
         }, 2000);
         fetch_attendance(); // Refresh the data
       } else {
-        console.log("Attendance is failed");
         setMessage(data.message);
         setisFailed(true);
         setTimeout(() => {

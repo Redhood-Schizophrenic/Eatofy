@@ -83,7 +83,11 @@ const Home = () => {
                 <p className="text-lg text-gray-500 mt-2">
                   The ultimate restaurant management software designed to streamline and optimize your establishment&apos;s operations.
                 </p>
-                <button className='bg-red-500 text-white rounded-[50px] p-3 mt-5 w-full lg:w-1/4'>Get Started</button>
+                <button>
+                  <a href='/hotels/auth' className='bg-red-500 text-white rounded-[50px] p-3 mt-5 w-full lg:w-1/4'>
+                    Get Started
+                  </a>
+                </button>
               </div>
               <div className="md:w-1/2 w-full p-4">
                 <img src="/banner.png" alt="Restaurant Management" className='p-4' />
@@ -160,16 +164,16 @@ const Home = () => {
           <div id="services" className="w-auto mx-auto p-4 bg-white">
             <h1 className="text-4xl font-bold text-gray-800 text-center mb-8">What we offer</h1>
             <div className="">
-              <Slider {...settings} >              
-              {
-                services.map((items) => (
-                  <div key={items.id} className="border-black border-2">
-                    <div>
-                      <h2>{items.title}</h2>
+              <Slider {...settings} >
+                {
+                  services.map((items) => (
+                    <div key={items.id} className="border-black border-2">
+                      <div>
+                        <h2>{items.title}</h2>
+                      </div>
                     </div>
-                  </div>
-                ))
-              }
+                  ))
+                }
               </Slider>
             </div>
           </div>

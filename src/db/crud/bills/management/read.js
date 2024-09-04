@@ -175,3 +175,44 @@ export async function read_bill_info({
 
 	}
 }
+
+// Staff Report
+export async function read_bill_info_by_staff({
+	staff_id
+}) {
+	try {
+
+		// Fetching the record
+		const result = await db.bills.findMany({
+			where: {
+				WaiterId: staff_id,
+			},
+			orderBy: {
+				createdAt: 'desc'
+			},
+			include: {
+				Waiter: true,
+				Table: true,
+				Customer: true
+			}
+		});
+
+		// Database is disconnected
+		db.$disconnect();
+
+		return {
+			returncode: 200,
+			message: "Data Fetched",
+			output: result
+		};
+
+	} catch (error) {
+
+		return {
+			returncode: 500,
+			message: error.message,
+			output: []
+		};
+
+	}
+}

@@ -39,6 +39,7 @@ export default function Menu() {
 		month: 'long',
 		day: 'numeric'
 	});
+	const [HotelName, setHotelName] = useState('');
 
 	// Bill Management
 	const [billId, setBillId] = useState("");
@@ -78,10 +79,6 @@ export default function Menu() {
 		setDishDisplayFullWidth(!isDishDisplayFullWidth);
 	}
 
-	const handleKotPrint = useReactToPrint({
-		content: () => billkot.current,
-	});
-
 	const handleBillPrint = useReactToPrint({
 		content: () => bill.current,
 	});
@@ -120,6 +117,8 @@ export default function Menu() {
 
 	const handlePaymentStatusClick = (status) => {
 		setPaymentStatus(status);
+		statusChangeHandler(status);
+
 	};
 
 	const fetch_bill = async () => {
@@ -139,10 +138,13 @@ export default function Menu() {
 			const data = await response.json();
 			if (data.returncode === 200) {
 				const response_data = await data.output[0];
+				console.log(data);
 				setMenus(response_data.Menus);
 				setCategories(response_data.Categories);
 				if (response_data.ExistingBill.length != 0) {
+					console.log(response_data?.ExistingBill[0]);
 					setBillId(response_data.ExistingBill[0].id);
+					setHotelName(response_data.ExistingBill[0].Hotels.HotelName);
 					if (response_data.Orders || response_data.Orders?.length == 0) {
 
 						setOldCart(response_data.Orders);
@@ -167,8 +169,6 @@ export default function Menu() {
 		const table_id = sessionStorage.getItem('table_id');
 
 		try {
-
-
 			await fetch(`${ApiHost}/api/hotel/tables/management/update/status`, {
 				method: 'PUT',
 				headers: {
@@ -182,6 +182,20 @@ export default function Menu() {
 			return
 		} finally {
 
+		}
+	}
+
+	const statusChangeHandler = (status) => {
+		const selectedStatus = status;
+
+		if (selectedStatus === 'Paid') {
+			setBalanceAmt(0);
+		} else if (selectedStatus === 'Partpaid') {
+			if (BalanceAmt === 0) {
+				alert('Balance cannot be zero');
+			}
+		} else if (selectedStatus === 'Unpaid') {
+			setBalanceAmt(totalAmt);
 		}
 	}
 
@@ -282,6 +296,7 @@ export default function Menu() {
 				setTimeout(() => {
 					setIsOrderSaved(false);
 				}, 2000);
+				route.push('/hotels/home');
 			} else {
 				console.log("Order Failed");
 				setIsOrderFailed(true);
@@ -374,8 +389,21 @@ export default function Menu() {
 		}
 	}
 
-	useEffect(() => {
+	const handleKotPrint = useReactToPrint({
+		content: () => billkot.current,
+	});
 
+	const handlekotprintAndSavemenu = () => {
+		if (Cart.length === 0) {
+			alert('Add some dish in the cart first');
+		} else {
+			handleSaveMenu();
+			handleKotPrint();;
+			route.push('/hotels/home');
+		}
+	}
+
+	useEffect(() => {
 		setType(sessionStorage.getItem('type'));
 		setHotelId(sessionStorage.getItem('hotel_id'));
 		setTableId(sessionStorage.getItem('table_id'));
@@ -383,6 +411,7 @@ export default function Menu() {
 		fetch_bill()
 	}, [HotelId, Type]);
 
+	console.log();
 
 	return (
 		<>
@@ -827,14 +856,7 @@ export default function Menu() {
 							<div className="fixed bottom-0 w-[35dvw] bg-black flex justify-between items-center gap-3 p-4">
 								{
 									OldCart.length === 0
-										? (
-											<div
-												onClick={() => handleSaveMenu()}
-												className="w-full p-1.5 bg-red-500 font-semibold text-white text-center rounded-md cursor-pointer"
-											>Save</div>
-										)
-										:
-										(
+										? ('') : (
 											<div
 												onClick={() => handleUpdateMenu()}
 												className="w-full p-1.5 bg-red-500 font-semibold text-white text-center rounded-md cursor-pointer"
@@ -863,7 +885,7 @@ export default function Menu() {
 								}
 								<div
 									onClick={() => {
-											handleKotPrint();
+										handlekotprintAndSavemenu();
 									}}
 									className="w-full p-1.5 bg-red-500 font-semibold text-white text-center rounded-md cursor-pointer"
 								>Kot & Print</div>
@@ -900,6 +922,7 @@ export default function Menu() {
 
 					<div ref={bill} className="max-w-md mx-auto p-4 border border-zinc-300 rounded-md bg-white text-black fixed top-[50dvh] left-0 z-[-150]">
 						<div className="flex flex-col justify-between mb-2">
+							<span>{HotelName}</span>
 							<span>Bill No: {billId.slice(0, 12)}</span>
 							<span>Date: {formattedDate}</span>
 						</div>
