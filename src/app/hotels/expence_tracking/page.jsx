@@ -20,6 +20,7 @@ const ExpenseTracking = () => {
     category: "",
     description: "",
     status: "",
+    payment_mode: "",
   });
   const [hotel_id, sethotel_id] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -108,7 +109,8 @@ const ExpenseTracking = () => {
           payable_to: expenseDetails.bearer,
           amount_payable: expenseDetails.amount_payable,
           amount_paid: expenseDetails.amount_paid,
-          status: expenseDetails.status
+          status: expenseDetails.status,
+          payment_mode: expenseDetails.payment_mode
         })
       });
 
@@ -138,6 +140,7 @@ const ExpenseTracking = () => {
       category: expense.ExpenseName,
       description: expense.Note,
       status: expense.PaymentStatus,
+      payment_mode: expense.PaymentMode
     });
     setShowUpdateExpenseForm(true);
     setSelectedExpense(expense);
@@ -161,7 +164,8 @@ const ExpenseTracking = () => {
           payable_to: expenseDetails.bearer,
           amount_payable: expenseDetails.amount_payable,
           amount_paid: expenseDetails.amount_paid,
-          status: expenseDetails.status
+          status: expenseDetails.status,
+          payment_mode: expenseDetails.payment_mode
         })
       });
 
@@ -292,7 +296,7 @@ const ExpenseTracking = () => {
                       </select>
                     </div>
                     <div className="">
-                      <label className="block text-zinc-700">Date<span className="text-red-500">*</span></label>
+                      <label className="block text-black">Date<span className="text-red-500">*</span></label>
                       <input
                         type="date"
                         className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
@@ -352,18 +356,42 @@ const ExpenseTracking = () => {
                     </div>
                   </div>
                 </div>
-                <div className="">
-                  <label className="block ">Note</label>
-                  <textarea
-                    className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
-                    value={expenseDetails.description}
-                    onChange={(e) =>
-                      setExpenseDetails({
-                        ...expenseDetails,
-                        description: e.target.value,
-                      })
-                    }
-                  ></textarea>
+                <div className="flex gap-6">
+                  <div className="w-full">
+                    <label className="block ">Note</label>
+                    <textarea
+                      className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                      value={expenseDetails.description}
+                      placeholder="(Optional)"
+                      onChange={(e) =>
+                        setExpenseDetails({
+                          ...expenseDetails,
+                          description: e.target.value,
+                        })
+                      }
+                    ></textarea>
+                  </div>
+
+                  <div className="flex flex-col w-full">
+                    <label className="font-medium block">Payment Mode<span className="text-red-500">*</span></label>
+                    <select
+                      name="payment_mode"
+                      value={expenseDetails.payment_mode}
+                      className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg text-black font-medium"
+                      onChange={(e) =>
+                        setExpenseDetails({
+                          ...expenseDetails,
+                          payment_mode: (e.target.value),
+                        })
+                      }
+
+                    >
+                      <option value="">--Select--</option>
+                      <option value="Cash">Cash</option>
+                      <option value="UPI">UPI</option>
+                      <option value="Credit">Credit</option>
+                    </select>
+                  </div>
                 </div>
 
                 <button className="bg-red-500 text-white px-4 py-2 rounded">
@@ -492,18 +520,42 @@ const ExpenseTracking = () => {
                     </div>
                   </div>
                 </div>
-                <div className="">
-                  <label className="block ">Note</label>
-                  <textarea
-                    className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
-                    value={expenseDetails.description}
-                    onChange={(e) =>
-                      setExpenseDetails({
-                        ...expenseDetails,
-                        description: e.target.value,
-                      })
-                    }
-                  ></textarea>
+                <div className="flex gap-6">
+                  <div className="w-full">
+                    <label className="block ">Note</label>
+                    <textarea
+                      className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg"
+                      value={expenseDetails.description}
+                      placeholder="(Optional)"
+                      onChange={(e) =>
+                        setExpenseDetails({
+                          ...expenseDetails,
+                          description: e.target.value,
+                        })
+                      }
+                    ></textarea>
+                  </div>
+
+                  <div className="flex flex-col w-full">
+                    <label className="font-medium block">Payment Mode<span className="text-red-500">*</span></label>
+                    <select
+                      name="payment_mode"
+                      value={expenseDetails.payment_mode}
+                      className="w-full border-b border-red-500 focus:outline-none focus:border-red-700 rounded-lg text-black font-medium"
+                      onChange={(e) =>
+                        setExpenseDetails({
+                          ...expenseDetails,
+                          payment_mode: (e.target.value),
+                        })
+                      }
+
+                    >
+                      <option value="">--Select--</option>
+                      <option value="Cash">Cash</option>
+                      <option value="UPI">UPI</option>
+                      <option value="Credit">Credit</option>
+                    </select>
+                  </div>
                 </div>
 
                 <button className="bg-red-500 text-white px-4 py-2 rounded">
@@ -525,6 +577,7 @@ const ExpenseTracking = () => {
                   <th className="border px-4 py-2">Amount Paid</th>
                   <th className="border px-4 py-2">Balance</th>
                   <th className="border px-4 py-2">Payment Status</th>
+                  <th className="border px-4 py-2">Payment Mode</th>
                   <th className="border px-4 py-2">Note</th>
                   <th className="border px-4 py-2">Actions</th>
                 </tr>
@@ -538,7 +591,18 @@ const ExpenseTracking = () => {
                       <td className="border px-4 py-2">{expense.ExpenseName}</td>
                       <td className="border px-4 py-2">₹{expense.AmountPaid}</td>
                       <td className="border px-4 py-2">₹{expense.AmountPayable}</td>
-                      <td className="border px-4 py-2">{expense.PaymentStatus}</td>
+                      <td className="border px-4 py-2">
+                        <span
+                          className={`px-2 inline-flex text-sm leading-5 font-semibold rounded-full ${expense.PaymentStatus.toLowerCase() === 'paid' ? 'bg-green-100 text-green-800' :
+                            expense.PaymentStatus.toLowerCase() === 'unpaid' ? 'bg-red-100 text-red-800' :
+                              expense.PaymentStatus.toLowerCase() === 'partpaid' ? 'bg-yellow-100 text-yellow-800' :
+                                'bg-gray-100 text-gray-800'
+                            }`}
+                        >
+                          {expense.PaymentStatus}
+                        </span>
+                      </td>
+                      <td className="border px-4 py-2">{expense.PaymentMode}</td>
                       <td className="border px-4 py-2">{expense.Note}</td>
                       <td className="border px-4 py-2">
                         <button

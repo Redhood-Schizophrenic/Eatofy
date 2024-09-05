@@ -7,7 +7,8 @@ export async function update_expense({
 	amount_paid,
 	amount_payable,
 	note,
-	status
+	status,
+	payment_mode
 }) {
 	try {
 
@@ -21,7 +22,8 @@ export async function update_expense({
 				AmountPayable: amount_payable,
 				AmountPaid: amount_paid,
 				Note: note,
-				PaymentStatus: status
+				PaymentStatus: status,
+				PaymentMode: payment_mode
 			},
 		});
 

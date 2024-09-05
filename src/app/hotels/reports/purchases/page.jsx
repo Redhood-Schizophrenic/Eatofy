@@ -7,7 +7,7 @@ import "chart.js/auto";
 import { Line } from "react-chartjs-2";
 import { FaEye, FaXmark } from "react-icons/fa6";
 
-export default function Purchase_management() {
+export default function Purchase_Report() {
 
   // For A Week before
   const today = new Date();

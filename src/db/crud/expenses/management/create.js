@@ -8,7 +8,8 @@ export async function create_expense({
 	payable_to,
 	amount_payable,
 	amount_paid,
-	status
+	status,
+	payment_mode
 }) {
 	try {
 
@@ -22,7 +23,8 @@ export async function create_expense({
 				PayableTo: payable_to,
 				AmountPayable: amount_payable,
 				AmountPaid: amount_paid,
-				PaymentStatus: status
+				PaymentStatus: status,
+				PaymentMode: payment_mode
 			}
 		});
 

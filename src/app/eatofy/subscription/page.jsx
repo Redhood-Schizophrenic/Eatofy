@@ -17,7 +17,6 @@ export default function Subscription(){
 		const data = await res.json();
 		setSubscription(data.output);
 	}
-	console.log(sub)
 
 	useEffect(() => {
 		fetchSubscription();

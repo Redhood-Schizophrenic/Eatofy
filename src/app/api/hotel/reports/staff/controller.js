@@ -147,7 +147,6 @@ const Performance_Calculator = async (staff_id, from_date, to_date) => {
 		Sales: {
 			Amount: total_revenue,
 			Orders: total_orders,
-			Chart: sales_data.Chart,
 			Data: sales_data.Data
 		},
 		Attendance: attendance_data

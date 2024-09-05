@@ -7,7 +7,7 @@ import "chart.js/auto";
 import { Doughnut } from 'react-chartjs-2';
 import { FaWallet } from 'react-icons/fa6';
 
-const Dashboard = () => {
+const Expenses_Report = () => {
 
   // For A Week before
   const today = new Date();
@@ -260,4 +260,4 @@ const Dashboard = () => {
 }
 
 
-export default Dashboard;
+export default Expenses_Report;

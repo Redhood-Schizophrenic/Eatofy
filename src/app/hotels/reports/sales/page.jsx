@@ -4,7 +4,7 @@ import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
 import React, { useEffect, useState } from 'react';
 
-const Dashboard = () => {
+const Sales_Report = () => {
 
   // For A Week before
   const today = new Date();
@@ -294,4 +294,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Sales_Report;

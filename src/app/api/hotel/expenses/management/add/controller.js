@@ -11,10 +11,11 @@ export async function add_expense(data) {
 		const amount_paid = data['amount_paid'] || 0;
 		const amount_payable = data['amount_payable'] || 0;
 		const status = data['status'] || null;
+		const payment_mode = data['payment_mode'] || null;
 
 		// Default Invalid Checker
 		if (
-			hotel_id == null || expense_name == null || date == null || payable_to == null || amount_payable == null || amount_paid == null || status == null
+			hotel_id == null || expense_name == null || date == null || payable_to == null || amount_payable == null || amount_paid == null || status == null || payment_mode == null
 		) {
 			return {
 				returncode: 400,
@@ -33,7 +34,8 @@ export async function add_expense(data) {
 			payable_to,
 			amount_payable,
 			amount_paid,
-			status
+			status,
+			payment_mode
 		});
 
 		return result;

@@ -395,6 +395,7 @@ model Expenses {
   HotelId       String
   Hotel         Hotels   @relation(fields: [HotelId], references: [id])
   Status        String   @default("Active")
+  PaymentMode   String   @default("Cash")
   PaymentStatus String   @default("Unpaid")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt

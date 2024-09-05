@@ -5,9 +5,10 @@ import React, { useState } from 'react';
 import { FcSalesPerformance } from "react-icons/fc";
 import { BiPurchaseTag } from "react-icons/bi";
 import { GiExpense } from "react-icons/gi";
-import { MdPeopleAlt } from 'react-icons/md';
+import { MdOutlineInventory2, MdPeopleAlt } from 'react-icons/md';
 import { IoIosPeople } from 'react-icons/io';
 import { FaBoxOpen } from 'react-icons/fa6';
+import { RiMoneyRupeeCircleFill } from 'react-icons/ri';
 
 const EatofyApp = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -18,6 +19,11 @@ const EatofyApp = () => {
   };
 
   const [menuItems, setMenuItems] = useState([
+    {
+      'name': 'Financial Report',
+      'href': '/hotels/reports/financial',
+      'img_tag': RiMoneyRupeeCircleFill
+    },
     {
       'name': 'Sales Report',
       'href': '/hotels/reports/sales',
@@ -47,8 +53,12 @@ const EatofyApp = () => {
       'name': 'Supplier Report',
       'href': '/hotels/reports/supplier',
       'img_tag': FaBoxOpen
+    }, 
+    {
+      'name': 'Inventory Report',
+      'href': '/hotels/reports/inventory',
+      'img_tag': MdOutlineInventory2
     },
-
   ]);
 
   return (
