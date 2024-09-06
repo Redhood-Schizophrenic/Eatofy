@@ -63,9 +63,7 @@ export async function read_available_stock_report({
 				}
 			},
 			orderBy: {
-				Items: {
-					ItemName: "asc"
-				}
+				Date: 'desc'
 			},
 			include: {
 				Items: {

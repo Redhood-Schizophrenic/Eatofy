@@ -1,7 +1,7 @@
 import { payment_mode_values_mapper, sales_values_mapper, expenses_values_mapper } from "./utils";
-import { read_hotel_bills } from "@/db/crud/bills/management/read";
-import { read_expenses } from "@/db/crud/expenses/management/read";
-import { read_invoices } from "@/db/crud/inventory/purchases/invoices/read";
+import { read_hotel_bills_asc } from "@/db/crud/bills/management/read";
+import { read_expenses_asc } from "@/db/crud/expenses/management/read";
+import { read_invoices_asc } from "@/db/crud/inventory/purchases/invoices/read";
 
 const datetime_formatter = (date) => {
 	// Get the day, month, and year
@@ -58,7 +58,7 @@ export async function fetch_financial_reports(data) {
 }
 
 const Purchases_Data = async (hotel_id, from_date, to_date) => {
-	const data = await read_invoices({ hotel_id });
+	const data = await read_invoices_asc({ hotel_id });
 	console.log(data);
 	const purchases_data = data.output.filter((hotel) => {
 		hotel.Datetime = new Date(hotel.Date);
@@ -87,7 +87,7 @@ const Purchases_Data = async (hotel_id, from_date, to_date) => {
 }
 
 const Expenses_Data = async (hotel_id, from_date, to_date) => {
-	const data = await read_expenses({ hotel_id });
+	const data = await read_expenses_asc({ hotel_id });
 	const expenses_data = data.output.filter((hotel) => {
 		hotel.Datetime = new Date(hotel.Date);
 		hotel.Date = datetime_formatter(hotel.Datetime);
@@ -115,7 +115,7 @@ const Expenses_Data = async (hotel_id, from_date, to_date) => {
 
 const Sales_Data = async (hotel_id, from_date, to_date) => {
 
-	const data = await read_hotel_bills({ hotel_id });
+	const data = await read_hotel_bills_asc({ hotel_id });
 	const sales_data = data.output.filter((hotel) => {
 		hotel.Datetime = new Date(hotel.createdAt);
 		hotel.Date = datetime_formatter(hotel.Datetime);

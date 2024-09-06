@@ -1,4 +1,4 @@
-import { read_expenses } from "@/db/crud/expenses/management/read";
+import { read_expenses_asc } from "@/db/crud/expenses/management/read";
 import { values_mapper } from "./utils";
 
 export async function fetch_expenses_reports(data) {
@@ -22,7 +22,7 @@ export async function fetch_expenses_reports(data) {
 		const to_date = new Date(to);
 
 		// Expenses
-		const response = await read_expenses({
+		const response = await read_expenses_asc({
 			hotel_id
 		});
 

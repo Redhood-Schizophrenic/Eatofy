@@ -77,15 +77,15 @@ export default function Financial_Report() {
         const purchase = data.output?.Purchase?.Amount || 0;
         const expense = data.output?.Expenses?.Amount || 0;
         const expenditure = purchase + expense;
-        if ((income > expenditure) || ( income > 0 && expenditure === 0 )) {
+        if ((income > expenditure) || (income > 0 && expenditure === 0)) {
           setProfitLoss("Profit");
           const amount = income - expenditure;
           setProfitLossAmt(amount);
-        } else if ((income === expenditure)|| ( income === 0 && expenditure === 0 )) {
+        } else if ((income === expenditure) || (income === 0 && expenditure === 0)) {
           setProfitLoss("Balanced");
           const amount = 0;
           setProfitLossAmt(amount);
-        } else if ((income < expenditure) || ( income === 0 && expenditure > 0 )) {
+        } else if ((income < expenditure) || (income === 0 && expenditure > 0)) {
           setProfitLoss("Loss");
           const amount = expenditure - income;
           setProfitLossAmt(amount);
@@ -370,15 +370,14 @@ Search Bar
 
             <div
               className={`bg-white p-4 rounded-lg shadow-md border-l-4 cursor-pointer w-1/4
-            ${
-              ProfitLoss.toLowerCase() === "profit"
-                ? "text-green-800 border-green-500"
-                : ProfitLoss.toLowerCase() === "loss"
-                ? "text-red-800 border-red-500"
-                : ProfitLoss.toLowerCase() === "balanced"
-                ? "text-yellow-800 border-yellow-500"
-                : "text-gray-800 border-gray-500"
-            }
+            ${ProfitLoss.toLowerCase() === "profit"
+                  ? "text-green-800 border-green-500"
+                  : ProfitLoss.toLowerCase() === "loss"
+                    ? "text-red-800 border-red-500"
+                    : ProfitLoss.toLowerCase() === "balanced"
+                      ? "text-yellow-800 border-yellow-500"
+                      : "text-gray-800 border-gray-500"
+                }
               `}
             >
               <h2 className="text-zinc-500">{ProfitLoss}</h2>
@@ -448,17 +447,16 @@ Search Bar
                           <td className="border px-4 py-2 inline-flex justify-center items-center">
                             <div className={`px-4 p-2`}>
                               <span
-                                className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${
-                                  items.PaymentStatus.toLowerCase() === "paid"
+                                className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${items.PaymentStatus.toLowerCase() === "paid"
                                     ? "bg-green-200 text-green-800"
                                     : items.PaymentStatus.toLowerCase() ===
                                       "unpaid"
-                                    ? "bg-red-200 text-red-800"
-                                    : items.PaymentStatus.toLowerCase() ===
-                                      "part-paid"
-                                    ? "bg-yellow-200 text-yellow-800"
-                                    : "bg-gray-200 text-gray-800"
-                                }`}
+                                      ? "bg-red-200 text-red-800"
+                                      : items.PaymentStatus.toLowerCase() ===
+                                        "part-paid"
+                                        ? "bg-yellow-200 text-yellow-800"
+                                        : "bg-gray-200 text-gray-800"
+                                  }`}
                               >
                                 {items.PaymentStatus}
                               </span>
@@ -538,15 +536,14 @@ Search Bar
                             </td>
                             <td className="border px-4 py-2">
                               <span
-                                className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${
-                                  row.Status.toLowerCase() === "paid"
+                                className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${row.Status.toLowerCase() === "paid"
                                     ? "bg-green-200 text-green-800"
                                     : row.Status.toLowerCase() === "unpaid"
-                                    ? "bg-red-200 text-red-800"
-                                    : row.Status.toLowerCase() === "partpaid"
-                                    ? "bg-yellow-200 text-yellow-800"
-                                    : "bg-gray-200 text-gray-800"
-                                }`}
+                                      ? "bg-red-200 text-red-800"
+                                      : row.Status.toLowerCase() === "partpaid"
+                                        ? "bg-yellow-200 text-yellow-800"
+                                        : "bg-gray-200 text-gray-800"
+                                  }`}
                               >
                                 {row.Status}
                               </span>
@@ -617,16 +614,15 @@ Search Bar
                           </td>
                           <td className="border px-4 py-2">
                             <span
-                              className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${
-                                row.PaymentStatus.toLowerCase() === "paid"
+                              className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${row.PaymentStatus.toLowerCase() === "paid"
                                   ? "bg-green-200 text-green-800"
                                   : row.PaymentStatus.toLowerCase() === "unpaid"
-                                  ? "bg-red-200 text-red-800"
-                                  : row.PaymentStatus.toLowerCase() ===
-                                    "part-paid"
-                                  ? "bg-yellow-200 text-yellow-800"
-                                  : "bg-gray-200 text-gray-800"
-                              }`}
+                                    ? "bg-red-200 text-red-800"
+                                    : row.PaymentStatus.toLowerCase() ===
+                                      "part-paid"
+                                      ? "bg-yellow-200 text-yellow-800"
+                                      : "bg-gray-200 text-gray-800"
+                                }`}
                             >
                               {row.PaymentStatus}
                             </span>
@@ -711,6 +707,7 @@ Search Bar
                     <tr className="bg-zinc-600 text-gray-200">
                       <th className="py-2 border border-white">Item</th>
                       <th className="py-2 border border-white">Quantity</th>
+                      <th className="py-2 border border-white">Unit</th>
                       <th className="py-2 border border-white">Price</th>
                     </tr>
                   </thead>
@@ -724,7 +721,11 @@ Search Bar
                           {stock.Quantity}
                         </td>
                         <td className="py-2 border border-white">
-                          Rs. {stock.Unit}
+                          {stock.Unit}
+                        </td>
+                        <td className="py-2 border border-white">
+                          <h2> Rs. {stock.Price}</h2>
+                            <p className="text-xs text-zinc-500">Rs. {stock.PerPrice} per..</p>
                         </td>
                       </tr>
                     ))}

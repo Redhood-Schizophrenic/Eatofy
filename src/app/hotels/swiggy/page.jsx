@@ -11,7 +11,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FaCashRegister, FaGooglePay } from "react-icons/fa";
 
-export default function Menu() {
+export default function Swiggy_Menu() {
 	const [isLoading, setLoading] = useState(false);
 	const [isMenuOpen, setMenuOpen] = useState(false);
 	const [Search, setSearch] = useState('');
@@ -20,6 +20,7 @@ export default function Menu() {
 	const [ClickedCategory, setClickedCategory] = useState(null);
 	const [ShowAllDishes, setShowAllDishes] = useState(true);
 	const [HotelId, setHotelId] = useState('');
+	const [TableId, setTableId] = useState('');
 	const [WaiterId, setWaiterId] = useState('');
 	const [isSettleBill, setisSettleBill] = useState(false);
 	const [disAmt, setdisAmt] = useState('');
@@ -127,7 +128,6 @@ export default function Menu() {
 
 	const fetch_bill = async () => {
 		const section_id = sessionStorage.getItem('section_id');
-
 		try {
 
 			setLoading(true);
@@ -138,7 +138,6 @@ export default function Menu() {
 				},
 				body: JSON.stringify({ 'section_id': section_id }),
 			});
-
 			const data = await response.json();
 			if (data.returncode === 200) {
 				const response_data = await data.output[0];
@@ -349,6 +348,8 @@ export default function Menu() {
 			fetch_bill()
 		}
 	}, [HotelId, Type]);
+
+	console.log(billId)
 
 	return (
 		<>
@@ -806,14 +807,7 @@ export default function Menu() {
 
 								<div className="fixed bottom-0 w-[35dvw] bg-black flex justify-between items-center gap-3 p-4">
 									{
-										OldCart.length === 0
-											? (
-												<div
-													onClick={() => handleSaveMenu()}
-													className="w-full p-1.5 bg-red-500 font-semibold text-white text-center rounded-md cursor-pointer"
-												>Save</div>
-											)
-											:
+										OldCart.length === 0 ? ('') :
 											(
 												<div
 													onClick={() => handleUpdateMenu()}
@@ -822,7 +816,15 @@ export default function Menu() {
 											)
 									}
 									<div
-										onClick={() => handleBillPrint()}
+										onClick={() => {
+											if (Cart === 0) {
+												alert('Add dish to the menu first');
+											} else {
+												handleSaveMenu();
+												handleKotPrint();
+												route.push('/hotels/home');
+											}
+										}}
 										className="w-full p-1.5 bg-red-500 font-semibold text-center rounded-md cursor-pointer"
 									>Print</div>
 									{

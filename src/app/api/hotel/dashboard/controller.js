@@ -1,4 +1,4 @@
-import { read_hotel_bills } from "@/db/crud/bills/management/read";
+import { read_hotel_bills_asc } from "@/db/crud/bills/management/read";
 import { groupBy } from "@/utils/groupBy";
 
 function values_mapper(orders, key) {
@@ -44,7 +44,7 @@ export async function hotel_dashboard(data) {
 		const to_date = new Date(`${to}T23:59:59`);
 
 		// Hotel's Order Fetch
-		const orders_response = await read_hotel_bills({ hotel_id });
+		const orders_response = await read_hotel_bills_asc({ hotel_id });
 		const orders_res = orders_response.output;
 
 		// Filter orders within the date range

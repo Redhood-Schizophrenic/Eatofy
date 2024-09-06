@@ -47,6 +47,50 @@ export async function read_hotel_bills_by_type({
 }
 
 // Fetch Hotel's Bills
+export async function read_hotel_bills_asc({
+	hotel_id
+}) {
+	try {
+
+		// Fetching the record
+		const result = await db.bills.findMany({
+			where: {
+				HotelId: hotel_id,
+				NOT: {
+					Status: "Inactive"
+				},
+			},
+			orderBy: {
+				createdAt: 'asc'
+			},
+			include: {
+				Customer: true,
+				Waiter: true,
+				Table: true
+			}
+		});
+
+		// Database is disconnected
+		db.$disconnect();
+
+		return {
+			returncode: 200,
+			message: "Data Fetched",
+			output: result
+		};
+
+	} catch (error) {
+
+		return {
+			returncode: 500,
+			message: error.message,
+			output: []
+		};
+
+	}
+}
+
+// Fetch Hotel's Bills
 export async function read_hotel_bills({
 	hotel_id
 }) {

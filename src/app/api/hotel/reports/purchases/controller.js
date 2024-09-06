@@ -1,5 +1,5 @@
 import { values_mapper } from "./utils";
-import { read_invoices } from "@/db/crud/inventory/purchases/invoices/read";
+import { read_invoices_asc } from "@/db/crud/inventory/purchases/invoices/read";
 
 export async function fetch_purchases_reports(data) {
 	try {
@@ -22,7 +22,7 @@ export async function fetch_purchases_reports(data) {
 		const to_date = new Date(to);
 
 		// Getting the Invoices
-		const invoices_result = await read_invoices({
+		const invoices_result = await read_invoices_asc({
 			hotel_id
 		});
 		

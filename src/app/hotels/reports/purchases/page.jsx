@@ -425,6 +425,7 @@ export default function Purchase_Report() {
                       <tr className="bg-zinc-600 text-gray-200">
                         <th className="py-2 border border-white">Item</th>
                         <th className="py-2 border border-white">Quantity</th>
+                        <th className="py-2 border border-white">Unit</th>
                         <th className="py-2 border border-white">Price</th>
                       </tr>
                     </thead>
@@ -434,7 +435,12 @@ export default function Purchase_Report() {
                           <tr className="bg-zinc-200 text-black" key={index}>
                             <td className="py-2 border border-white">{stock.Items.ItemName}</td>
                             <td className="py-2 border border-white">{stock.Quantity}</td>
-                            <td className="py-2 border border-white">Rs. {stock.Unit}</td>
+                            <td className="py-2 border border-white">{stock.Unit}</td>
+                            <td className="py-2 border border-white">
+                              <h2 className="">Rs. {stock.Price}</h2>
+                              <p className="text-xs text-zinc-500">Rs. {stock.PerPrice} per.</p> 
+                            </td>
+
                           </tr>
                         ))
                       }
