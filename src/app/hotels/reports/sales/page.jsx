@@ -84,7 +84,7 @@ const Sales_Report = () => {
         ].filter(bill => bill.Status.toLowerCase() === 'partpaid'));
 
       } else {
-        console.log("Failed to fetch");
+        alert("Failed to fetch");
       }
     } catch (e) {
       console.error(e);

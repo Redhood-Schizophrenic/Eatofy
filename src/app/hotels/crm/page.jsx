@@ -41,7 +41,6 @@ const CustomerTable = () => {
             date: item.CustomerOccassion[0]?.Date || "N/A"
           }));
           setCustomerList(mappedCustomerList);
-          console.log(result)
         } else {
           console.error("Unexpected response format:", result);
         }

@@ -14,7 +14,7 @@ export async function read_invoices_asc ({
 				},
 			},
 			orderBy: {
-				createdAt: "asc"
+				Date: 'asc'
 			},
 			include: {
 				Suppliers: true

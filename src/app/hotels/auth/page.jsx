@@ -100,8 +100,6 @@ const HotelAuth = () => {
     setRole(e.target.value);
   }
 
-  console.log(role);
-
   return (
     <>
       <div

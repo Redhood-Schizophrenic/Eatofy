@@ -164,7 +164,6 @@ const StaffTable = () => {
             incentives: item.Incentive,
           }));
           setStaffList(mappedStaffList);
-          console.log(result)
         } else {
           console.error("Unexpected response format:", result);
         }

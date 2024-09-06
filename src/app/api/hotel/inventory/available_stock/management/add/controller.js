@@ -35,8 +35,6 @@ export async function add_available_stock(data) {
 				quantity
 			}
 			const result = await update_available_quantity(request);
-			console.log("Result", result);
-
 			return result;
 		}
 

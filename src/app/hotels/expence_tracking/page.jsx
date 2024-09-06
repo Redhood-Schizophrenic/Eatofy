@@ -52,7 +52,7 @@ const ExpenseTracking = () => {
       if (res.returncode === 200) {
         setExpenses(res.output);
       } else {
-        console.log("Expence fetched");
+        alert("Expence fetched failed");
       }
 
     } catch (error) {
@@ -119,10 +119,9 @@ const ExpenseTracking = () => {
       if (data.returncode === 200) {
         setShowAddExpenseForm(!showAddExpenseForm);
         fetchExpenses();
-        console.log("Expense added successfully");
         setShowAddExpenseForm(false);
       } else {
-        console.log("Failed to add expense");
+        alert("Failed to add expense");
       }
 
     } catch (error) {
@@ -173,7 +172,6 @@ const ExpenseTracking = () => {
 
       if (data.returncode === 200) {
         fetchExpenses();
-        console.log("Expence Updated Successfully");
         setShowUpdateExpenseForm(false);
         setSelectedExpense(null);
       }

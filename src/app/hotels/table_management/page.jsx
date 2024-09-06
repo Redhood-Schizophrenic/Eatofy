@@ -103,15 +103,11 @@ const Widget = () => {
   function ifTableExist(tablenaeme, tableexist) {
     tableexist.forEach((exist) => {
       if (tablenaeme === exist.TableName) {
-        console.log("Table Exist");
         setIsExist(true);
         setMessage('Table Exist !!!');
       } else if (tablenaeme !== exist.TableName) {
-        console.log("Table Can be Created");
         setIsExist(true);
         setMessage('Table Created !!!');
-      } else {
-        console.log("Function has runned but its no use!! :(");
       }
     });
   }
@@ -150,10 +146,8 @@ const Widget = () => {
 
         const data = await response.json();
         const table = data.output;
-        console.log("Table added:", data);
         setShowTableForm(false);
         fetchTables();
-        console.log(table)
         ifTableExist(requestData.table_name, table);
       } catch (error) {
         console.error("Error adding table:", error);
@@ -182,7 +176,6 @@ const Widget = () => {
         if (!response.ok) throw new Error("Network response was not ok");
 
         const data = await response.json();
-        console.log("Table added:", data);
         setShowTableForm(false);
         fetchTables();
       } catch (error) {

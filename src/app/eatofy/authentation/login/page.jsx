@@ -12,9 +12,6 @@ export default function EatofyLogin() {
 	const [data, setdata] = useState([]);
 	const route = useRouter();
 
-	// console.log(email);
-	// console.log(password);
-
 	const FetchData = async (e) => {
 		e.preventDefault();
 
@@ -30,15 +27,12 @@ export default function EatofyLogin() {
 		setdata(data);
 
 		if (data.returncode === 200) {
-			console.log("Logged In")
 			alert("Logged In")
 			route.push('/eatofy/dashboard');
 		}else{
 			alert("Please enter valid Email and Password")
 		}
 	}
-
-	// console.log(data);
 
 	return (
 		<>

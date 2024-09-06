@@ -80,8 +80,6 @@ const Attendance_Data = async (staff_id, from_date, to_date) => {
 		return from_date <= staff.Datetime && to_date >= staff.Datetime;
 	});
 
-	console.log(attendance_data);
-
 	const attendance_metrics = attendance_values_mapper(attendance_data);
 	const present = attendance_metrics.Present;
 	const absent = attendance_metrics.Absent;

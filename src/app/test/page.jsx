@@ -23,10 +23,8 @@ export default function Test() {
 		const data = await response.json();
 
 		if (data.response.status === 200) {
-			console.log("Done", data);
 			setdata(data);
 		} else {
-			console.log("Not Done");
 		}
 	}
 

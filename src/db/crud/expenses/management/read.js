@@ -14,7 +14,7 @@ export async function read_expenses_asc({
 				}
 			},
 			orderBy: {
-				createdAt: 'asc'
+				Date: 'asc'
 			}
 		});
 

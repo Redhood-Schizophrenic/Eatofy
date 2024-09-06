@@ -29,8 +29,6 @@ export default function Auth() {
     });
   };
 
-  console.log(formData.email," ",formData.email)
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     let url;
@@ -53,7 +51,6 @@ export default function Auth() {
       url = `${ApiHost}/api/eatofy/auth/login`;
       method = 'POST';
       payload = formData;
-      console.log("I'm at Login")
     }
 
     try {
@@ -75,7 +72,6 @@ export default function Auth() {
               ? 'Password reset successful!'
               : 'Login successful!'
         );
-        console.log(data);
         route.push('/eatofy/dashboard');
       } else {
         setMessage(

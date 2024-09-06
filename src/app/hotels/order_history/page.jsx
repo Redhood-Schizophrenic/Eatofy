@@ -130,7 +130,6 @@ const BillTable = () => {
         if (result.returncode === 200 && Array.isArray(result.output)) {
           const bill_info = result.output[0].BillInfo[0];
           const orders_info = result.output[0].Orders;
-          console.log(orders_info);
           setBillInfo(bill_info);
           setOrdersInfo(orders_info);
         } else {
@@ -165,7 +164,6 @@ const BillTable = () => {
 
         let total = menutotal + cgstAmt + sgstAmt;
 
-        console.log("Total", total)
         if (vatRate != 0) {
           vatAmt = total * (vatRate / 100);
           total = total + vatAmt
@@ -176,7 +174,6 @@ const BillTable = () => {
           total = total - discountAmount
         }
 
-        console.log("Total", total)
 
         const response = await fetch(`${ApiHost}/api/hotel/bills/management/update/payment`, {
           method: 'PUT',
@@ -206,7 +203,6 @@ const BillTable = () => {
           setEditBillInfo(false);
           fetchBillList();
         } else {
-          console.log("Failed to update bill");
           setMessage('Payment Failed');
         }
 

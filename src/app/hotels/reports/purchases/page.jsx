@@ -77,7 +77,7 @@ export default function Purchase_Report() {
 
 
       } else {
-        console.log("Failed to fetch supplier");
+        alert("Failed to fetch supplier");
       }
 
     } catch (e) {
@@ -105,7 +105,7 @@ export default function Purchase_Report() {
       if (data.returncode === 200) {
         setStock(data);
       } else {
-        console.log('Failed to get by date');
+        alert('Failed to get by date');
       }
 
     } catch (e) {

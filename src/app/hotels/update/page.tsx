@@ -44,7 +44,6 @@ const UpdateHotel = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Update successful:', data);
       } else {
         console.error('Update failed');
       }

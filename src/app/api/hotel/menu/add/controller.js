@@ -74,7 +74,6 @@ export async function add_menu_dish(data) {
 		// Inserting the Menu for each section
 		for (const section of sections) {
 			const menu_result = await add_menu(data = { dish_id, section_id: section.id, price });
-			console.log(menu_result);
 			if (menu_result.returncode !== 200 && menu_result.output.length == 0) {
 				return menu_result;
 			}

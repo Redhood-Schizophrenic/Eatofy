@@ -32,7 +32,6 @@ export default function Hotels() {
 		e.preventDefault();
 
 		const formData = new FormData(e.currentTarget);
-		console.log(formData);
 		formData.append('logo',file);
 		
 		try {
@@ -43,7 +42,6 @@ export default function Hotels() {
 
 			if (response.ok) {
 				const data = await response.json();
-				console.log('Profile Updated:', data);
 				setMessage('Profile updated');
 			} else {
 				console.error('Profile Update Failed');
@@ -58,7 +56,6 @@ export default function Hotels() {
 		e.preventDefault();
 
 		const formData = new FormData(e.currentTarget);
-		console.log(formData);
 		formData.append('hotel_name', hotel_name);
 		formData.append('email', email);
 		formData.append('password', password);
@@ -68,8 +65,6 @@ export default function Hotels() {
 		formData.append('speciality', specialArray);
 		formData.append('contacts', contactsArray);
 
-		console.log(formData);
-
 		try {
 			const response = await fetch(`${ApiHost}/api/eatofy/hotels/operations/update/details`, {
 				method: 'PUT',
@@ -77,10 +72,8 @@ export default function Hotels() {
 			});
 
 			if (response.ok) {
-				const data = await response.json();
-				console.log('Hotel created:', data);
-			} else {
-				console.error('Failed to create hotel');
+				await response.json();
+				route.push('/eatofy/add/hotels')
 			}
 		} catch (error) {
 			console.error('An error occurred:', error);
@@ -108,8 +101,6 @@ export default function Hotels() {
 	useEffect(() => {
 		fetchHotel();
 	}, [])
-
-	console.log(data)
 
 	return (
 		<>
@@ -209,7 +200,6 @@ export default function Hotels() {
 										(e) => {
 											if (e.target.value.length === 0) {
 												setwebsite('N/A');
-												console.log(e.target.value)
 											} else {
 												setwebsite(e.target.value);
 											}

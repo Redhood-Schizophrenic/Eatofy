@@ -82,7 +82,6 @@ const MenuManagement = () => {
       const data = await response.json();
 
       if (data.returncode === 200) {
-        console.log("Data fetched", data);
         setCategoryList(data.output);
       } else {
         alert("Unable to fetch Category's");

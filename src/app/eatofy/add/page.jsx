@@ -5,9 +5,6 @@ import { redirect, usePathname } from "next/navigation";
 export default function Eatofy() {
 
 	const path = usePathname();
-
-	// console.log(path);
-	
 	if (path === '/eatofy/add') {
 		redirect('/eatofy/authentation');
 	}else{

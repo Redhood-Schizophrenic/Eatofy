@@ -36,8 +36,6 @@ export default function AddHotels() {
 	const [owneremail, setowneremail] = useState('');
 	const [ownerpassword, setownerpassword] = useState('');
 
-	// console.log(specialArray, ' ', contactsArray)
-
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
@@ -52,7 +50,6 @@ export default function AddHotels() {
 		formData.append('contacts', contactsArray);
 		formData.append('logo', file);
 
-		console.log(formData);
 
 		try {
 			const response = await fetch(`${ApiHost}/api/eatofy/hotels/management/add/single/logo`, {
@@ -62,7 +59,6 @@ export default function AddHotels() {
 
 			if (response.ok) {
 				const data = await response.json();
-				console.log('Hotel created:', data);
 				setistrue(!istrue);
 				route.push('/eatofy/hotels');
 				setMessage('Hotel Added');
@@ -96,7 +92,6 @@ export default function AddHotels() {
 			const data = await response.json();
 
 			if (data.returncode === 200) {
-				console.log('Owners Added', data);
 				setMessage('Owners Added');
 			}
 
@@ -110,7 +105,6 @@ export default function AddHotels() {
 		const data = await res.json();
 		setHotels(data.output);
 	}
-	console.log(hotels)
 
 	const ShowForm = () => {
 		form.current.classList.toggle('hidden');
@@ -274,7 +268,6 @@ export default function AddHotels() {
 											(e) => {
 												if (e.target.value.length === 0) {
 													setwebsite('N/A');
-													console.log(e.target.value)
 												} else {
 													setwebsite(e.target.value);
 												}

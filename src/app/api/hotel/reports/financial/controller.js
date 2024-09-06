@@ -59,7 +59,6 @@ export async function fetch_financial_reports(data) {
 
 const Purchases_Data = async (hotel_id, from_date, to_date) => {
 	const data = await read_invoices_asc({ hotel_id });
-	console.log(data);
 	const purchases_data = data.output.filter((hotel) => {
 		hotel.Datetime = new Date(hotel.Date);
 		hotel.Date = datetime_formatter(hotel.Datetime);

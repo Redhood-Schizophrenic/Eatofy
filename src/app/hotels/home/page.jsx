@@ -36,16 +36,14 @@ const Eatofy = () => {
 
       if (sectionsData.returncode === 200) {
         setSections(sectionsData.output);
-        console.log("Sections", sectionsData.output);
       } else {
-        console.log("Failed to fetch sections");
+        alert("Failed to fetch sections");
       }
 
       if (tablesData.returncode === 200) {
         setTables(tablesData.output);
-        console.log("Tables", tablesData.output);
       } else {
-        console.log("Failed to fetch tables");
+        alert("Failed to fetch tables");
       }
     } catch (e) {
       console.error(e);

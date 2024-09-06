@@ -85,7 +85,6 @@ export default function HotelSubscription() {
 			let minuts = date.getMinutes();
 			minuts = minuts.toString().padStart(2, '0');
 			setend_time(`${date.getHours()}:${minuts}`);
-			// console.log(end_time, "hello")
 		}
 
 	}, [start_date, end_time])

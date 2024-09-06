@@ -49,7 +49,6 @@ export async function add_purchase_stock(data) {
 				hotel_id
 			};
 
-		    console.log(request_var);
 			const stock_automation = await add_available_stock(request_var);
 
 			if (stock_automation.returncode === 200) {

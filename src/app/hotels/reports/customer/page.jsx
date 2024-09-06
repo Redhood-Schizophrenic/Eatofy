@@ -44,7 +44,7 @@ const Customer_Report = () => {
         setTable(data.output);
 
       } else {
-        console.log("Failed to fetch");
+        alert("Failed to fetch");
       }
 
     } catch (e) {

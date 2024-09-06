@@ -225,7 +225,6 @@ export default function Menu() {
 					setIsOrderSaved(false);
 				}, 2000);
 			} else {
-				console.log("Lavde Lagle BCC000000D");
 				setIsOrderFailed(true);
 				fetch_bill();
 				setTimeout(() => {
@@ -267,7 +266,6 @@ export default function Menu() {
 					setIsOrderSaved(false);
 				}, 2000);
 			} else {
-				console.log("Lavde Lagle BCC000000D");
 				setIsOrderFailed(true);
 				setTimeout(() => {
 					setIsOrderFailed(false);

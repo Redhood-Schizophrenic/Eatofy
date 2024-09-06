@@ -236,7 +236,6 @@ export default function Swiggy_Menu() {
 					setIsOrderSaved(false);
 				}, 2000);
 			} else {
-				console.log("Lavde Lagle BCC000000D");
 				setIsOrderFailed(true);
 				setTimeout(() => {
 					setIsOrderFailed(false);

@@ -24,7 +24,6 @@ export async function add_customer(data) {
 
 		// Existing Customer Name
 		const existingCustomer = await read_customer({ customer_name, contact });
-		console.log(existingCustomer);
 		if (existingCustomer.returncode == 200) {
 			return existingCustomer;
 		}

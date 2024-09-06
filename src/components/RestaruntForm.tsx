@@ -8,9 +8,6 @@ export default function ResturantForm() {
 	const [email, setemail] = useState("");
 	const [password, setpassword] = useState("");
 
-	console.log(username);
-	console.log(email);
-	console.log(password);
 
 	return(
 		<>

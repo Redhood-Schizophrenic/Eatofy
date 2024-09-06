@@ -27,13 +27,6 @@ export default function Services() {
     { name: "Other Relevent Features" },
   ]
 
-  console.log(isActive1);
-  console.log(isActive2);
-  console.log(isActive3);
-  console.log(isActive4);
-  console.log(isActive5);
-  console.log(isActive6);
-  console.log(isActive7);
 
   return (
     <>
@@ -133,7 +126,7 @@ export default function Services() {
                               else if (id === 7)
                                 setActive7(true);
                               else 
-                                console.log("Failed");
+                                alert("Failed");
                             }
                           }   
                         >

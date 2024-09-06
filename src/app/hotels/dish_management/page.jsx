@@ -48,7 +48,6 @@ const MenuManagement = () => {
       const data = await response.json();
 
       if (data.returncode === 200) {
-        console.log("Data fetched", data);
         setData(data.output);
       } else {
         alert("Unable to fetch Category's");
@@ -74,7 +73,6 @@ const MenuManagement = () => {
       const data = await response.json();
 
       if (data.returncode === 200) {
-        console.log("Data fetched", data);
         setdishes(data.output);
       } else {
         alert("Unable to fetch Category's");
@@ -100,7 +98,6 @@ const MenuManagement = () => {
       const data = await response.json();
 
       if (data.returncode === 200) {
-        console.log("Data fetched", data);
         setsection(data.output);
       } else {
         alert("Unable to fetch Sections");
@@ -262,10 +259,9 @@ const MenuManagement = () => {
 
       const data = await response.json();
       if (data.returncode === 200) {
-        console.log("Menu", data);
         setShowaddmenu(false);
       } else {
-        console.log("failed to fetch")
+        alert("failed to fetch")
       }
 
     } catch (e) {
@@ -284,9 +280,6 @@ const MenuManagement = () => {
   const handleAddDish = () => {
     setaddDish(!addDish);
   }
-
-  // console.log(dishname, "\n", dishcode, "\n", dishtype)
-  // console.log("cate_id", sessionStorage.getItem('category_id_option'))
 
   return (
     <>

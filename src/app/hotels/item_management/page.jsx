@@ -45,10 +45,9 @@ export default function Item_management() {
 
       const data = await response.json();
       if (data.returncode === 200) {
-        console.log("fetched", data)
         setfetcedcategory(data.output);
       } else {
-        console.log('Failed to fetch');
+        alert('Failed to fetch');
       }
 
     } catch (e) {
@@ -73,10 +72,9 @@ export default function Item_management() {
 
       const data = await response.json();
       if (data.returncode === 200) {
-        console.log("fetched", data)
         setitems(data.output);
       } else {
-        console.log('Failed to fetch');
+        alert('Failed to fetch');
       }
 
     } catch (e) {
@@ -104,7 +102,6 @@ export default function Item_management() {
 
       const data = await response.json();
       if (data.returncode === 200) {
-        console.log(data);
         setShowTableForm(false);
         fetchItemCategory();
       }
@@ -136,10 +133,9 @@ export default function Item_management() {
 
       const data = await response.json();
       if (data.returncode === 200) {
-        console.log(data);
         fetchItems();
       } else {
-        console.log("Failed to add item");
+        alert("Failed to add item");
       }
 
     } catch (e) {

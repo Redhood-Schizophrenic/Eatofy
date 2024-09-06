@@ -24,7 +24,6 @@ export async function add_supplier(data) {
 
 		// Existing Suppliers
 		const existingSupplier = await check_supplier({ supplier_name, contact, hotel_id });
-		console.log(existingSupplier);
 		if ( existingSupplier.returncode == 200 ) {
 			return {
 				returncode: 400,

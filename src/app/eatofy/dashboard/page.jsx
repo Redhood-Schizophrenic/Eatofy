@@ -25,7 +25,6 @@ const Dashboard = () => {
     const res = await fetch(`${ApiHost}/api/eatofy/dashboard`);
     const data = await res.json();
     setdata(data.output[0].subscribed_hotels);
-    // console.log(data);
     setTotalhotel(data.output[0].total_hotels);
     setTotalHotelSubs(data.output[0].total_subscribed_hotels);
     setTotalSubs(totalsubplus(data.output[0].subscribed_hotels));
@@ -81,11 +80,9 @@ const Dashboard = () => {
 
 
   function SearchMoney() {
-    // console.log("I'm executed")
     if (isSearched) {
       const output = filterDataByDate(data, isValid, 7);
       setshow(true);
-      console.log(show, output.length)
       setTotalhotelsearch(output.length);
       setTotalHotelSubsearch(output.length);
       setTotalSubsearch(totalsubplus(output));
@@ -98,10 +95,6 @@ const Dashboard = () => {
     fetchData();
 
   }, [])
-
-  // console.log(data)
-  // console.log(totalhotelsubsearch)
-  // console.log("Hello",filterDataByDate(data,'2days',18));
 
   const data1 = data.map((item)=> item.Subscription.Price);
 

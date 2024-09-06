@@ -42,7 +42,7 @@ export default function Available_stock() {
       if (data.returncode === 200) {
         setfetchitems(data.output);
       } else {
-        console.log("Failed to fetch items");
+        alert("Failed to fetch items");
       }
     } catch (e) {
       console.error(e);
@@ -64,7 +64,7 @@ export default function Available_stock() {
       if (data.returncode === 200) {
         setfetchstock(data.output);
       } else {
-        console.log("Failed to fetch stock");
+        alert("Failed to fetch stock");
       }
     } catch (e) {
       console.error(e);
@@ -95,7 +95,7 @@ export default function Available_stock() {
         fetchStock();
         setShowEditTableForm(false);
       } else {
-        console.log("Failed to update stock");
+        alert("Failed to update stock");
       }
     } catch (e) {
       console.error(e);
@@ -117,7 +117,7 @@ export default function Available_stock() {
       if (data.returncode === 200) {
         location.href = "/hotels/home"
       } else {
-        console.log("Failed to add stock");
+        alert("Failed to add stock");
       }
     } catch (e) {
       console.error(e);
@@ -141,7 +141,7 @@ export default function Available_stock() {
         fetchStock();
         setShowTableForm(false);
       } else {
-        console.log("Failed to add stock");
+        alert("Failed to add stock");
       }
     } catch (e) {
       console.error(e);

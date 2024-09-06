@@ -99,7 +99,7 @@ export default function Purchase_management() {
         setsupplier(data.output[0].Suppliers);
         setfetcheditems(data.output[0].Items);
       } else {
-        console.log("Failed to fetch supplier");
+        alert("Failed to fetch supplier");
       }
 
     } catch (e) {
@@ -139,7 +139,7 @@ export default function Purchase_management() {
         setShowTableForm(false);
         await fetchData();
       } else {
-        console.log("Failed to add purchase");
+        alert("Failed to add purchase");
       }
 
     } catch (e) {
@@ -169,8 +169,7 @@ export default function Purchase_management() {
           setShowEditForm(false);
           fetchData();
         } else {
-          console.log("Failed to update bill");
-          setMessage('Payment Failed');
+          alert('Payment Failed');
         }
 
       } catch (e) {
@@ -201,10 +200,9 @@ export default function Purchase_management() {
 
       const data = await response.json();
       if (data.returncode === 200) {
-        console.log('bydate', data);
         setfetchedpurchase(data.output);
       } else {
-        console.log('Failed to get by date');
+        alert('Failed to get by date');
       }
 
     } catch (e) {
@@ -232,7 +230,7 @@ export default function Purchase_management() {
       if (data.returncode === 200) {
         setStock(data);
       } else {
-        console.log('Failed to get by date');
+        alert('Failed to get by date');
       }
 
     } catch (e) {

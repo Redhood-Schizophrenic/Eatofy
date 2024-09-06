@@ -13,10 +13,6 @@ export default function EatofyRegister() {
 	const [data, setdata] = useState([]);
 	const route = useRouter();
 
-	// console.log(username);
-	// console.log(email);
-	// console.log(password);
-
 	const FetchData = async (e) => {
 		e.preventDefault();
 
@@ -32,19 +28,12 @@ export default function EatofyRegister() {
 		setdata(data);
 
 		if (data.returncode === 200) {
-			console.log("FUCK DOne")
 			alert("Registered Succesfully")
 			route.push('/eatofy/dashboard');
 		}else{
 			alert("Fill All required fields")
 		}
 	}
-
-	console.log(data);
-
-	// useEffect(()=>{
-	// 	FetchData();
-	// },[]);
 
 	return (
 		<>

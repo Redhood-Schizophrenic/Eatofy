@@ -60,7 +60,7 @@ const Expenses_Report = () => {
         setTable(data.output.FullData);
         setTotal(data.output.TotalAmount);
       } else {
-        console.log("Failed to fetch");
+        alert("Failed to fetch");
       }
 
     } catch (e) {

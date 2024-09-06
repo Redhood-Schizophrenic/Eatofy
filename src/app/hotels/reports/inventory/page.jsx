@@ -80,7 +80,7 @@ export default function Inventory_Report() {
 
 
       } else {
-        console.log("Failed to fetch supplier");
+        alert("Failed to fetch supplier");
       }
 
     } catch (e) {

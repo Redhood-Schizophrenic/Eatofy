@@ -42,7 +42,6 @@ export default function Supplier_management() {
       const data = await response.json();
 
       if (data.returncode === 200) {
-        console.log("Suppliers Fetched", data);
         setsupplier(data.output);
       } else {
         alert("Failed to fetch Suppliers data");
