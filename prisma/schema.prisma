@@ -48,6 +48,9 @@ model Hotels {
   Reservations         TableReservation[]
   Tables               Tables[]
   AvailableStockReport AvailableStockReport[]
+  DarkModeSettings     DarkModeSettings[]
+  EatocoinsSettings    EatocoinsSettings[]
+  VatSettings          VatSettings[]
 }
 
 model Subscriptions {
@@ -313,6 +316,7 @@ model Customers {
   Email             String?
   HotelId           String
   Status            String              @default("Active")
+  EatocoinsWallet   Float?              @default(0)
   Bills             Bills[]
   CustomerOccassion CustomerOccassion[]
   Hotel             Hotels              @relation(fields: [HotelId], references: [id])
@@ -411,4 +415,39 @@ model ComplianceChecklist {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
   Hotel          Hotels   @relation(fields: [HotelId], references: [id])
+}
+
+model DarkModeSettings {
+  id         String   @id @unique @default(uuid())
+  Visibility Boolean  @default(false)
+  HotelId    String
+  Status     String   @default("Active")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  Hotel      Hotels   @relation(fields: [HotelId], references: [id])
+}
+
+model VatSettings {
+  id         String   @id @unique @default(uuid())
+  Visibility Boolean  @default(false)
+  VATPercent Float?   @default(0.0)
+  HotelId    String
+  Status     String   @default("Active")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  Hotel      Hotels   @relation(fields: [HotelId], references: [id])
+}
+
+model EatocoinsSettings {
+  id                 String   @id @unique @default(uuid())
+  Visibility         Boolean  @default(false)
+  CreditLimitAmt     Float    @default(0) // Minimum Purchases amt. needed to credit to customer's wallet
+  CreditLimitPercent Float    @default(0) // Percent of the amt. Purchased will be credited to wallet
+  RedeemLimitAmount  Float    @default(0) // Amount above which redeeming the wallet coins will be available
+  RedeemLimitPercent Float    @default(0) // Max Percent of eato-coins discount that can be availed  
+  HotelId            String
+  Status             String   @default("Active")
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  Hotel              Hotels   @relation(fields: [HotelId], references: [id])
 }

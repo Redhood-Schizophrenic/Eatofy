@@ -37,6 +37,44 @@ export async function update_customer_status({
 	}
 }
 
+// Update Eatocoins Wallet
+export async function update_customer_wallet({
+	customer_id,
+	eatocoins
+}) {
+	try {
+
+		// Updating the record
+		const result = await db.customers.update({
+			where: {
+				id: customer_id,
+				EatocoinsWallet: eatocoins
+			},
+			data: {
+				Email: email
+			},
+		});
+
+		// Database is disconnected
+		db.$disconnect();
+
+		return {
+			returncode: 200,
+			message: "Data Updated",
+			output: result
+		};
+
+	} catch (error) {
+
+		return {
+			returncode: 500,
+			message: error.message,
+			output: []
+		};
+
+	}
+}
+
 // Update Details
 export async function update_customer_details({
 	customer_id,

@@ -4,9 +4,10 @@ export async function create_customer({
 	customer_name,
 	contact,
 	email,
+	eatocoins,
 	hotel_id
 }) {
-	
+
 	try {
 
 		// Inserting the record
@@ -15,6 +16,7 @@ export async function create_customer({
 				CustomerName: customer_name,
 				Contact: contact,
 				Email: email,
+				EatocoinsWallet: eatocoins || 0,
 				HotelId: hotel_id
 			}
 		});
@@ -29,7 +31,7 @@ export async function create_customer({
 		};
 
 	} catch (error) {
-		
+
 		return {
 			returncode: 500,
 			message: error.message,
