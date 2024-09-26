@@ -53,7 +53,7 @@ const Sales_Report = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          'hotel_id': sessionStorage.getItem('hotel_id'),
+          'hotel_id': localStorage.getItem('hotel_id'),
           'from': from,
           'to': to
         }),
@@ -260,18 +260,17 @@ const Sales_Report = () => {
                           <td className="border px-4 py-2">{row.Date}</td>
                           <td className="border px-4 py-2">{row.Type}</td>
                           <td className="border px-4 py-2">{row.Waiter.FirstName} {row.Waiter.LastName}</td>
-                          <td className="border px-4 py-2">{row.Customer?.CustomerName || "N/A" }</td>
+                          <td className="border px-4 py-2">{row.Customer?.CustomerName || "N/A"}</td>
                           <td className="border px-4 py-2">{row.Customer?.Contact || "N/A"}</td>
                           <td className="border px-4 py-2">{row.TotalAmount}</td>
                           <td className="border px-4 py-2">{row.BalanceAmount}</td>
                           <td className="border px-4 py-2">
                             <span
-                              className={`px-2 inline-flex text-sm leading-5 font-semibold rounded-full ${
-                                  row.Status.toLowerCase() === 'paid' ? 'bg-green-100 text-green-800' :
-                                  row.Status.toLowerCase() === 'unpaid' ? 'bg-red-100 text-red-800' : 
-                                  row.Status.toLowerCase() === 'partpaid' ? 'bg-yellow-100 text-yellow-800':
-                                  'bg-gray-100 text-gray-800'
-                              }`}
+                              className={`px-2 inline-flex text-sm leading-5 font-semibold rounded-full ${row.Status.toLowerCase() === 'paid' ? 'bg-green-100 text-green-800' :
+                                  row.Status.toLowerCase() === 'unpaid' ? 'bg-red-100 text-red-800' :
+                                    row.Status.toLowerCase() === 'partpaid' ? 'bg-yellow-100 text-yellow-800' :
+                                      'bg-gray-100 text-gray-800'
+                                }`}
                             >
                               {row.Status}
                             </span>

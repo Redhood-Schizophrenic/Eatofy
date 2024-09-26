@@ -46,7 +46,7 @@ const Expenses_Report = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          'hotel_id': sessionStorage.getItem('hotel_id'),
+          'hotel_id': localStorage.getItem('hotel_id'),
           'from': from,
           'to': to
         }),

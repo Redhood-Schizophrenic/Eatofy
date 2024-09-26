@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Bills" ADD COLUMN     "Amount" DOUBLE PRECISION NOT NULL DEFAULT 0.0;
+
+-- AlterTable
+ALTER TABLE "EatocoinsSettings" ADD COLUMN     "Rate" DOUBLE PRECISION NOT NULL DEFAULT 0;

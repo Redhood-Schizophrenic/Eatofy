@@ -2,16 +2,16 @@ import db from "@/db/connector";
 
 // Details Update
 export async function update_vat_settings({
-	hotel_id,
+	setting_id,
 	visibility,
 	vat_percent
 }) {
 	try {
 
 		// Updating the record
-		const result = await db.darkModeSettings.update({
+		const result = await db.vatSettings.update({
 			where: {
-				HotelId: hotel_id
+				id: setting_id
 			},
 			data: {
 				Visibility: visibility,

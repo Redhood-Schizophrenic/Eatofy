@@ -32,7 +32,7 @@ const Customer_Report = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          'hotel_id': sessionStorage.getItem('hotel_id'),
+          'hotel_id': localStorage.getItem('hotel_id'),
         }),
       });
 
@@ -44,7 +44,7 @@ const Customer_Report = () => {
         setTable(data.output);
 
       } else {
-        alert("Failed to fetch");
+        alert("Failed to fetch / No Customers to display");
       }
 
     } catch (e) {
@@ -95,7 +95,7 @@ const Customer_Report = () => {
                 Customer Data
               </h2>
               <div className=' flex justify-center items-center'>
-                <table className="min-w-full text-black border-collapse">
+                <table className="min-w-full text-black border-collapse text-center">
                   <thead>
                     <tr className="bg-gray-500 text-white font-bold">
                       <th className="border px-4 py-2">SR#</th>
@@ -104,6 +104,7 @@ const Customer_Report = () => {
                       <th className="border px-4 py-2">Email</th>
                       <th className="border px-4 py-2">Occassion</th>
                       <th className="border px-4 py-2">Date</th>
+                      <th className="border px-4 py-2">Wallet</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -118,9 +119,10 @@ const Customer_Report = () => {
                             <td className="border px-4 py-2">{index + 1}</td>
                             <td className="border px-4 py-2">{row.CustomerName}</td>
                             <td className="border px-4 py-2">{row.Contact}</td>
-                            <td className="border px-4 py-2">{row.Email}</td>
+                            <td className="border px-4 py-2">{row.Email || "N/A"}</td>
                             <td className="border px-4 py-2">{row.CustomerOccassion[0]?.Occassion || "N/A"}</td>
                             <td className="border px-4 py-2">{row.CustomerOccassion[0]?.Date || "N/A"}</td>
+                            <td className="border px-4 py-2">{row.EatocoinsWallet | 0} points </td>
                           </tr>
                         ))
                         : null

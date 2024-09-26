@@ -89,7 +89,7 @@ export default function Inventory_Report() {
   }
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem('hotel_id'));
+    sethotel_id(localStorage.getItem('hotel_id'));
     if (hotel_id) {
       fetchInventoryData();
     }
@@ -313,22 +313,21 @@ export default function Inventory_Report() {
                           <td className="border px-4 py-2">{items.Quantity}</td>
                           <td className="border px-4 py-2">{items.Unit}</td>
                           <td className="border px-4 py-2">
-                          <span
-                              className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${
-                                items.Status.toLowerCase() === "available"
+                            <span
+                              className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${items.Status.toLowerCase() === "available"
                                   ? "bg-green-200 text-green-800"
                                   : items.Status.toLowerCase() === "unavailable"
-                                  ? "bg-red-200 text-red-800"
-                                  : items.Status.toLowerCase() ===
-                                    "low stock"
-                                  ? "bg-yellow-200 text-yellow-800"
-                                  : "bg-gray-200 text-gray-800"
-                              }`}
+                                    ? "bg-red-200 text-red-800"
+                                    : items.Status.toLowerCase() ===
+                                      "low stock"
+                                      ? "bg-yellow-200 text-yellow-800"
+                                      : "bg-gray-200 text-gray-800"
+                                }`}
                             >
                               {items.Status}
                             </span>
                             {}
-                            </td>
+                          </td>
                         </tr>
                       ))
                     }

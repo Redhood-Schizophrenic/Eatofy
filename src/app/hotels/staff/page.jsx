@@ -176,7 +176,7 @@ const StaffTable = () => {
   };
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem('hotel_id'));
+    sethotel_id(localStorage.getItem('hotel_id'));
     if (hotel_id) {
       fetchStaffList();
     }

@@ -335,19 +335,10 @@ export default function Menu() {
 				body: JSON.stringify({
 					'bill_id': billId,
 					'table_id': TableId,
-					'total_amount': totalAmt,
-					'cgst_rate': cgstRate,
-					'cgst_amount': cgstAmt,
-					'sgst_rate': sgstRate,
-					'sgst_amount': sgstAmt,
 					'delivery_rate': DeliveryChr,
-					'delivery_amounti': Deliverychr,
-					'vat_rate': vatAmt,
-					'vat_amount': VatAmt,
 					'menu_total': parseFloat(menutotal),
 					'balance_amount': parseFloat(BalanceAmt),
 					'discount_rate': disAmt,
-					'discount_amount': discount,
 					'payment_mode': PaymentMode,
 					'payment_status': PaymentStatus
 				}),
@@ -371,14 +362,14 @@ export default function Menu() {
 	}
 
 	useEffect(() => {
-		setHotelId(sessionStorage.getItem('hotel_id'));
+		setHotelId(localStorage.getItem('hotel_id'));
 		setTableId(sessionStorage.getItem('table_id'));
 		setWaiterId(sessionStorage.getItem('waiter_id'));
 		setType(sessionStorage.getItem('type'));
 		setTableName(sessionStorage.getItem('table_name'));
 
 		fetch_bill()
-	}, [HotelId,Type]);
+	}, [HotelId, Type]);
 
 
 	return (
@@ -469,67 +460,67 @@ export default function Menu() {
 
 								<div className="flex gap-6 px-6 flex-wrap">
 									{
-									ShowAllDishes
-										?
-										Menus.filter((menu) => {
-											const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
-											return searchMatch;
-										}).map((menu, index) => (
-											<div
-												key={index}
-												onClick={() => { handleAddToCart(menu) }}
-												id="menu"
-												className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
-													menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
-														menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
-															menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
-													}`}
-											>
-												<p className="flex flex-wrap text-lg font-semibold">
-													{menu.Dish.DishName}
-												</p>
-												<p className="flex justify-center items-center">
-													&#35;{menu.Dish.Code}
-												</p>
-												<p className="flex justify-center items-center">
-													{menu.Dish.Category.CategoryName}
-												</p>
+										ShowAllDishes
+											?
+											Menus.filter((menu) => {
+												const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+												return searchMatch;
+											}).map((menu, index) => (
+												<div
+													key={index}
+													onClick={() => { handleAddToCart(menu) }}
+													id="menu"
+													className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
+														menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
+															menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
+																menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
+														}`}
+												>
+													<p className="flex flex-wrap text-lg font-semibold">
+														{menu.Dish.DishName}
+													</p>
+													<p className="flex justify-center items-center">
+														&#35;{menu.Dish.Code}
+													</p>
+													<p className="flex justify-center items-center">
+														{menu.Dish.Category.CategoryName}
+													</p>
 
-											</div>
-										))
-										:
-										Menus.filter((menu) => {
-											// Check if the category matches or if no category is selected (show all)
-											const categoryMatch = ClickedCategory === null || menu.Dish.Category.id === ClickedCategory;
-											// Check if the dish name or code includes the search text
-											const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
-											// Return true if both conditions are met
-											return categoryMatch && searchMatch;
+												</div>
+											))
+											:
+											Menus.filter((menu) => {
+												// Check if the category matches or if no category is selected (show all)
+												const categoryMatch = ClickedCategory === null || menu.Dish.Category.id === ClickedCategory;
+												// Check if the dish name or code includes the search text
+												const searchMatch = menu.Dish.DishName.toLowerCase().includes(Search.toLowerCase()) || menu.Dish.Code.toLowerCase().includes(Search.toLowerCase());
+												// Return true if both conditions are met
+												return categoryMatch && searchMatch;
 
-										}).map((menu, index) => (
-											<div
-												key={index}
-												onClick={() => { handleAddToCart(menu) }}
-												id="menu"
-												className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
-													menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
-														menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
-															menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
-													}`}
-											>
-												<p className="flex flex-wrap text-lg font-semibold">
-													{menu.Dish.DishName}
-												</p>
-												<p className="flex justify-center items-center">
-													&#35;{menu.Dish.Code}
-												</p>
-												<p className="flex justify-center items-center">
-													{menu.Dish.Category.CategoryName}
-												</p>
-											</div>
-										))
+											}).map((menu, index) => (
+												<div
+													key={index}
+													onClick={() => { handleAddToCart(menu) }}
+													id="menu"
+													className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === 'Veg' ? 'border-green-500 text-green-700' :
+														menu.Dish.Type === 'Non-Veg' ? 'border-red-500 text-red-700' :
+															menu.Dish.Type === 'Beverage' ? 'border-blue-500 text-blue-700' :
+																menu.Dish.Type === 'Egg' ? 'border-yellow-500 text-yellow-600' : 'border-black'
+														}`}
+												>
+													<p className="flex flex-wrap text-lg font-semibold">
+														{menu.Dish.DishName}
+													</p>
+													<p className="flex justify-center items-center">
+														&#35;{menu.Dish.Code}
+													</p>
+													<p className="flex justify-center items-center">
+														{menu.Dish.Category.CategoryName}
+													</p>
+												</div>
+											))
 
-								}
+									}
 								</div>
 
 							</div>

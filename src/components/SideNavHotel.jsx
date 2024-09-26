@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { FaArrowLeft, FaBriefcase, FaDashcube, FaHome, FaList, FaWarehouse } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 import { IoLogOutOutline } from "react-icons/io5";
-import { FaBookBookmark, FaChartPie, FaTable } from "react-icons/fa6";
+import { FaBookBookmark, FaChartPie, FaGear, FaTable } from "react-icons/fa6";
 // import { MdOutline1K, MdOutlineSubscriptions } from "react-icons/md";
 import { MdOutlineMenuBook } from "react-icons/md";
 import "../styles/navbar.css";
@@ -29,11 +29,12 @@ export default function HotelSideNav() {
   const [isOpen8, setIsOpen8] = useState(false);
   const [isOpen9, setIsOpen9] = useState(false);
   const [isOpen10, setIsOpen10] = useState(false);
+  const [isOpen11, setIsOpen11] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isThere, setIsThere] = useState();
 
   useEffect(() => {
-    const role = window.sessionStorage.getItem('role');
+    const role = sessionStorage.getItem('role');
     if (role) {
       setIsThere(role);
       changeRole(role);
@@ -115,14 +116,6 @@ export default function HotelSideNav() {
         }
         break;
 
-      case 'logout':
-        if (isOpen5) {
-          setIsOpen5(false);
-        } else {
-          setIsOpen5(true);
-        }
-        break;
-
       case 'dashboard':
         if (isOpen6) {
           setIsOpen6(false);
@@ -144,6 +137,14 @@ export default function HotelSideNav() {
           setIsOpen9(false);
         } else {
           setIsOpen9(true);
+        }
+        break;
+
+      case 'settings':
+        if (isOpen11) {
+          setIsOpen11(false);
+        } else {
+          setIsOpen11(true);
         }
         break;
 
@@ -258,6 +259,16 @@ export default function HotelSideNav() {
                       <FaBookBookmark size={25} className="icon" color={isOpen4 ? '#fff' : ''} />
                       <span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Reservation</span>
                     </Link>
+
+                    <Link
+                      href="/hotels/settings"
+                      className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[13px] p-2 py-3 gap-8 w-full"
+                      onMouseEnter={() => { changeColor('settings') }}
+                      onMouseLeave={() => { changeColor('settings') }}
+                    >
+                      <FaGear size={25} className="icon" color={isOpen11 ? '#fff' : ''} />
+                      <span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Settings</span>
+                    </Link>
                   </>
                 )
                 :
@@ -296,6 +307,16 @@ export default function HotelSideNav() {
                     >
                       <FaBriefcase size={25} className="icon" color={isOpen1 ? '#fff' : ''} />
                       <span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Back Office</span>
+                    </Link>
+
+                    <Link
+                      href="/hotels/settings"
+                      className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[13px] p-2 py-3 gap-8 w-full"
+                      onMouseEnter={() => { changeColor('settings') }}
+                      onMouseLeave={() => { changeColor('settings') }}
+                    >
+                      <FaGear size={25} className="icon" color={isOpen11 ? '#fff' : ''} />
+                      <span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Settings</span>
                     </Link>
                   </>
                 )
@@ -349,7 +370,7 @@ export default function HotelSideNav() {
               className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[14px] p-2 gap-8 w-full mb-4"
               onMouseEnter={() => { changeColor('logout') }}
               onMouseLeave={() => { changeColor('logout') }}
-              onClick={() => { sessionStorage.clear() }}
+              onClick={() => { sessionStorage.clear(); localStorage.removeItem('hotel_id'); }}
             >
               <IoLogOutOutline size={25} className="icon" color={isOpen5 ? '#fff' : ''} />
               <span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Logout</span>

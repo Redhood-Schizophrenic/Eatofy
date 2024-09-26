@@ -1,6 +1,6 @@
 import { read_vat_settings } from "../../../../../../db/crud/settings/vat/management/read";
 
-export async function read_vat_settings(data) {
+export async function fetch_vat_settings(data) {
 	try {
 
 		const hotel_id = data['hotel_id'] || null;

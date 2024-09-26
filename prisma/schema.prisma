@@ -51,6 +51,7 @@ model Hotels {
   DarkModeSettings     DarkModeSettings[]
   EatocoinsSettings    EatocoinsSettings[]
   VatSettings          VatSettings[]
+  GSTSettings          GstSettings[]
 }
 
 model Subscriptions {
@@ -366,7 +367,10 @@ model Bills {
   SGSTRate              String     @default("2.5 %")
   SGSTAmount            Float      @default(0.0)
   CGSTAmount            Float      @default(0.0)
+  EatocoinsRate         String?
+  EatocoinsAmount       Float?
   MenuTotal             Float      @default(0.0)
+  Amount                Float      @default(0.0)
   BalanceAmount         Float      @default(0.0)
   DeliveryChargesRate   String?
   DeliveryChargesAmount Float?
@@ -427,6 +431,17 @@ model DarkModeSettings {
   Hotel      Hotels   @relation(fields: [HotelId], references: [id])
 }
 
+model GstSettings {
+  id         String   @id @unique @default(uuid())
+  Visibility Boolean  @default(false)
+  GSTPercent Float?   @default(0.0)
+  HotelId    String
+  Status     String   @default("Active")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  Hotel      Hotels   @relation(fields: [HotelId], references: [id])
+}
+
 model VatSettings {
   id         String   @id @unique @default(uuid())
   Visibility Boolean  @default(false)
@@ -445,6 +460,7 @@ model EatocoinsSettings {
   CreditLimitPercent Float    @default(0) // Percent of the amt. Purchased will be credited to wallet
   RedeemLimitAmount  Float    @default(0) // Amount above which redeeming the wallet coins will be available
   RedeemLimitPercent Float    @default(0) // Max Percent of eato-coins discount that can be availed  
+  Rate               Float    @default(0)
   HotelId            String
   Status             String   @default("Active")
   createdAt          DateTime @default(now())

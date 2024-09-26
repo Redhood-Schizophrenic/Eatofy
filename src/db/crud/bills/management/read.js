@@ -16,7 +16,7 @@ export async function read_hotel_bills_by_type({
 					Status: "Inactive"
 				},
 			},
-			orderBy:{
+			orderBy: {
 				createdAt: 'desc'
 			},
 			include: {
@@ -151,7 +151,8 @@ export async function read_bill_info_by_table({
 			},
 			include: {
 				Table: true,
-				Hotels: true
+				Hotels: true,
+				Customer: true
 			}
 		});
 

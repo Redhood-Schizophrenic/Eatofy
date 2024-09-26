@@ -27,7 +27,7 @@ const ExpenseTracking = () => {
   const [isFormValid, setisFormValid] = useState(true);
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem('hotel_id'));
+    sethotel_id(localStorage.getItem('hotel_id'));
     if (hotel_id) {
       fetchExpenses();
     }
@@ -102,7 +102,7 @@ const ExpenseTracking = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          hotel_id: sessionStorage.getItem('hotel_id'),
+          hotel_id: localStorage.getItem('hotel_id'),
           expense_name: expenseDetails.category,
           date: expenseDetails.date,
           note: expenseDetails.description,

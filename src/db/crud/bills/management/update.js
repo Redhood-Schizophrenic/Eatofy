@@ -3,6 +3,7 @@ import db from "@/db/connector";
 // Bill Payment
 export async function bill_payment({
 	bill_id,
+	amount,
 	total_amount,
 	cgst_rate,
 	sgst_rate,
@@ -17,7 +18,9 @@ export async function bill_payment({
 	vat_rate,
 	vat_amount,
 	delivery_rate,
-	delivery_amount
+	delivery_amount,
+	eatocoins_rate,
+	eatocoins
 }) {
 	try {
 
@@ -33,6 +36,7 @@ export async function bill_payment({
 				CGSTAmount: cgst_amount,
 				SGSTAmount: sgst_amount,
 				MenuTotal: menu_total,
+				Amount: amount,
 				BalanceAmount: balance_amount,
 				DiscountRate: discount_rate,
 				DiscountPrice: discount_amount,
@@ -41,7 +45,9 @@ export async function bill_payment({
 				VatRate: vat_rate,
 				VatAmount: vat_amount,
 				DeliveryChargesRate: delivery_rate,
-				DeliveryChargesAmount: delivery_amount
+				DeliveryChargesAmount: delivery_amount,
+				EatocoinsRate: eatocoins_rate,
+				EatocoinsAmount: eatocoins
 			}
 		});
 

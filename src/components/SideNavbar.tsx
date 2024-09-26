@@ -50,7 +50,7 @@ export default function SideNav() {
 					setIsOpen3(true);
 				}
 				break;
-			
+
 			case 'subscription':
 				if (isOpen4) {
 					setIsOpen4(false);
@@ -92,8 +92,8 @@ export default function SideNav() {
 						<Link
 							href="/"
 							className={`icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center ${isCollapsed ? 'pl-[12px]' : 'pl-[11.5px]'} p-2 gap-8 w-full`}
-							onMouseEnter={()=>{changeColor('home')}}
-							onMouseLeave={()=>{changeColor('home')}}
+							onMouseEnter={() => { changeColor('home') }}
+							onMouseLeave={() => { changeColor('home') }}
 						>
 							<GoHome size={30} className="icon" color={isOpen1 ? '#fff' : ''} />
 							<span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Home</span>
@@ -101,8 +101,8 @@ export default function SideNav() {
 						<Link
 							href="/eatofy/dashboard"
 							className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[13px] p-2 gap-8 w-full"
-							onMouseEnter={()=>{changeColor('dashboard')}}
-							onMouseLeave={()=>{changeColor('dashboard')}}
+							onMouseEnter={() => { changeColor('dashboard') }}
+							onMouseLeave={() => { changeColor('dashboard') }}
 						>
 							<FaChartPie size={25} className="icon" color={isOpen2 ? '#fff' : ''} />
 							<span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Dashboard</span>
@@ -110,8 +110,8 @@ export default function SideNav() {
 						<Link
 							href="/eatofy/add/hotels"
 							className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[13.5px] p-2 gap-8 w-full"
-							onMouseEnter={()=>{changeColor('addhotel')}}
-							onMouseLeave={()=>{changeColor('addhotel')}}
+							onMouseEnter={() => { changeColor('addhotel') }}
+							onMouseLeave={() => { changeColor('addhotel') }}
 						>
 							<FaHotel size={25} className="icon" color={isOpen3 ? '#fff' : ''} />
 							<span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Add Hotels</span>
@@ -119,8 +119,17 @@ export default function SideNav() {
 						<Link
 							href="/eatofy/add/subscription"
 							className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[13.5px] p-2 gap-8 w-full"
-							onMouseEnter={()=>{changeColor('subscription')}}
-							onMouseLeave={()=>{changeColor('subscription')}}
+							onMouseEnter={() => { changeColor('subscription') }}
+							onMouseLeave={() => { changeColor('subscription') }}
+						>
+							<MdOutlineSubscriptions size={25} className="icon" color={isOpen4 ? '#fff' : ''} />
+							<span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Subscription</span>
+						</Link>
+						<Link
+							href="/eatofy/add/subscription"
+							className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[13.5px] p-2 gap-8 w-full"
+							onMouseEnter={() => { changeColor('subscription') }}
+							onMouseLeave={() => { changeColor('subscription') }}
 						>
 							<MdOutlineSubscriptions size={25} className="icon" color={isOpen4 ? '#fff' : ''} />
 							<span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Subscription</span>
@@ -129,8 +138,8 @@ export default function SideNav() {
 						<Link
 							href="/eatofy"
 							className="icons hover:bg-[#cc6666] hover:bg-opacity-50 inline-flex justify-start items-center pl-[14px] p-2 gap-8 w-full mb-4"
-							onMouseEnter={()=>{changeColor('logout')}}
-							onMouseLeave={()=>{changeColor('logout')}}
+							onMouseEnter={() => { changeColor('logout') }}
+							onMouseLeave={() => { changeColor('logout') }}
 						>
 							<IoLogOutOutline size={25} className="icon" color={isOpen5 ? '#fff' : ''} />
 							<span className={`icons_name text-white text-xl ${isCollapsed ? 'block' : 'hidden'}`}>Logout</span>

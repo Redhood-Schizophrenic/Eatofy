@@ -24,7 +24,7 @@ const Widget = () => {
 
 
   useEffect(() => {
-    sethotelId(sessionStorage.getItem("hotel_id"));
+    sethotelId(localStorage.getItem("hotel_id"));
     if (hotelId) {
       fetchTables();
       fetchSections();
@@ -413,7 +413,7 @@ const Widget = () => {
                 </div>
                 <button
                   type="submit"
-                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded focus:outline-none focus:shadow-outline"
                 >
                   Add Section
                 </button>
@@ -435,7 +435,7 @@ const Widget = () => {
           </div>
           <button
             onClick={handleShowSectionForm}
-            className="bg-red-500 text-white px-4 py-2 rounded-full flex items-center space-x-2"
+            className="bg-red-500 font-bold text-white px-4 rounded-full flex items-center"
           >
             <span>Add Section</span>
           </button>

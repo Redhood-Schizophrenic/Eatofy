@@ -2,7 +2,7 @@
 
 import { ApiHost } from '@/constants/url_consts';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 
 const HotelAuth = () => {
@@ -41,7 +41,7 @@ const HotelAuth = () => {
 
         // Save token to sessionStorage
         sessionStorage.setItem('jwtToken', data.output[1].token);
-        sessionStorage.setItem('hotel_id', data.output[0].result[0].HotelId);
+        localStorage.setItem('hotel_id', data.output[0].result[0].HotelId);
         // Save user data to sessionStorage
         setMessage(data.message);
         setIsLogged(true);
@@ -78,7 +78,8 @@ const HotelAuth = () => {
               break;
           }
           sessionStorage.setItem('role', role);
-        }else{
+          localStorage.setItem('role', role);
+        } else {
           alert("The account you entered is not Authorized for the role you selected, \n Please select proper role for account");
         }
 
@@ -99,6 +100,17 @@ const HotelAuth = () => {
   const handleChange = (e) => {
     setRole(e.target.value);
   }
+
+  // useEffect(() => {
+  //   if (localStorage.getItem('hotel_id') !== null) {
+  //     alert('Hotel Id exist Logging you in');
+  // if (localStorage.getItem('role') !== null) {
+  //   const Role = localStorage.getItem('role');
+  //   sessionStorage.setItem('role', Role);
+  // }
+  // route.push('/hotels/dashboard')
+  //   }
+  // }, []);
 
   return (
     <>

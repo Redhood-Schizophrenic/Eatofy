@@ -15,7 +15,7 @@ const StaffReports = () => {
   // Fetch
   const fetchStaffList = async () => {
 
-    const hotel_id = sessionStorage.getItem('hotel_id');
+    const hotel_id = localStorage.getItem('hotel_id');
     try {
       const response = await fetch(`${ApiHost}/api/hotel/staff/management/fetch`, {
         method: "POST",

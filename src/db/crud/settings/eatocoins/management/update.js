@@ -3,6 +3,7 @@ import db from "@/db/connector";
 // Details Update
 export async function update_eatocoins_settings({
 	hotel_id,
+	rate,
 	visibility,
 	credit_limit_amt,
 	credit_limit_percent,
@@ -19,7 +20,8 @@ export async function update_eatocoins_settings({
 				CreditLimitAmt: credit_limit_amt,
 				CreditLimitPercent: credit_limit_percent,
 				RedeemLimitAmount: redeem_limit_amt,
-				RedeemLimitPercent: redeem_limit_percent
+				RedeemLimitPercent: redeem_limit_percent,
+				Rate: rate
 			},
 		});
 

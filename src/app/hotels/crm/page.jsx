@@ -38,7 +38,8 @@ const CustomerTable = () => {
             contact: item.Contact,
             email: item.Email,
             occassion: item.CustomerOccassion[0]?.Occassion || "N/A",
-            date: item.CustomerOccassion[0]?.Date || "N/A"
+            date: item.CustomerOccassion[0]?.Date || "N/A",
+            wallet: item?.EatocoinsWallet | 0 || "0"
           }));
           setCustomerList(mappedCustomerList);
         } else {
@@ -53,9 +54,9 @@ const CustomerTable = () => {
   };
 
   useEffect(() => {
-    const hotelId = sessionStorage.getItem('hotel_id');
+    const hotelId = localStorage.getItem('hotel_id');
     sethotel_id(hotelId);
-    if (hotel_id){
+    if (hotel_id) {
       fetchCustomerList();
     }
   }, [hotel_id]);
@@ -121,7 +122,7 @@ const CustomerTable = () => {
     <>
       <HotelSideNav />
       <div className={`ml-[70px] flex-1 h-screen p-4 bg-white ${isFormVisible ? "" : ""}`}>
-            <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Customer Relationship Management</h2>
+        <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Customer Relationship Management</h2>
 
         <div className="flex justify-between space-x-4 mb-4">
           <div className="">
@@ -149,20 +150,22 @@ const CustomerTable = () => {
                   <th className="border px-4 py-2">Email</th>
                   <th className="border px-4 py-2">Occassion</th>
                   <th className="border px-4 py-2">Date</th>
+                  <th className="border px-4 py-2">Wallet</th>
                 </tr>
               </thead>
               <tbody>
                 {
                   filteredCustomers.map((customer, index) => (
-                  <tr key={customer.id} className={index % 2 === 0 ? "bg-zinc-200" : ""}>
-                    <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">{customer.customer_name}</td>
-                    <td className="border px-4 py-2">{customer.contact}</td>
-                    <td className="border px-4 py-2">{customer.email}</td>
-                    <td className="border px-4 py-2">{customer.occassion}</td>
-                    <td className="border px-4 py-2">{customer.date}</td>
-                  </tr>
-                ))}
+                    <tr key={customer.id} className={index % 2 === 0 ? "bg-zinc-200" : ""}>
+                      <td className="border px-4 py-2">{index + 1}</td>
+                      <td className="border px-4 py-2">{customer.customer_name}</td>
+                      <td className="border px-4 py-2">{customer.contact}</td>
+                      <td className="border px-4 py-2">{customer.email}</td>
+                      <td className="border px-4 py-2">{customer.occassion}</td>
+                      <td className="border px-4 py-2">{customer.date}</td>
+                      <td className="border px-4 py-2">Rs. {customer.wallet}</td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

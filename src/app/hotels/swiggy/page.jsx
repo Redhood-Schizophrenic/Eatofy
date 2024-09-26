@@ -304,17 +304,9 @@ export default function Swiggy_Menu() {
 				body: JSON.stringify({
 					'bill_id': billId,
 					'table_id': TableId,
-					'total_amount': totalAmt,
-					'cgst_rate': cgstRate,
-					'cgst_amount': cgstAmt,
-					'sgst_rate': sgstRate,
-					'sgst_amount': sgstAmt,
-					'vat_rate': vatAmt,
-					'vat_amount': VatAmt,
 					'menu_total': parseFloat(menutotal),
 					'balance_amount': parseFloat(BalanceAmt),
 					'discount_rate': disAmt,
-					'discount_amount': discount,
 					'payment_mode': PaymentMode,
 					'payment_status': PaymentStatus
 				}),
@@ -338,7 +330,7 @@ export default function Swiggy_Menu() {
 	}
 
 	useEffect(() => {
-		setHotelId(sessionStorage.getItem('hotel_id'));
+		setHotelId(localStorage.getItem('hotel_id'));
 		setTableId(sessionStorage.getItem('table_id'));
 		setWaiterId(sessionStorage.getItem('waiter_id'));
 		setType(sessionStorage.getItem('type'));

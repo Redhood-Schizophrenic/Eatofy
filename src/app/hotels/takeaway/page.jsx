@@ -148,7 +148,7 @@ export default function Menu() {
 			const data = await response.json();
 			if (data.returncode === 200) {
 				const response_data = await data.output[0];
-				console.log("Next",response_data);
+				console.log("Next", response_data);
 				setMenus(response_data.Menus);
 				setCategories(response_data.Categories);
 				return
@@ -331,17 +331,9 @@ export default function Menu() {
 				body: JSON.stringify({
 					'bill_id': billId,
 					'table_id': TableId,
-					'total_amount': totalAmt,
-					'cgst_rate': cgstRate,
-					'cgst_amount': cgstAmt,
-					'sgst_rate': sgstRate,
-					'sgst_amount': sgstAmt,
-					'vat_rate': vatAmt,
-					'vat_amount': VatAmt,
 					'menu_total': parseFloat(menutotal),
 					'balance_amount': parseFloat(BalanceAmt),
 					'discount_rate': disAmt,
-					'discount_amount': discount,
 					'payment_mode': PaymentMode,
 					'payment_status': PaymentStatus
 				}),
@@ -366,14 +358,14 @@ export default function Menu() {
 
 	useEffect(() => {
 		setType(sessionStorage.getItem('type'));
-		setHotelId(sessionStorage.getItem('hotel_id'));
+		setHotelId(localStorage.getItem('hotel_id'));
 		setTableId(sessionStorage.getItem('table_id'));
 		setWaiterId(sessionStorage.getItem('waiter_id'));
 
 		if (HotelId) {
 			fetch_bill()
 		}
-	}, [HotelId,Type]);
+	}, [HotelId, Type]);
 
 
 	return (

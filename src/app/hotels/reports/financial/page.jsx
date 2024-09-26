@@ -134,7 +134,7 @@ export default function Financial_Report() {
   };
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem("hotel_id"));
+    sethotel_id(localStorage.getItem("hotel_id"));
     if (hotel_id) {
       fetchFinanceData();
     }
@@ -448,14 +448,14 @@ Search Bar
                             <div className={`px-4 p-2`}>
                               <span
                                 className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${items.PaymentStatus.toLowerCase() === "paid"
-                                    ? "bg-green-200 text-green-800"
+                                  ? "bg-green-200 text-green-800"
+                                  : items.PaymentStatus.toLowerCase() ===
+                                    "unpaid"
+                                    ? "bg-red-200 text-red-800"
                                     : items.PaymentStatus.toLowerCase() ===
-                                      "unpaid"
-                                      ? "bg-red-200 text-red-800"
-                                      : items.PaymentStatus.toLowerCase() ===
-                                        "part-paid"
-                                        ? "bg-yellow-200 text-yellow-800"
-                                        : "bg-gray-200 text-gray-800"
+                                      "part-paid"
+                                      ? "bg-yellow-200 text-yellow-800"
+                                      : "bg-gray-200 text-gray-800"
                                   }`}
                               >
                                 {items.PaymentStatus}
@@ -537,12 +537,12 @@ Search Bar
                             <td className="border px-4 py-2">
                               <span
                                 className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${row.Status.toLowerCase() === "paid"
-                                    ? "bg-green-200 text-green-800"
-                                    : row.Status.toLowerCase() === "unpaid"
-                                      ? "bg-red-200 text-red-800"
-                                      : row.Status.toLowerCase() === "partpaid"
-                                        ? "bg-yellow-200 text-yellow-800"
-                                        : "bg-gray-200 text-gray-800"
+                                  ? "bg-green-200 text-green-800"
+                                  : row.Status.toLowerCase() === "unpaid"
+                                    ? "bg-red-200 text-red-800"
+                                    : row.Status.toLowerCase() === "partpaid"
+                                      ? "bg-yellow-200 text-yellow-800"
+                                      : "bg-gray-200 text-gray-800"
                                   }`}
                               >
                                 {row.Status}
@@ -615,13 +615,13 @@ Search Bar
                           <td className="border px-4 py-2">
                             <span
                               className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${row.PaymentStatus.toLowerCase() === "paid"
-                                  ? "bg-green-200 text-green-800"
-                                  : row.PaymentStatus.toLowerCase() === "unpaid"
-                                    ? "bg-red-200 text-red-800"
-                                    : row.PaymentStatus.toLowerCase() ===
-                                      "part-paid"
-                                      ? "bg-yellow-200 text-yellow-800"
-                                      : "bg-gray-200 text-gray-800"
+                                ? "bg-green-200 text-green-800"
+                                : row.PaymentStatus.toLowerCase() === "unpaid"
+                                  ? "bg-red-200 text-red-800"
+                                  : row.PaymentStatus.toLowerCase() ===
+                                    "part-paid"
+                                    ? "bg-yellow-200 text-yellow-800"
+                                    : "bg-gray-200 text-gray-800"
                                 }`}
                             >
                               {row.PaymentStatus}
@@ -725,7 +725,7 @@ Search Bar
                         </td>
                         <td className="py-2 border border-white">
                           <h2> Rs. {stock.Price}</h2>
-                            <p className="text-xs text-zinc-500">Rs. {stock.PerPrice} per..</p>
+                          <p className="text-xs text-zinc-500">Rs. {stock.PerPrice} per..</p>
                         </td>
                       </tr>
                     ))}

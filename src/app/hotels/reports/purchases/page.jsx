@@ -117,7 +117,7 @@ export default function Purchase_Report() {
   }
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem('hotel_id'));
+    sethotel_id(localStorage.getItem('hotel_id'));
     if (hotel_id) {
       fetchPurchaseData();
     }
@@ -438,7 +438,7 @@ export default function Purchase_Report() {
                             <td className="py-2 border border-white">{stock.Unit}</td>
                             <td className="py-2 border border-white">
                               <h2 className="">Rs. {stock.Price}</h2>
-                              <p className="text-xs text-zinc-500">Rs. {stock.PerPrice} per.</p> 
+                              <p className="text-xs text-zinc-500">Rs. {stock.PerPrice} per.</p>
                             </td>
 
                           </tr>

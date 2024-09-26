@@ -321,17 +321,9 @@ export default function Swiggy_Menu() {
           },
           body: JSON.stringify({
             bill_id: billId,
-            total_amount: totalAmt,
-            cgst_rate: cgstRate,
-            cgst_amount: cgstAmt,
-            sgst_rate: sgstRate,
-            sgst_amount: sgstAmt,
-            vat_rate: vatAmt,
-            vat_amount: VatAmt,
             menu_total: parseFloat(menutotal),
             balance_amount: parseFloat(BalanceAmt),
             discount_rate: disAmt,
-            discount_amount: discount,
             payment_mode: PaymentMode,
             payment_status: PaymentStatus,
           }),
@@ -355,7 +347,7 @@ export default function Swiggy_Menu() {
   };
 
   useEffect(() => {
-    setHotelId(sessionStorage.getItem("hotel_id"));
+    setHotelId(localStorage.getItem("hotel_id"));
     setWaiterId(sessionStorage.getItem("waiter_id"));
     setType(sessionStorage.getItem("type"));
 
@@ -461,11 +453,10 @@ export default function Swiggy_Menu() {
         <div className="ml-[70px] flex px-0 overflow-hidden bg-white">
           <div
             id="Dish_Display"
-            className={`h-auto transition-width duration-500 ${
-              isDishDisplayFullWidth || OldCart.length !== 0
-                ? "w-[60dvw]"
-                : "w-full"
-            }`}
+            className={`h-auto transition-width duration-500 ${isDishDisplayFullWidth || OldCart.length !== 0
+              ? "w-[60dvw]"
+              : "w-full"
+              }`}
           >
             <div className="w-full inline-flex justify-between items-center p-4">
               <div className="flex gap-4 justify-center items-center">
@@ -486,11 +477,10 @@ export default function Swiggy_Menu() {
                 />
                 <button
                   onClick={toggleMenu}
-                  className={`text-4xl text-black ${
-                    isDishDisplayFullWidth || OldCart.length !== 0
-                      ? "hidden"
-                      : "block"
-                  }`}
+                  className={`text-4xl text-black ${isDishDisplayFullWidth || OldCart.length !== 0
+                    ? "hidden"
+                    : "block"
+                    }`}
                 >
                   <CiSquareChevLeft />
                 </button>
@@ -536,99 +526,96 @@ export default function Swiggy_Menu() {
               <div className="flex gap-6 px-6 flex-wrap">
                 {ShowAllDishes
                   ? Menus.filter((menu) => {
-                      const searchMatch =
-                        menu.Dish.DishName.toLowerCase().includes(
-                          Search.toLowerCase()
-                        ) ||
-                        menu.Dish.Code.toLowerCase().includes(
-                          Search.toLowerCase()
-                        );
-                      return searchMatch;
-                    }).map((menu, index) => (
-                      <div
-                        key={index}
-                        onClick={() => {
-                          handleAddToCart(menu);
-                        }}
-                        id="menu"
-                        className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${
-                          menu.Dish.Type === "Veg"
-                            ? "border-green-500 text-green-700"
-                            : menu.Dish.Type === "Non-Veg"
-                            ? "border-red-500 text-red-700"
-                            : menu.Dish.Type === "Beverage"
+                    const searchMatch =
+                      menu.Dish.DishName.toLowerCase().includes(
+                        Search.toLowerCase()
+                      ) ||
+                      menu.Dish.Code.toLowerCase().includes(
+                        Search.toLowerCase()
+                      );
+                    return searchMatch;
+                  }).map((menu, index) => (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        handleAddToCart(menu);
+                      }}
+                      id="menu"
+                      className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === "Veg"
+                        ? "border-green-500 text-green-700"
+                        : menu.Dish.Type === "Non-Veg"
+                          ? "border-red-500 text-red-700"
+                          : menu.Dish.Type === "Beverage"
                             ? "border-blue-500 text-blue-700"
                             : menu.Dish.Type === "Egg"
-                            ? "border-yellow-500 text-yellow-600"
-                            : "border-black"
+                              ? "border-yellow-500 text-yellow-600"
+                              : "border-black"
                         }`}
-                      >
-                        <p className="flex flex-wrap text-lg font-semibold">
-                          {menu.Dish.DishName}
-                        </p>
-                        <p className="flex justify-center items-center">
-                          &#35;{menu.Dish.Code}
-                        </p>
-                        <p className="flex justify-center items-center">
-                          {menu.Dish.Category.CategoryName}
-                        </p>
-                      </div>
-                    ))
+                    >
+                      <p className="flex flex-wrap text-lg font-semibold">
+                        {menu.Dish.DishName}
+                      </p>
+                      <p className="flex justify-center items-center">
+                        &#35;{menu.Dish.Code}
+                      </p>
+                      <p className="flex justify-center items-center">
+                        {menu.Dish.Category.CategoryName}
+                      </p>
+                    </div>
+                  ))
                   : Menus.filter((menu) => {
-                      // Check if the category matches or if no category is selected (show all)
-                      const categoryMatch =
-                        ClickedCategory === null ||
-                        menu.Dish.Category.id === ClickedCategory;
-                      // Check if the dish name or code includes the search text
-                      const searchMatch =
-                        menu.Dish.DishName.toLowerCase().includes(
-                          Search.toLowerCase()
-                        ) ||
-                        menu.Dish.Code.toLowerCase().includes(
-                          Search.toLowerCase()
-                        );
-                      // Return true if both conditions are met
-                      return categoryMatch && searchMatch;
-                    }).map((menu, index) => (
-                      <div
-                        key={index}
-                        onClick={() => {
-                          handleAddToCart(menu);
-                        }}
-                        id="menu"
-                        className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${
-                          menu.Dish.Type === "Veg"
-                            ? "border-green-500 text-green-700"
-                            : menu.Dish.Type === "Non-Veg"
-                            ? "border-red-500 text-red-700"
-                            : menu.Dish.Type === "Beverage"
+                    // Check if the category matches or if no category is selected (show all)
+                    const categoryMatch =
+                      ClickedCategory === null ||
+                      menu.Dish.Category.id === ClickedCategory;
+                    // Check if the dish name or code includes the search text
+                    const searchMatch =
+                      menu.Dish.DishName.toLowerCase().includes(
+                        Search.toLowerCase()
+                      ) ||
+                      menu.Dish.Code.toLowerCase().includes(
+                        Search.toLowerCase()
+                      );
+                    // Return true if both conditions are met
+                    return categoryMatch && searchMatch;
+                  }).map((menu, index) => (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        handleAddToCart(menu);
+                      }}
+                      id="menu"
+                      className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === "Veg"
+                        ? "border-green-500 text-green-700"
+                        : menu.Dish.Type === "Non-Veg"
+                          ? "border-red-500 text-red-700"
+                          : menu.Dish.Type === "Beverage"
                             ? "border-blue-500 text-blue-700"
                             : menu.Dish.Type === "Egg"
-                            ? "border-yellow-500 text-yellow-600"
-                            : "border-black"
+                              ? "border-yellow-500 text-yellow-600"
+                              : "border-black"
                         }`}
-                      >
-                        <p className="flex flex-wrap text-lg font-semibold">
-                          {menu.Dish.DishName}
-                        </p>
-                        <p className="flex justify-center items-center">
-                          &#35;{menu.Dish.Code}
-                        </p>
-                        <p className="flex justify-center items-center">
-                          {menu.Dish.Category.CategoryName}
-                        </p>
-                      </div>
-                    ))}
+                    >
+                      <p className="flex flex-wrap text-lg font-semibold">
+                        {menu.Dish.DishName}
+                      </p>
+                      <p className="flex justify-center items-center">
+                        &#35;{menu.Dish.Code}
+                      </p>
+                      <p className="flex justify-center items-center">
+                        {menu.Dish.Category.CategoryName}
+                      </p>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
 
           <div
-            className={`bg-black text-white h-auto transition-transform duration-500 max-h-dvh ${
-              isMenuOpen || OldCart.length !== 0
-                ? "fixed w-[35dvw] top-0 right-0"
-                : "fixed top-0 right-[-100%]"
-            }`}
+            className={`bg-black text-white h-auto transition-transform duration-500 max-h-dvh ${isMenuOpen || OldCart.length !== 0
+              ? "fixed w-[35dvw] top-0 right-0"
+              : "fixed top-0 right-[-100%]"
+              }`}
           >
             {IsOrderSaved ? (
               <div className="w-1/4 h-[60px] fixed top-10 right-10 bg-green-200 z-50 border-t-[4px] border-green-500 inline-grid place-items-center">
@@ -771,26 +758,23 @@ export default function Swiggy_Menu() {
               ) : isSettleBill ? (
                 <div className="w-full h-auto max-h-[75dvh] overflow-y-scroll overflow-x-hidden bg-black px-4 mb-10 flex flex-col gap-4">
                   <p
-                    className={`border-2 border-zinc-500 text-center ${
-                      Message === "Payment Successful"
-                        ? "bg-green-200 border-green-500 text-green-500 p-2"
-                        : ""
-                    } ${
-                      Message === "Payment Failed"
+                    className={`border-2 border-zinc-500 text-center ${Message === "Payment Successful"
+                      ? "bg-green-200 border-green-500 text-green-500 p-2"
+                      : ""
+                      } ${Message === "Payment Failed"
                         ? "bg-red-200 border-red-500 text-red-500 p-2"
                         : ""
-                    }`}
+                      }`}
                   >
                     {Message}
                   </p>
                   <div className="font-bold mt-2 text-xl">Payment mode</div>
                   <div className="flex justify-between items-center gap-2">
                     <div
-                      className={`p-3 rounded-md w-full gap-2 inline-grid place-items-center ${
-                        PaymentMode === "Credit-card"
-                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                      }`}
+                      className={`p-3 rounded-md w-full gap-2 inline-grid place-items-center ${PaymentMode === "Credit-card"
+                        ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                        : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                        }`}
                       onClick={() => {
                         handlePaymentModeClick("Credit-card");
                       }}
@@ -799,11 +783,10 @@ export default function Swiggy_Menu() {
                       <span className="text-sm">Credit-card</span>
                     </div>
                     <div
-                      className={`p-3 rounded-md w-full inline-grid gap-2 place-items-center ${
-                        PaymentMode === "Cash"
-                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                      }`}
+                      className={`p-3 rounded-md w-full inline-grid gap-2 place-items-center ${PaymentMode === "Cash"
+                        ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                        : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                        }`}
                       onClick={() => {
                         handlePaymentModeClick("Cash");
                       }}
@@ -812,11 +795,10 @@ export default function Swiggy_Menu() {
                       <span className="text-sm">Cash</span>
                     </div>
                     <div
-                      className={`p-3 rounded-md w-full gap-2 inline-grid place-items-center ${
-                        PaymentMode === "UPI"
-                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                      }`}
+                      className={`p-3 rounded-md w-full gap-2 inline-grid place-items-center ${PaymentMode === "UPI"
+                        ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                        : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                        }`}
                       onClick={() => {
                         handlePaymentModeClick("UPI");
                       }}
@@ -888,11 +870,10 @@ export default function Swiggy_Menu() {
                     <div className="text-white font-bold">Payment status</div>
                     <div className="flex justify-start items-center gap-4 my-3 text-sm">
                       <div
-                        className={`p-3 rounded-md ${
-                          PaymentStatus === "Paid"
-                            ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                            : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                        }`}
+                        className={`p-3 rounded-md ${PaymentStatus === "Paid"
+                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                          }`}
                         onClick={() => {
                           handlePaymentStatusClick("Paid");
                         }}
@@ -900,11 +881,10 @@ export default function Swiggy_Menu() {
                         Paid
                       </div>
                       <div
-                        className={`p-3 rounded-md ${
-                          PaymentStatus === "Part-paid"
-                            ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                            : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                        }`}
+                        className={`p-3 rounded-md ${PaymentStatus === "Part-paid"
+                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                          }`}
                         onClick={() => {
                           handlePaymentStatusClick("Part-paid");
                         }}
@@ -912,11 +892,10 @@ export default function Swiggy_Menu() {
                         Part-paid
                       </div>
                       <div
-                        className={`p-3 rounded-md ${
-                          PaymentStatus === "Unpaid"
-                            ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                            : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                        }`}
+                        className={`p-3 rounded-md ${PaymentStatus === "Unpaid"
+                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                          }`}
                         onClick={() => {
                           handlePaymentStatusClick("Unpaid");
                         }}

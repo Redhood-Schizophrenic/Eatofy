@@ -101,7 +101,7 @@ const StaffTable = () => {
   }
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem('hotel_id'));
+    sethotel_id(localStorage.getItem('hotel_id'));
   }, []);
 
   useEffect(() => {
@@ -165,8 +165,8 @@ const StaffTable = () => {
                         {
                           Staff.filter((staff) => staff?.Role?.toLowerCase() !== "owner")
                             .map((member, index) => (
-                            <option key={index} value={member.id} onClick={() => { sessionStorage.setItem('staff_id', member.id); }}>{member.FirstName}</option>
-                          ))
+                              <option key={index} value={member.id} onClick={() => { sessionStorage.setItem('staff_id', member.id); }}>{member.FirstName}</option>
+                            ))
                         }
                       </select>
                     </div>
@@ -257,28 +257,28 @@ const StaffTable = () => {
                 {attendances
                   .filter((attendance) => attendance?.Staff?.Role?.toLowerCase() != "owner")
                   .map((attendance, index) => (
-                  <tr className="bg-zinc-100 border-black" key={attendance.id}>
-                    <td className="border px-4 py-2">{index + 1}</td>
-                    <td className="border px-4 py-2">{attendance.Date}</td>
-                    <td className="border px-4 py-2">{attendance.Staff.FirstName} {attendance.Staff.LastName}</td>
-                    <td className="border px-4 py-2">{attendance.Staff.Address}</td>
-                    <td className="border px-4 py-2">{attendance.Staff.DepartmentName}</td>
-                    <td className="border px-4 py-2">{attendance.Staff.Designation}</td>
-                    <td className={`border px-4 py-2 `}>
-                      <label
-                        htmlFor=""
-                        className={`text-center px-2 py-1 rounded-lg font-semibold
+                    <tr className="bg-zinc-100 border-black" key={attendance.id}>
+                      <td className="border px-4 py-2">{index + 1}</td>
+                      <td className="border px-4 py-2">{attendance.Date}</td>
+                      <td className="border px-4 py-2">{attendance.Staff.FirstName} {attendance.Staff.LastName}</td>
+                      <td className="border px-4 py-2">{attendance.Staff.Address}</td>
+                      <td className="border px-4 py-2">{attendance.Staff.DepartmentName}</td>
+                      <td className="border px-4 py-2">{attendance.Staff.Designation}</td>
+                      <td className={`border px-4 py-2 `}>
+                        <label
+                          htmlFor=""
+                          className={`text-center px-2 py-1 rounded-lg font-semibold
                             ${(attendance.Type.toLowerCase() === "present") ? 'bg-green-200 text-green-500' :
-                            (attendance.Type.toLowerCase() === "absent") ? 'bg-red-200 text-red-500' :
-                              (attendance.Type.toLowerCase() === "Half-Day") ? 'bg-yellow-200 text-yellow-500' :
-                                'text-gray-500 bg-gray-200'
-                          }`}
-                      >
-                        {attendance.Type}
-                      </label>
-                    </td>
-                  </tr>
-                ))}
+                              (attendance.Type.toLowerCase() === "absent") ? 'bg-red-200 text-red-500' :
+                                (attendance.Type.toLowerCase() === "Half-Day") ? 'bg-yellow-200 text-yellow-500' :
+                                  'text-gray-500 bg-gray-200'
+                            }`}
+                        >
+                          {attendance.Type}
+                        </label>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>

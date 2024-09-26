@@ -1,9 +1,9 @@
-import { read_vat_settings } from "./controller";
+import { fetch_vat_settings } from "./controller";
 
 export async function POST(request) {
 	try {
 		const data = await request.json();
-		const result = await read_vat_settings(data);
+		const result = await fetch_vat_settings(data);
 		return Response.json(
 			{
 				returncode: result.returncode,

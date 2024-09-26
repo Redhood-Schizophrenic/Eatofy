@@ -1,4 +1,3 @@
-import { update_eatocoins_settings } from "../../../../../../db/crud/settings/eatocoins/management/update";
 import { create_vat_settings } from "../../../../../../db/crud/settings/vat/management/create";
 import { read_vat_settings } from "../../../../../../db/crud/settings/vat/management/read";
 import { update_vat_settings } from "../../../../../../db/crud/settings/vat/management/update";
@@ -24,8 +23,9 @@ export async function add_vat_settings(data) {
 		// Existing Section Name
 		const existingSettings = await read_vat_settings({ hotel_id });
 		if (existingSettings.returncode === 200 && existingSettings.output.length != 0) {
+			const setting_id = existingSettings?.output[0]?.id;
 			const result = await update_vat_settings({
-				hotel_id, visibility, vat_percent
+				setting_id, visibility, vat_percent
 			});
 			return result;
 		}

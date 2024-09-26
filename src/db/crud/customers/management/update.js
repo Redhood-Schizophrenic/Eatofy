@@ -48,10 +48,9 @@ export async function update_customer_wallet({
 		const result = await db.customers.update({
 			where: {
 				id: customer_id,
-				EatocoinsWallet: eatocoins
 			},
 			data: {
-				Email: email
+				EatocoinsWallet: eatocoins
 			},
 		});
 

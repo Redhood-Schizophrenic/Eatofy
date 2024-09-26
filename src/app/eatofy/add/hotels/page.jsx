@@ -60,7 +60,7 @@ export default function AddHotels() {
 			if (response.ok) {
 				const data = await response.json();
 				setistrue(!istrue);
-				route.push('/eatofy/hotels');
+				route.push('/eatofy/add/hotels');
 				setMessage('Hotel Added');
 			} else {
 				console.error('Failed to create hotel');
@@ -204,7 +204,7 @@ export default function AddHotels() {
 												className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
 												onClick={
 													() => {
-														sessionStorage.setItem("hotel_id", items.id);
+														localStorage.setItem("hotel_id", items.id);
 													}
 												}
 											>
@@ -232,32 +232,32 @@ export default function AddHotels() {
 							<form encType="multipart/form-data" onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4">
 								<div>
 									<label className="block text-white">Hotel Name</label>
-									<input 
-										type="text" 
-										value={hotel_name} 
-										onChange={(e) => { sethotel_name(e.target.value) }} 
-										className="w-full p-2 bg-black bg-opacity-20 text-white rounded" 
-										required 
+									<input
+										type="text"
+										value={hotel_name}
+										onChange={(e) => { sethotel_name(e.target.value) }}
+										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
+										required
 									/>
 								</div>
 								<div>
 									<label className="block text-white">Email</label>
-									<input 
-										type="email" 
-										value={email} 
-										onChange={(e) => { setemail(e.target.value) }} 
-										className="w-full p-2 bg-black bg-opacity-20 text-white rounded" 
-										required 
+									<input
+										type="email"
+										value={email}
+										onChange={(e) => { setemail(e.target.value) }}
+										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
+										required
 									/>
 								</div>
 								<div>
 									<label className="block text-white">Password</label>
-									<input 
-										type="password" 
-										value={password} 
-										onChange={(e) => { setpassword(e.target.value) }} 
-										className="w-full p-2 bg-black bg-opacity-20 text-white rounded" 
-										required 
+									<input
+										type="password"
+										value={password}
+										onChange={(e) => { setpassword(e.target.value) }}
+										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
+										required
 									/>
 								</div>
 								<div>
@@ -289,8 +289,8 @@ export default function AddHotels() {
 								</div>
 								<div>
 									<label className="block text-white">Contact</label>
-									<input 
-										type="text" 
+									<input
+										type="text"
 										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
 										onChange={
 											(e) => {
@@ -315,7 +315,7 @@ export default function AddHotels() {
 								</div>
 								<div>
 									<label className="block text-white">Speciality</label>
-									<textarea 
+									<textarea
 										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
 										onChange={
 											(e) => {
@@ -329,8 +329,8 @@ export default function AddHotels() {
 								</div>
 								<div>
 									<label className="block text-white">Hotel Logo (Images)</label>
-									<input 
-										type="file" 
+									<input
+										type="file"
 										className="w-full p-2 bg-black bg-opacity-20 text-white rounded"
 										onChange={(e) => setFile(e.target.files?.[0])}
 										defaultValue={file}

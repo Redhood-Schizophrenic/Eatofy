@@ -20,7 +20,7 @@ export default function Supplier_management() {
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem('hotel_id'));
+    sethotel_id(localStorage.getItem('hotel_id'));
     if (hotel_id) {
       fetchSuppliers();
     }
@@ -317,7 +317,7 @@ export default function Supplier_management() {
                     <td className="p-2">
                       <div className="flex flex-col sm:flex-row items-center">
                         {
-                            <span>{items.SupplierType}</span>
+                          <span>{items.SupplierType}</span>
                         }
                       </div>
                     </td>

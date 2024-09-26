@@ -7,7 +7,8 @@ export async function create_eatocoins_settings({
 	credit_limit_amt,
 	credit_limit_percent,
 	redeem_limit_amt,
-	redeem_limit_percent
+	redeem_limit_percent,
+	rate
 }) {
 	try {
 
@@ -19,7 +20,8 @@ export async function create_eatocoins_settings({
 				CreditLimitAmt: credit_limit_amt,
 				CreditLimitPercent: credit_limit_percent,
 				RedeemLimitAmount: redeem_limit_amt,
-				RedeemLimitPercent: redeem_limit_percent
+				RedeemLimitPercent: redeem_limit_percent,
+				Rate: rate
 			},
 		});
 		// Disconnect the Database

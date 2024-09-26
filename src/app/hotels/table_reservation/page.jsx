@@ -1,7 +1,7 @@
 "use client"
 import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
 import { FaXmark } from 'react-icons/fa6';
 
@@ -19,6 +19,7 @@ const ReservationGrid = () => {
   const [no_of_persons, setNo_of_persons] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [hotel_id, sethotel_id] = useState('');
+  const searchBar = useRef();
 
   function handleClick(e) {
     const name = e.target.name;
@@ -83,9 +84,12 @@ const ReservationGrid = () => {
   }
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem('hotel_id'));
+    sethotel_id(localStorage.getItem('hotel_id'));
     if (hotel_id) {
       handleFetchReservations();
+      if (searchBar.current) {
+        searchBar.current.focus();
+      }
     }
   }, [hotel_id])
 
@@ -181,6 +185,7 @@ const ReservationGrid = () => {
 
           <div>
             <input
+              ref={searchBar}
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}

@@ -13,6 +13,7 @@ const BillTable = () => {
   const [billInfo, setBillInfo] = useState({});
   const [ordersInfo, setOrdersInfo] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  let hotel_id
 
   // Settle Bill
   const [billId, setbillId] = useState('');
@@ -34,7 +35,7 @@ const BillTable = () => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 'hotel_id': sessionStorage.getItem('hotel_id') }),
+        body: JSON.stringify({ 'hotel_id': hotel_id }),
       });
 
       if (response.ok) {
@@ -217,11 +218,12 @@ const BillTable = () => {
 
 
   useEffect(() => {
-    const hotel_id = sessionStorage.getItem('hotel_id');
+    hotel_id = localStorage.getItem('hotel_id');
+    console.log("Hotel Id", hotel_id);
     if (hotel_id) {
       fetchBillList();
     }
-  }, []);
+  }, [hotel_id]);
 
   // Bill Delete
   const handleBillDelete = async (bill_id) => {
@@ -296,6 +298,7 @@ const BillTable = () => {
                   <th className="border px-4 py-2">Type</th>
                   <th className="border px-4 py-2">Balance</th>
                   <th className="border px-4 py-2">Total</th>
+                  <th className="border px-4 py-2">Amount</th>
                   <th className="border px-4 py-2">Payment Status</th>
                   <th className="border px-4 py-2">Actions</th>
                 </tr>
@@ -303,7 +306,7 @@ const BillTable = () => {
               <tbody>
                 {
                   filteredOrders.map((bill, index) => (
-                    <tr key={bill.id} className={index % 2 === 0 ? "bg-zinc-200" : ""}>
+                    <tr key={bill.id} className={index % 2 === 0 ? "bg-zinc-200 text-center" : "text-center"}>
                       <td className="border px-4 py-2">{index + 1}</td>
                       <td className="border px-4 py-2">
                         {bill.Table ? bill.Table.TableName : 'N/A'}
@@ -315,8 +318,9 @@ const BillTable = () => {
                         {bill.Customer ? bill.Customer.CustomerName : 'N/A'}
                       </td>
                       <td className="border px-4 py-2">{bill.Type}</td>
-                      <td className="border px-4 py-2">{bill.BalanceAmount}</td>
-                      <td className="border px-4 py-2">{bill.TotalAmount}</td>
+                      <td className="border px-4 py-2">Rs. {bill.BalanceAmount | 0}</td>
+                      <td className="border px-4 py-2">Rs. {bill.TotalAmount | 0}</td>
+                      <td className="border px-4 py-2">Rs. {bill.Amount | 0}</td>
                       <td className="border px-4 py-2">
                         {
                           bill.Status === "Paid" ? (
@@ -328,7 +332,7 @@ const BillTable = () => {
                               {bill.Status}
                             </span>
                           ) : bill.Status === "Unpaid" ? (
-                            <span className="p-1.5 text-xs font-bold uppercase tracking-wider bg-red-300 text-red-800 rounded-lg bg-opacity-80">
+                            <span className="p-1.5 px-2 text-xs font-bold uppercase tracking-wider bg-red-300 text-red-800 rounded-lg bg-opacity-80">
                               {bill.Status}
                             </span>
                           ) : (
@@ -448,7 +452,7 @@ const BillTable = () => {
         // Popup Screen
         displayBillInfo &&
         <div className="fixed z-10 inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-[70dvw]  relative">
+          <div className="bg-white p-6 rounded-lg w-[70dvw]  relative h-auto">
             <div className="flex justify-between w-full">
               <h1 className="text-2xl font-semibold">Invoice</h1>
               <button onClick={() => setDisplayBillInfo(false)}>
@@ -472,18 +476,10 @@ const BillTable = () => {
                       <p>{billInfo.Date}</p>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <h1 className="font-bold">Customer Name: </h1>
-                      <p>{billInfo.Customer?.CustomerName || 'N/A'}</p>
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <h1 className="font-bold">Customer Contact: </h1>
-                      <p>{billInfo.Customer?.Contact || 'N/A'}</p>
-                    </div>
-                    <div className="flex flex-col gap-2">
                       <h1 className="font-bold">Payment: </h1>
                       <div>
                         <p className={`p-1.5 text-sm font-bold uppercase tracking-wider rounded-lg bg-opacity-80 text-center 
-                            ${billInfo.Status === "Paid" ? "bg-green-300 text-green-800" :
+${billInfo.Status === "Paid" ? "bg-green-300 text-green-800" :
                             billInfo.Status === "Active" ? "bg-yellow-300 text-yellow-800" :
                               billInfo.Status === "Unpaid" ? "bg-red-300 text-red-800" :
                                 "bg-gray-300 text-gray-800"
@@ -494,6 +490,20 @@ const BillTable = () => {
                     </div>
                   </div>
 
+                  <div className="p-4 flex justify-between w-full text-sm">
+                    <div className="flex flex-col gap-2">
+                      <h1 className="font-bold">Customer Name: </h1>
+                      <p>{billInfo.Customer?.CustomerName || 'N/A'}</p>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <h1 className="font-bold">Customer Contact: </h1>
+                      <p>{billInfo.Customer?.Contact || 'N/A'}</p>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <h1 className="font-bold">Eatocoins Used: </h1>
+                      <p>{billInfo.Customer?.EatocoinsWallet | 0 || '0'} </p>
+                    </div>
+                  </div>
 
                   <div className="p-4 flex  justify-between w-full text-sm">
                     <div className="flex flex-col gap-2">
@@ -503,12 +513,12 @@ const BillTable = () => {
                     <div className="flex flex-col gap-2">
                       <h1 className="font-bold flex gap-1">
                         <label>VAT </label>
-                        <label>({billInfo.VatRate}%) :-</label>
+                        <label>({billInfo.VatRate}) :-</label>
                       </h1>
                       <p>Rs. {billInfo.VatAmount}</p>
                     </div>
                     <div className="flex flex-col gap-2">
-                      <h1 className="font-bold">Discount: ({billInfo.DiscountRate}%)</h1>
+                      <h1 className="font-bold">Discount: ({billInfo.DiscountRate})</h1>
                       <p> Rs. {billInfo?.DiscountPrice || '0'}</p>
                     </div>
                     <div className="flex flex-col gap-2">

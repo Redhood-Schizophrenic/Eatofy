@@ -33,12 +33,17 @@ export default function Menu() {
   const billkot = useRef();
   const bill = useRef();
   const today = new Date();
+  const searchBar = useRef();
   const formattedDate = today.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric",
   });
   const [HotelName, setHotelName] = useState("");
+  const [EatocoinsOpen, setEatocoinsOpen] = useState(false);
+  const [Eatocoins, setEatocoins] = useState('');
+  const [Customername, setCustomername] = useState("");
+  const [ExistingEatocoins, setExistingEatocoins] = useState(0);
 
   // Bill Management
   const [billId, setBillId] = useState("");
@@ -101,7 +106,7 @@ export default function Menu() {
         item.id === id ? { ...item, quantity: item.quantity + 1 } : item
       )
     );
-    setshowBillUpdate(false);
+    // setshowBillUpdate(false);
   };
 
   const handleDecrement = (id) => {
@@ -156,6 +161,8 @@ export default function Menu() {
             setOldCart(response_data.Orders);
           }
         }
+        setCustomername(response_data.ExistingBill[0].Customer.CustomerName);
+        setExistingEatocoins(response_data.ExistingBill[0].Customer.EatocoinsWallet);
         setTableName(response_data.TableInfo[0].TableName);
         return;
       } else {
@@ -369,17 +376,10 @@ export default function Menu() {
           body: JSON.stringify({
             bill_id: billId,
             table_id: TableId,
-            total_amount: totalAmt,
-            cgst_rate: cgstRate,
-            cgst_amount: cgstAmt,
-            sgst_rate: sgstRate,
-            sgst_amount: sgstAmt,
-            vat_rate: vatAmt,
-            vat_amount: VatAmt,
+            eatocoins: parseInt(Eatocoins),
             menu_total: parseFloat(menutotal),
             balance_amount: parseFloat(BalanceAmt),
             discount_rate: disAmt,
-            discount_amount: discount,
             payment_mode: PaymentMode,
             payment_status: PaymentStatus,
           }),
@@ -417,13 +417,16 @@ export default function Menu() {
 
   useEffect(() => {
     setType(sessionStorage.getItem("type"));
-    setHotelId(sessionStorage.getItem("hotel_id"));
+    setHotelId(localStorage.getItem("hotel_id"));
     setTableId(sessionStorage.getItem("table_id"));
     setWaiterId(sessionStorage.getItem("waiter_id"));
-    fetch_bill();
+    if (searchBar.current) {
+      searchBar.current.focus();
+      fetch_bill();
+    }
   }, [HotelId, Type]);
 
-  console.log();
+  // console.log();
 
   return (
     <>
@@ -435,11 +438,10 @@ export default function Menu() {
         <div className="ml-[70px] flex px-0 bg-white">
           <div
             id="Dish_Display"
-            className={`h-auto transition-width duration-500 ${
-              isDishDisplayFullWidth || OldCart.length !== 0
-                ? "w-[60dvw]"
-                : "w-full"
-            }`}
+            className={`h-auto transition-width duration-500 ${isDishDisplayFullWidth || OldCart.length !== 0
+              ? "w-[60dvw]"
+              : "w-full"
+              }`}
           >
             <div className="w-full inline-flex justify-between items-center p-4">
               <div className="flex gap-4 justify-center items-center">
@@ -452,19 +454,19 @@ export default function Menu() {
               </div>
               <div className="flex gap-3">
                 <input
+                  ref={searchBar}
                   type="text"
-                  className="rounded-lg text-sm bg-black text-white p-2 focus:outline-none focus:ring-red-400"
+                  className="rounded-lg text-sm text-gray-500 p-2 focus:ring-0 focus:outline-none"
                   placeholder="Search by name or code"
                   value={Search}
                   onChange={handleSearch}
                 />
                 <button
                   onClick={toggleMenu}
-                  className={`text-4xl text-black ${
-                    isDishDisplayFullWidth || OldCart.length !== 0
-                      ? "hidden"
-                      : "block"
-                  }`}
+                  className={`text-4xl text-black ${isDishDisplayFullWidth || OldCart.length !== 0
+                    ? "hidden"
+                    : "block"
+                    }`}
                 >
                   <CiSquareChevLeft />
                 </button>
@@ -510,99 +512,96 @@ export default function Menu() {
               <div className="flex gap-6 px-6 flex-wrap">
                 {ShowAllDishes
                   ? Menus.filter((menu) => {
-                      const searchMatch =
-                        menu.Dish.DishName.toLowerCase().includes(
-                          Search.toLowerCase()
-                        ) ||
-                        menu.Dish.Code.toLowerCase().includes(
-                          Search.toLowerCase()
-                        );
-                      return searchMatch;
-                    }).map((menu, index) => (
-                      <div
-                        key={index}
-                        onClick={() => {
-                          handleAddToCart(menu);
-                        }}
-                        id="menu"
-                        className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${
-                          menu.Dish.Type === "Veg"
-                            ? "border-green-500 text-green-700"
-                            : menu.Dish.Type === "Non-Veg"
-                            ? "border-red-500 text-red-700"
-                            : menu.Dish.Type === "Beverage"
+                    const searchMatch =
+                      menu.Dish.DishName.toLowerCase().includes(
+                        Search.toLowerCase()
+                      ) ||
+                      menu.Dish.Code.toLowerCase().includes(
+                        Search.toLowerCase()
+                      );
+                    return searchMatch;
+                  }).map((menu, index) => (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        handleAddToCart(menu);
+                      }}
+                      id="menu"
+                      className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === "Veg"
+                        ? "border-green-500 text-green-700"
+                        : menu.Dish.Type === "Non-Veg"
+                          ? "border-red-500 text-red-700"
+                          : menu.Dish.Type === "Beverage"
                             ? "border-blue-500 text-blue-700"
                             : menu.Dish.Type === "Egg"
-                            ? "border-yellow-500 text-yellow-600"
-                            : "border-black"
+                              ? "border-yellow-500 text-yellow-600"
+                              : "border-black"
                         }`}
-                      >
-                        <p className="flex flex-wrap text-lg font-semibold">
-                          {menu.Dish.DishName}
-                        </p>
-                        <p className="flex justify-center items-center">
-                          &#35;{menu.Dish.Code}
-                        </p>
-                        <p className="flex justify-center items-center">
-                          {menu.Dish.Category.CategoryName}
-                        </p>
-                      </div>
-                    ))
+                    >
+                      <p className="flex flex-wrap text-lg font-semibold">
+                        {menu.Dish.DishName}
+                      </p>
+                      <p className="flex justify-center items-center">
+                        &#35;{menu.Dish.Code}
+                      </p>
+                      <p className="flex justify-center items-center">
+                        {menu.Dish.Category.CategoryName}
+                      </p>
+                    </div>
+                  ))
                   : Menus.filter((menu) => {
-                      // Check if the category matches or if no category is selected (show all)
-                      const categoryMatch =
-                        ClickedCategory === null ||
-                        menu.Dish.Category.id === ClickedCategory;
-                      // Check if the dish name or code includes the search text
-                      const searchMatch =
-                        menu.Dish.DishName.toLowerCase().includes(
-                          Search.toLowerCase()
-                        ) ||
-                        menu.Dish.Code.toLowerCase().includes(
-                          Search.toLowerCase()
-                        );
-                      // Return true if both conditions are met
-                      return categoryMatch && searchMatch;
-                    }).map((menu, index) => (
-                      <div
-                        key={index}
-                        onClick={() => {
-                          handleAddToCart(menu);
-                        }}
-                        id="menu"
-                        className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${
-                          menu.Dish.Type === "Veg"
-                            ? "border-green-500 text-green-700"
-                            : menu.Dish.Type === "Non-Veg"
-                            ? "border-red-500 text-red-700"
-                            : menu.Dish.Type === "Beverage"
+                    // Check if the category matches or if no category is selected (show all)
+                    const categoryMatch =
+                      ClickedCategory === null ||
+                      menu.Dish.Category.id === ClickedCategory;
+                    // Check if the dish name or code includes the search text
+                    const searchMatch =
+                      menu.Dish.DishName.toLowerCase().includes(
+                        Search.toLowerCase()
+                      ) ||
+                      menu.Dish.Code.toLowerCase().includes(
+                        Search.toLowerCase()
+                      );
+                    // Return true if both conditions are met
+                    return categoryMatch && searchMatch;
+                  }).map((menu, index) => (
+                    <div
+                      key={index}
+                      onClick={() => {
+                        handleAddToCart(menu);
+                      }}
+                      id="menu"
+                      className={`border-2 p-6 w-[35dvh] h-[20dvh] text-center rounded-lg flex flex-col justify-center items-center ${menu.Dish.Type === "Veg"
+                        ? "border-green-500 text-green-700"
+                        : menu.Dish.Type === "Non-Veg"
+                          ? "border-red-500 text-red-700"
+                          : menu.Dish.Type === "Beverage"
                             ? "border-blue-500 text-blue-700"
                             : menu.Dish.Type === "Egg"
-                            ? "border-yellow-500 text-yellow-600"
-                            : "border-black"
+                              ? "border-yellow-500 text-yellow-600"
+                              : "border-black"
                         }`}
-                      >
-                        <p className="flex flex-wrap text-lg font-semibold">
-                          {menu.Dish.DishName}
-                        </p>
-                        <p className="flex justify-center items-center">
-                          &#35;{menu.Dish.Code}
-                        </p>
-                        <p className="flex justify-center items-center">
-                          {menu.Dish.Category.CategoryName}
-                        </p>
-                      </div>
-                    ))}
+                    >
+                      <p className="flex flex-wrap text-lg font-semibold">
+                        {menu.Dish.DishName}
+                      </p>
+                      <p className="flex justify-center items-center">
+                        &#35;{menu.Dish.Code}
+                      </p>
+                      <p className="flex justify-center items-center">
+                        {menu.Dish.Category.CategoryName}
+                      </p>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
 
           <div
-            className={`bg-black text-white h-screen transition-transform duration-500 max-h-dvh ${
-              isMenuOpen || OldCart.length !== 0
-                ? "fixed w-[35dvw] top-0 right-0"
-                : "fixed top-0 right-[-100%]"
-            }`}
+            className={`bg-black text-white h-screen transition-transform duration-500 max-h-dvh ${isMenuOpen || OldCart.length !== 0
+              ? "fixed w-[35dvw] top-0 right-0"
+              : "fixed top-0 right-[-100%]"
+              }`}
           >
             {IsOrderSaved ? (
               <div className="w-1/4 h-[60px] fixed top-10 right-10 bg-green-200 z-50 border-t-[4px] border-green-500 inline-grid place-items-center">
@@ -743,28 +742,25 @@ export default function Menu() {
                   </div>
                 </div>
               ) : isSettleBill ? (
-                <div className="w-full h-auto max-h-[75dvh] overflow-y-scroll overflow-x-hidden bg-black px-4 mb-10 flex flex-col gap-4">
+                <div className="w-full h-auto max-h-[85dvh] overflow-y-scroll overflow-x-hidden bg-black px-4 pb-10 mb-0 flex flex-col gap-4">
                   <p
-                    className={`border-2 border-zinc-500 text-center ${
-                      Message === "Payment Successful"
-                        ? "bg-green-200 border-green-500 text-green-500 p-2"
-                        : ""
-                    } ${
-                      Message === "Payment Failed"
+                    className={`w-[300px] py-6 fixed top-10 right-10 border-l-3 text-center rounded-lg ${Message === "Payment Successful"
+                      ? "bg-green-200 border-green-500 text-green-500 p-2 text-lg"
+                      : ""
+                      } ${Message === "Payment Failed"
                         ? "bg-red-200 border-red-500 text-red-500 p-2"
                         : ""
-                    }`}
+                      }`}
                   >
                     {Message}
                   </p>
                   <div className="font-bold mt-2 text-xl">Payment mode</div>
                   <div className="flex justify-between items-center gap-4 my-3">
                     <div
-                      className={`p-3 rounded-md w-full gap-2 inline-grid place-items-center ${
-                        PaymentMode === "Credit-card"
-                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                      }`}
+                      className={`p-3 rounded-md w-full gap-2 inline-grid place-items-center ${PaymentMode === "Credit-card"
+                        ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                        : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                        }`}
                       onClick={() => {
                         handlePaymentModeClick("Credit-card");
                       }}
@@ -773,11 +769,10 @@ export default function Menu() {
                       <span className="text-sm">Credit-card</span>
                     </div>
                     <div
-                      className={`p-3 rounded-md w-full inline-grid gap-2 place-items-center ${
-                        PaymentMode === "Cash"
-                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                      }`}
+                      className={`p-3 rounded-md w-full inline-grid gap-2 place-items-center ${PaymentMode === "Cash"
+                        ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                        : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                        }`}
                       onClick={() => {
                         handlePaymentModeClick("Cash");
                       }}
@@ -786,11 +781,10 @@ export default function Menu() {
                       <span className="text-sm">Cash</span>
                     </div>
                     <div
-                      className={`p-3 rounded-md w-full gap-2 inline-grid place-items-center ${
-                        PaymentMode === "UPI"
-                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                      }`}
+                      className={`p-3 rounded-md w-full gap-2 inline-grid place-items-center ${PaymentMode === "UPI"
+                        ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                        : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                        }`}
                       onClick={() => {
                         handlePaymentModeClick("UPI");
                       }}
@@ -866,11 +860,10 @@ export default function Menu() {
                     <div className="text-white font-bold">Payment status</div>
                     <div className="flex justify-start items-center gap-4 my-3 text-sm">
                       <div
-                        className={`p-3 rounded-md ${
-                          PaymentStatus === "Paid"
-                            ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                            : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                        }`}
+                        className={`p-3 rounded-md ${PaymentStatus === "Paid"
+                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                          }`}
                         onClick={() => {
                           handlePaymentStatusClick("Paid");
                         }}
@@ -878,11 +871,10 @@ export default function Menu() {
                         Paid
                       </div>
                       <div
-                        className={`p-3 rounded-md ${
-                          PaymentStatus === "Part-paid"
-                            ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                            : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                        }`}
+                        className={`p-3 rounded-md ${PaymentStatus === "Part-paid"
+                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                          }`}
                         onClick={() => {
                           handlePaymentStatusClick("Part-paid");
                         }}
@@ -890,16 +882,26 @@ export default function Menu() {
                         Part-paid
                       </div>
                       <div
-                        className={`p-3 rounded-md ${
-                          PaymentStatus === "Unpaid"
-                            ? "bg-[#252836] border-2 font-semibold border-white text-white"
-                            : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
-                        }`}
+                        className={`p-3 rounded-md ${PaymentStatus === "Unpaid"
+                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                          }`}
                         onClick={() => {
                           handlePaymentStatusClick("Unpaid");
                         }}
                       >
                         Unpaid
+                      </div>
+                      <div
+                        className={`p-3 rounded-md ${PaymentStatus === "Unpaid"
+                          ? "bg-[#252836] border-2 font-semibold border-white text-white"
+                          : "bg-[#252836] hover:font-semibold hover:text-white text-gray-300"
+                          }`}
+                        onClick={() => {
+                          setEatocoinsOpen(!EatocoinsOpen);
+                        }}
+                      >
+                        Redeem Eatocoins
                       </div>
                     </div>
                     <div className="w-full inline-flex justify-center items-center gap-4 font-semibold">
@@ -914,7 +916,7 @@ export default function Menu() {
                       <button
                         onClick={() => {
                           handleBillPrint();
-                          setisSettleBill(false);
+                          // setisSettleBill(false);
                         }}
                         className="w-full bg-black text-red-500 p-2 rounded-md border border-red-500"
                       >
@@ -1158,6 +1160,31 @@ export default function Menu() {
             </div>
           </div>
         </div>
+      }
+      {
+        EatocoinsOpen && (
+          <div className="fixed top-0 left-0 flex justify-center items-center w-full h-full bg-black bg-opacity-30">
+            <div className="bg-white w-[500px] h-[300px] shadow-black shadow-md rounded-md">
+
+              <div className="p-4 my-2 text-lg">
+                <p className="my-2">Shashank sangawar</p>
+                <p className="my-2">Existing Eatocoins :- {ExistingEatocoins}</p>
+                <label>
+                  <input
+                    defaultValue={Eatocoins}
+                    onChange={(e) => { setEatocoins(e.target.value) }}
+                    className="w-full rounded-md p-2"
+                    placeholder="Enter Eatocoins" />
+                </label>
+              </div>
+
+              <div className="w-full p-4">
+                <button className="w-full bg-red-400 active:bg-red-500 px-4 py-2 text-white my-2 rounded-md">Submit</button>
+                <button className="w-full bg-red-400 active:bg-red-500 px-4 py-2 text-white my-2 rounded-md" onClick={() => { setEatocoinsOpen(!EatocoinsOpen) }}>Close</button>
+              </div>
+            </div>
+          </div>
+        )
       }
     </>
   );

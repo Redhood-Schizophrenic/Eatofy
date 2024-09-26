@@ -19,7 +19,7 @@ export default function Item_management() {
   const [hotel_id, sethotel_id] = useState('');
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem('hotel_id'));
+    sethotel_id(localStorage.getItem('hotel_id'));
     if (hotel_id) {
       fetchItemCategory();
       fetchItems();

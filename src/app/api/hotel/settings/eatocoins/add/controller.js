@@ -9,11 +9,12 @@ export async function add_eatocoins_settings(data) {
 		const visibility = data['visibility'] || true;
 		const credit_limit_amt = data['credit_limit_amt'] || null;
 		const credit_limit_percent = data['credit_limit_percent'] || null;
+		const rate = data['rate'] || 0;
 		const redeem_limit_amt = data['redeem_limit_amt'] || null;
 		const redeem_limit_percent = data['redeem_limit_percent'] || null;
 
 		// Default Invalid Checker
-		if (hotel_id == null || vat_percent == null) {
+		if (hotel_id === null || credit_limit_amt === null || credit_limit_percent === null || redeem_limit_percent === null || redeem_limit_amt === null) {
 			return {
 				returncode: 400,
 				message: 'Invalid Input',
@@ -26,7 +27,7 @@ export async function add_eatocoins_settings(data) {
 		const existingSettings = await read_eatocoins_settings({ hotel_id });
 		if (existingSettings.returncode === 200 && existingSettings.output.length != 0) {
 			const result = await update_eatocoins_settings({
-				hotel_id, visibility, credit_limit_amt, credit_limit_percent, redeem_limit_amt, redeem_limit_percent
+				hotel_id, rate, visibility, credit_limit_amt, credit_limit_percent, redeem_limit_amt, redeem_limit_percent
 			});
 
 			return result;
@@ -35,6 +36,7 @@ export async function add_eatocoins_settings(data) {
 		// Inserting the Section
 		const result = await create_eatocoins_settings({
 			hotel_id,
+			rate,
 			visibility,
 			credit_limit_amt,
 			credit_limit_percent,

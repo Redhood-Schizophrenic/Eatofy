@@ -242,7 +242,7 @@ export default function Purchase_management() {
   }
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem('hotel_id'));
+    sethotel_id(localStorage.getItem('hotel_id'));
     if (hotel_id) {
       fetchData();
     }
@@ -376,7 +376,7 @@ export default function Purchase_management() {
                         }
                       </select>
                       <Link href={`${ApiHost}/hotels/backoffice/supplier_management`}>
-                        <IoIosAddCircleOutline size={28}/>
+                        <IoIosAddCircleOutline size={28} />
                       </Link>
                     </div>
                     <div className='flex gap-4'>

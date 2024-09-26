@@ -5,7 +5,7 @@ import { ApiHost } from '@/constants/url_consts';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaMagnifyingGlass } from "react-icons/fa6";
 
 const Eatofy = () => {
@@ -13,6 +13,7 @@ const Eatofy = () => {
   const [sections, setSections] = useState([]);
   const [tables, setTables] = useState([]);
   const route = useRouter();
+  const searchBar = useRef();
   const [hotel_id, sethotel_id] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -50,14 +51,18 @@ const Eatofy = () => {
     }
   }
 
+  console.log(hotel_id)
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
 
   useEffect(() => {
-    sethotel_id(sessionStorage.getItem('hotel_id'));
+    sethotel_id(localStorage.getItem('hotel_id'));
     if (hotel_id) {
       fetchData();
+      if (searchBar.current) {
+        searchBar.current.focus();
+      }
     }
   }, [hotel_id]);
 
@@ -65,20 +70,21 @@ const Eatofy = () => {
     <>
       <HotelSideNav />
       <div className="ml-[70px]">
-        <div className="w-full p-4 h-full bg-white">
+        <div className="w-full p-4 h-full">
           <div className='flex justify-between'>
             <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Eatofy</h2>
 
             <div className='w-[40%] pl-4 flex border rounded-3xl border-black justify-between items-center'>
               <input
+                ref={searchBar}
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchChange}
                 placeholder="Search table..."
                 className="border-none w-full focus:ring-0"
               />
-              <div className='bg-gray-200 p-4 rounded-full'>
-                <FaMagnifyingGlass/>
+              <div className='bg-red-500 p-3 rounded-full mr-[0.50rem]'>
+                <FaMagnifyingGlass color='#fff' />
               </div>
             </div>
 
@@ -160,7 +166,7 @@ const Eatofy = () => {
               <div key={section.id} className="my-4">
                 <span className="bg-red-200 text-black px-4 py-2 rounded-lg">{section.SectionName}</span>
                 <div className="grid grid-cols-6 ml-5 gap-4 my-8">
-                  {tables.filter((table) => table.TableName.toLowerCase().includes(searchQuery.toLowerCase()) && table.SectionId === section.id )
+                  {tables.filter((table) => table.TableName.toLowerCase().includes(searchQuery.toLowerCase()) && table.SectionId === section.id)
                     .map((table) => (
                       <div
                         key={table.id}

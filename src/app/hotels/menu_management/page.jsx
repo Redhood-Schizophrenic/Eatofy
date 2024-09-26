@@ -4,7 +4,7 @@ import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
 import { Button } from '@react-email/components';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { FaTrashCan, FaXmark } from 'react-icons/fa6';
 import { FiEdit } from 'react-icons/fi';
@@ -22,6 +22,7 @@ const MenuManagement = () => {
   const [sections, setSection] = useState([]);
   const [SuccessMessage, setSuccessMessage] = useState('');
   const [ErrorMessage, setErrorMessage] = useState('');
+  const searchBar = useRef();
 
   // Search Dishes
   const handleSearch = (element) => {
@@ -68,7 +69,7 @@ const MenuManagement = () => {
   const fetchCategory = async () => {
     try {
 
-      const hotel_id = sessionStorage.getItem('hotel_id');
+      const hotel_id = localStorage.getItem('hotel_id');
       const response = await fetch(`${ApiHost}/api/hotel/dish/category/fetch`, {
         method: 'POST',
         headers: {
@@ -101,7 +102,7 @@ const MenuManagement = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          'hotel_id': sessionStorage.getItem('hotel_id')
+          'hotel_id': localStorage.getItem('hotel_id')
         }),
       });
 
@@ -121,6 +122,9 @@ const MenuManagement = () => {
   useEffect(() => {
     fetchCategory();
     MenuFetch();
+    if (searchBar.current) {
+      searchBar.current.focus();
+    }
   }, []);
 
   // Add
@@ -140,7 +144,7 @@ const MenuManagement = () => {
           'dish_type': DishType,
           'price': Price,
           'category_name': CategoryName,
-          'hotel_id': sessionStorage.getItem('hotel_id')
+          'hotel_id': localStorage.getItem('hotel_id')
         }),
       });
 
@@ -163,7 +167,7 @@ const MenuManagement = () => {
   const handleEditMenuAll = async (e) => {
     e.preventDefault();
 
-    const menu_id = sessionStorage.getItem("menu_id");
+    const menu_id = localStorage.getItem("menu_id");
 
     try {
 
@@ -548,6 +552,7 @@ const MenuManagement = () => {
             </h1>
             <div>
               <input
+                ref={searchBar}
                 type="text"
                 className="rounded-lg text-sm bg-white text-black"
                 placeholder="Search by name or code"

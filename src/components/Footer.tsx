@@ -4,7 +4,7 @@ import { FaFacebook, FaFacebookF, FaInstagram, FaTwitter } from 'react-icons/fa'
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-black w-full h-auto md:h-[65dvh] text-white p-10 py-12 flex flex-col justify-between gap-8">
+    <footer className="bg-black w-full h-auto text-white p-10 py-20 flex flex-col justify-between gap-8">
       <div className="container w-[80dvw] mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         <div>
           <h3 className="text-lg font-bold mb-2 sm:mb-4">About Us</h3>
@@ -12,9 +12,9 @@ const Footer: React.FC = () => {
             We are dedicated to providing the best restaurant management solutions to streamline your operations and enhance your customer experience.
           </p>
           <div className="flex gap-4 my-4">
-            <Link href="#" className="w-[40px] h-[40px] rounded-full bg-gray-500 bg-opacity-30 inline-grid place-items-center"><FaFacebookF size={20} color='#fff'/></Link>
-            <Link href="#" className="w-[40px] h-[40px] rounded-full bg-gray-500 bg-opacity-30 inline-grid place-items-center"><FaTwitter size={20} color='#fff'/></Link>
-            <Link href="#" className="w-[40px] h-[40px] rounded-full bg-gray-500 bg-opacity-30 inline-grid place-items-center"><FaInstagram size={20} color='#fff'/></Link>
+            <Link href="#" className="w-[40px] h-[40px] rounded-full bg-gray-500 bg-opacity-30 inline-grid place-items-center"><FaFacebookF size={20} color='#fff' /></Link>
+            <Link href="#" className="w-[40px] h-[40px] rounded-full bg-gray-500 bg-opacity-30 inline-grid place-items-center"><FaTwitter size={20} color='#fff' /></Link>
+            <Link href="#" className="w-[40px] h-[40px] rounded-full bg-gray-500 bg-opacity-30 inline-grid place-items-center"><FaInstagram size={20} color='#fff' /></Link>
           </div>
         </div>
         <div>
@@ -36,7 +36,7 @@ const Footer: React.FC = () => {
         </div>
       </div>
       <div className="text-center mt-6 sm:mt-8 text-white text-sm">
-        © 2024 Eatofy. All rights reserved.<br/>Developed by Appniche Technologies
+        © 2024 Eatofy. All rights reserved.<br />Developed by Appniche Technologies
       </div>
     </footer>
   );
