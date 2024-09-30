@@ -108,7 +108,6 @@ const Dashboard = () => {
         to_input = to_default;
         setFrom(from_input);
         setTo(to_input);
-        fetchAllOrders();
         break;
 
       case 'Week':
@@ -116,7 +115,6 @@ const Dashboard = () => {
         to_input = new Date(today.setDate(today.getDate() - 7)).toISOString().split('T')[0]; // 7 days ago
         setFrom(to_input);
         setTo(from_input);
-        fetchAllOrders();
         break;
 
       case 'Month':
@@ -124,7 +122,6 @@ const Dashboard = () => {
         to_input = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0]; // Last day of the current month
         setFrom(from_input);
         setTo(to_input);
-        fetchAllOrders();
         break;
 
       case 'Year':
@@ -132,7 +129,6 @@ const Dashboard = () => {
         to_input = new Date(today.getFullYear(), 11, 31).toISOString().split('T')[0]; // December 31st of the current year
         setFrom(from_input);
         setTo(to_input);
-        fetchAllOrders();
         break;
 
       case 'custom':
@@ -144,7 +140,6 @@ const Dashboard = () => {
         to_input = to_default;
         setFrom(from_input);
         setTo(to_input);
-        fetchAllOrders();
         break;
     }
   };
@@ -271,9 +266,10 @@ const Dashboard = () => {
                   <option value='Week'>Week</option>
                   <option value='Month'>Month</option>
                   <option value='Year'>Year</option>
+                  <option value="custom">--Custom--</option>
                 </select>
               </div>
-              {/*<div className='flex items-end pr-4'>
+              <div className='flex items-end pr-4'>
                 <button
                   className='bg-red-500 text-white px-4 py-2 rounded-lg'
                   onClick={
@@ -284,13 +280,53 @@ const Dashboard = () => {
                 >
                   Filter
                 </button>
-              </div>*/}
+              </div>
             </div>
           </div>
           {
             selectedRange === 'custom' && (
               <div className='w-full h-dvh fixed top-0 left-0 bg-black bg-opacity-70 flex justify-center items-center'>
-                <button className='bg-red-500 text-white text-lg p-1 px-4 rounded-lg' onClick={() => { setselectedRange('Today') }}>filter</button>
+                <div className="flex items-center space-x-4">
+                  <div className='flex flex-col text-sm font-semibold text-zinc-700 items-center'>
+                    <label htmlFor="from" className='text-white'>
+                      From
+                    </label>
+                    <input
+                      type="date"
+                      id='from'
+                      value={from}
+                      onChange={(e) => {
+                        setFrom(e.target.value)
+                      }}
+                    />
+                  </div>
+                  <div className='flex flex-col text-sm font-semibold text-zinc-700 items-center'>
+                    <label htmlFor="to" className='text-white'>
+                      To
+                    </label>
+                    <input
+                      type="date"
+                      id='to'
+                      value={to}
+                      onChange={(e) => {
+                        setTo(e.target.value)
+                      }}
+                    />
+                  </div>
+                  <div className='flex items-end pr-4 pt-6'>
+                    <button
+                      className='bg-red-500 text-white px-4 py-2 rounded-lg'
+                      onClick={
+                        () => {
+                          setselectedRange('');
+                          fetchAllOrders();
+                        }
+                      }
+                    >
+                      Filter
+                    </button>
+                  </div>
+                </div>
               </div>
             )
           }

@@ -15,6 +15,7 @@ export default function Purchase_Report() {
   weekbefore.setDate(today.getDate() - 1);
   const from_default = weekbefore.toISOString().split('T')[0];
   const to_default = today.toISOString().split('T')[0];
+  const [selectedRange, setselectedRange] = useState('Today');
 
   //Request Params
   const [from, setFrom] = useState(from_default);
@@ -116,6 +117,53 @@ export default function Purchase_Report() {
     setInvoice(invoice_info);
   }
 
+  const handleRangeChange = (selectedOption) => {
+    setselectedRange(selectedOption);
+    const today = new Date();
+    let from_input, to_input
+
+    switch (selectedOption) {
+      case 'Today':
+        from_input = from_default; // Assuming this is the correct default for today
+        to_input = to_default;
+        setFrom(from_input);
+        setTo(to_input);
+        break;
+
+      case 'Week':
+        from_input = new Date().toISOString().split('T')[0]; // Today's date
+        to_input = new Date(today.setDate(today.getDate() - 7)).toISOString().split('T')[0]; // 7 days ago
+        setFrom(to_input);
+        setTo(from_input);
+        break;
+
+      case 'Month':
+        from_input = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0]; // First day of the current month
+        to_input = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0]; // Last day of the current month
+        setFrom(from_input);
+        setTo(to_input);
+        break;
+
+      case 'Year':
+        from_input = new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0]; // January 1st of the current year
+        to_input = new Date(today.getFullYear(), 11, 31).toISOString().split('T')[0]; // December 31st of the current year
+        setFrom(from_input);
+        setTo(to_input);
+        break;
+
+      case 'custom':
+        setselectedRange('custom'); // You will probably handle custom logic elsewhere
+        break;
+
+      default:
+        from_input = from_default;
+        to_input = to_default;
+        setFrom(from_input);
+        setTo(to_input);
+        break;
+    }
+  };
+
   useEffect(() => {
     sethotel_id(localStorage.getItem('hotel_id'));
     if (hotel_id) {
@@ -204,47 +252,78 @@ export default function Purchase_Report() {
               Purchase Reports
             </h1>
 
-            <div className="flex items-center space-x-4">
-              <div className='flex flex-col text-sm font-semibold text-zinc-700 items-center'>
-                <label htmlFor="from">
-                  From
-                </label>
-                <input
-                  type="date"
-                  id='from'
-                  value={from}
-                  onChange={(e) => {
-                    setFrom(e.target.value)
-                  }}
-                />
+            <div className="flex gap-4">
+              <div className='flex flex-col justify-center text-sm font-semibold text-zinc-700 items-end'>
+                <select value={selectedRange} onChange={(e) => { e.preventDefault(); handleRangeChange(e.target.value); }} className='w-[200px] rounded-lg'>
+                  <option value='Today'>Today</option>
+                  <option value='Week'>Week</option>
+                  <option value='Month'>Month</option>
+                  <option value='Year'>Year</option>
+                  <option value="custom">--Custom--</option>
+                </select>
               </div>
-              <div className='flex flex-col text-sm font-semibold text-zinc-700 items-center'>
-                <label htmlFor="to">
-                  To
-                </label>
-                <input
-                  type="date"
-                  id='to'
-                  value={to}
-                  onChange={(e) => {
-                    setTo(e.target.value)
-                  }}
-                />
-              </div>
-              <div className='flex items-end pr-4 pt-6'>
-                <button
-                  className='bg-red-500 text-white px-4 py-2 rounded-lg'
-                  onClick={
-                    () => {
+              <div className="flex items-center">
+                <div className="flex items-end">
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                    onClick={() => {
                       fetchPurchaseData();
-                    }
-                  }
-                >
-                  Filter
-                </button>
+                    }}
+                  >
+                    Filter
+                  </button>
+                </div>
               </div>
             </div>
           </div>
+
+          {
+            selectedRange === 'custom' && (
+              <div className='w-full h-dvh fixed top-0 left-0 bg-black bg-opacity-70 flex justify-center items-center'>
+                <div className="flex items-center space-x-4">
+                  <div className='flex flex-col text-sm font-semibold text-zinc-700 items-center'>
+                    <label htmlFor="from" className='text-white'>
+                      From
+                    </label>
+                    <input
+                      type="date"
+                      id='from'
+                      value={from}
+                      onChange={(e) => {
+                        setFrom(e.target.value)
+                      }}
+                    />
+                  </div>
+                  <div className='flex flex-col text-sm font-semibold text-zinc-700 items-center'>
+                    <label htmlFor="to" className='text-white'>
+                      To
+                    </label>
+                    <input
+                      type="date"
+                      id='to'
+                      value={to}
+                      onChange={(e) => {
+                        setTo(e.target.value)
+                      }}
+                    />
+                  </div>
+                  <div className='flex items-end pr-4 pt-6'>
+                    <button
+                      className='bg-red-500 text-white px-4 py-2 rounded-lg'
+                      onClick={
+                        () => {
+                          setselectedRange('');
+                          fetchPurchaseData();
+                        }
+                      }
+                    >
+                      Filter
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )
+          }
 
           <div className="flex justify-start items-end w-full">
             <input

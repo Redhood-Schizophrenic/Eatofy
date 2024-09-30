@@ -12,6 +12,7 @@ const Sales_Report = () => {
   weekbefore.setDate(today.getDate() - 1);
   const from_default = weekbefore.toISOString().split('T')[0];
   const to_default = today.toISOString().split('T')[0];
+  const [selectedRange, setselectedRange] = useState('Today');
 
   //Request Params
   const [from, setFrom] = useState(from_default);
@@ -91,6 +92,53 @@ const Sales_Report = () => {
     }
   };
 
+  const handleRangeChange = (selectedOption) => {
+    setselectedRange(selectedOption);
+    const today = new Date();
+    let from_input, to_input
+
+    switch (selectedOption) {
+      case 'Today':
+        from_input = from_default; // Assuming this is the correct default for today
+        to_input = to_default;
+        setFrom(from_input);
+        setTo(to_input);
+        break;
+
+      case 'Week':
+        from_input = new Date().toISOString().split('T')[0]; // Today's date
+        to_input = new Date(today.setDate(today.getDate() - 7)).toISOString().split('T')[0]; // 7 days ago
+        setFrom(to_input);
+        setTo(from_input);
+        break;
+
+      case 'Month':
+        from_input = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0]; // First day of the current month
+        to_input = new Date(today.getFullYear(), today.getMonth() + 1, 0).toISOString().split('T')[0]; // Last day of the current month
+        setFrom(from_input);
+        setTo(to_input);
+        break;
+
+      case 'Year':
+        from_input = new Date(today.getFullYear(), 0, 1).toISOString().split('T')[0]; // January 1st of the current year
+        to_input = new Date(today.getFullYear(), 11, 31).toISOString().split('T')[0]; // December 31st of the current year
+        setFrom(from_input);
+        setTo(to_input);
+        break;
+
+      case 'custom':
+        setselectedRange('custom'); // You will probably handle custom logic elsewhere
+        break;
+
+      default:
+        from_input = from_default;
+        to_input = to_default;
+        setFrom(from_input);
+        setTo(to_input);
+        break;
+    }
+  };
+
   useEffect(() => {
     fetchAllOrders();
   }, []);
@@ -116,47 +164,79 @@ const Sales_Report = () => {
             <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold pb-6">
               Sales Report
             </h1>
+            <div className="flex gap-4">
+              <div className='flex flex-col justify-center text-sm font-semibold text-zinc-700 items-end'>
+                <select value={selectedRange} onChange={(e) => { e.preventDefault(); handleRangeChange(e.target.value); }} className='w-[200px] rounded-lg'>
+                  <option value='Today'>Today</option>
+                  <option value='Week'>Week</option>
+                  <option value='Month'>Month</option>
+                  <option value='Year'>Year</option>
+                  <option value="custom">--Custom--</option>
+                </select>
+              </div>
+              <div className="flex items-center">
+                <div className="flex items-end">
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded-lg"
+                    onClick={() => {
+                      fetchAllOrders();
+                    }}
+                  >
+                    Filter
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
-          <div className="w-full flex justify-between">
-            <div className="flex items-center space-x-4">
-              <div className='flex flex-col text-sm font-semibold text-zinc-700 items-center'>
-                <label htmlFor="from">From</label>
-                <input
-                  type="date"
-                  id='from'
-                  value={from}
-                  onChange={(e) => setFrom(e.target.value)}
-                />
+          {
+            selectedRange === 'custom' && (
+              <div className='w-full h-dvh fixed top-0 left-0 bg-black bg-opacity-70 flex justify-center items-center'>
+                <div className="flex items-center space-x-4">
+                  <div className='flex flex-col text-sm font-semibold text-zinc-700 items-center'>
+                    <label htmlFor="from" className='text-white'>
+                      From
+                    </label>
+                    <input
+                      type="date"
+                      id='from'
+                      value={from}
+                      onChange={(e) => {
+                        setFrom(e.target.value)
+                      }}
+                    />
+                  </div>
+                  <div className='flex flex-col text-sm font-semibold text-zinc-700 items-center'>
+                    <label htmlFor="to" className='text-white'>
+                      To
+                    </label>
+                    <input
+                      type="date"
+                      id='to'
+                      value={to}
+                      onChange={(e) => {
+                        setTo(e.target.value)
+                      }}
+                    />
+                  </div>
+                  <div className='flex items-end pr-4 pt-6'>
+                    <button
+                      className='bg-red-500 text-white px-4 py-2 rounded-lg'
+                      onClick={
+                        () => {
+                          setselectedRange('');
+                          fetchAllOrders();
+                        }
+                      }
+                    >
+                      Filter
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className='flex flex-col text-sm font-semibold text-zinc-700 items-center'>
-                <label htmlFor="to">To</label>
-                <input
-                  type="date"
-                  id='to'
-                  value={to}
-                  onChange={(e) => setTo(e.target.value)}
-                />
-              </div>
-              <div className='flex items-end pr-4 pt-6'>
-                <button
-                  className='bg-red-500 text-white px-4 py-2 rounded-lg'
-                  onClick={fetchAllOrders}
-                >
-                  Filter
-                </button>
-              </div>
-            </div>
-            <div className='w-1/2 flex justify-end items-end'>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearchChange}
-                placeholder="Search Table, Waiter, Payment Status or Customer..."
-                className="px-4 py-2 border rounded-lg w-full"
-              />
-            </div>
-          </div>
+            )
+          }
+
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8 mb-4">
             <div
@@ -267,9 +347,9 @@ const Sales_Report = () => {
                           <td className="border px-4 py-2">
                             <span
                               className={`px-2 inline-flex text-sm leading-5 font-semibold rounded-full ${row.Status.toLowerCase() === 'paid' ? 'bg-green-100 text-green-800' :
-                                  row.Status.toLowerCase() === 'unpaid' ? 'bg-red-100 text-red-800' :
-                                    row.Status.toLowerCase() === 'partpaid' ? 'bg-yellow-100 text-yellow-800' :
-                                      'bg-gray-100 text-gray-800'
+                                row.Status.toLowerCase() === 'unpaid' ? 'bg-red-100 text-red-800' :
+                                  row.Status.toLowerCase() === 'partpaid' ? 'bg-yellow-100 text-yellow-800' :
+                                    'bg-gray-100 text-gray-800'
                                 }`}
                             >
                               {row.Status}
