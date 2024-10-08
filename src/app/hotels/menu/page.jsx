@@ -23,6 +23,9 @@ export default function Menu() {
   const [isSettleBill, setisSettleBill] = useState(false);
   const [disAmt, setdisAmt] = useState("");
   const [vatAmt, setvatAmt] = useState("");
+  const [Vat, setVat] = useState('');
+  const [Cgst, setCgst] = useState('');
+  const [Sgst, setSgst] = useState('');
   const [BalanceAmt, setBalanceAmt] = useState(0);
   const [PaymentMode, setPaymentMode] = useState("Cash");
   const [PaymentStatus, setPaymentStatus] = useState("Paid");
@@ -155,15 +158,15 @@ export default function Menu() {
         setCategories(response_data.Categories);
         if (response_data.ExistingBill.length != 0) {
           console.log(response_data?.ExistingBill[0]);
-          setBillId(response_data.ExistingBill[0].id);
-          setHotelName(response_data.ExistingBill[0].Hotels.HotelName);
+          setBillId(response_data?.ExistingBill[0].id);
+          setHotelName(response_data?.ExistingBill[0].Hotels.HotelName);
           if (response_data.Orders || response_data.Orders?.length == 0) {
             setOldCart(response_data.Orders);
           }
         }
-        setCustomername(response_data.ExistingBill[0].Customer.CustomerName);
-        setExistingEatocoins(response_data.ExistingBill[0].Customer.EatocoinsWallet);
-        setTableName(response_data.TableInfo[0].TableName);
+        setCustomername(response_data?.ExistingBill[0]?.Customer?.CustomerName);
+        setExistingEatocoins(response_data?.ExistingBill[0]?.Customer?.EatocoinsWallet);
+        setTableName(response_data?.TableInfo[0]?.TableName);
         return;
       } else {
         console.log("Failed to fetch Dishes");
@@ -349,14 +352,55 @@ export default function Menu() {
     cgstRate = "9%";
     sgstRate = "9%";
   }
-  const cgstRateNum = parseFloat(cgstRate.replace("%", ""));
-  const sgstRateNum = parseFloat(sgstRate.replace("%", ""));
+
+  async function LoadSettings() {
+    console.log(HotelId)
+    try {
+      const res = await fetch(`${ApiHost}/api/hotel/settings/gst/read`,{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'hotel_id': HotelId })
+      });
+
+      const resVat = await fetch(`${ApiHost}/api/hotel/settings/vat/read`,{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'hotel_id': HotelId })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data);
+        const Gst = data?.output[0]?.GSTPercent;
+        console.log(Gst);
+        const half = Gst / 2;
+        console.log(half)
+        setCgst(half);
+        setSgst(half);
+      }
+
+      if (resVat.ok) {
+        const data = await resVat.json();
+        console.log(data);
+        const Vat = data?.output[0]?.VATPercent;
+        console.log(Vat);
+        setVat(Vat);
+      }
+    } catch (e) {
+      throw console.error(e);
+    }       
+  }
+
+  const cgstRateNum = Cgst;
+  const sgstRateNum = Sgst;
   const cgstAmt = (cgstRateNum / 100) * parseFloat(menutotal);
   const sgstAmt = (sgstRateNum / 100) * parseFloat(menutotal);
+  console.log(cgstAmt)
+  console.log(sgstAmt)
   const VatAmt =
-    vatAmt === ""
+    Vat === ""
       ? 0
-      : (parseFloat(vatAmt.replace("%", "")) / 100) * parseFloat(menutotal);
+      : (Vat / 100) * parseFloat(menutotal);
   const grosstotal = parseFloat(menutotal) + cgstAmt + sgstAmt + VatAmt;
   const discount =
     disAmt === ""
@@ -420,9 +464,12 @@ export default function Menu() {
     setHotelId(localStorage.getItem("hotel_id"));
     setTableId(sessionStorage.getItem("table_id"));
     setWaiterId(sessionStorage.getItem("waiter_id"));
-    if (searchBar.current) {
-      searchBar.current.focus();
-      fetch_bill();
+    if (HotelId) {
+      LoadSettings();
+      if (searchBar.current) {
+        searchBar.current.focus();
+        fetch_bill();
+      }
     }
   }, [HotelId, Type]);
 
@@ -815,16 +862,10 @@ export default function Menu() {
                       </div>
                     </div>
                     <div className="w-full inline-flex justify-between items-center mb-2">
-                      <label className="w-1/2">Enter Vat in %</label>
-                      <input
-                        type="text"
-                        value={vatAmt}
-                        onChange={(e) => {
-                          setvatAmt(e.target.value);
-                        }}
-                        className="w-1/2 bg-[#252836] text-base text-white"
-                        placeholder="Vat in %"
-                      />
+                      <label className="w-1/2">Vat Calculated</label>
+                      <div className="w-1/2 text-right">
+                        {Vat} %
+                      </div>
                     </div>
                     <div className="w-full inline-flex justify-between items-center mb-2">
                       <label className="w-1/2">Enter Discount</label>

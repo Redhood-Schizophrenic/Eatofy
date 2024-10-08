@@ -52,6 +52,7 @@ model Hotels {
   EatocoinsSettings    EatocoinsSettings[]
   VatSettings          VatSettings[]
   GSTSettings          GstSettings[]
+  Notifications        Notifications[]
 }
 
 model Subscriptions {
@@ -466,4 +467,16 @@ model EatocoinsSettings {
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
   Hotel              Hotels   @relation(fields: [HotelId], references: [id])
+}
+
+model Notifications {
+  id          String   @id @unique @default(uuid())
+  HotelId     String
+  Type        String   @default("Unread")
+  Title       String
+  Description String?
+  Status      String   @default("Active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  Hotel       Hotels   @relation(fields: [HotelId], references: [id])
 }

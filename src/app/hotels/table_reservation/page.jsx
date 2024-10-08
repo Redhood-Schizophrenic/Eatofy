@@ -7,10 +7,20 @@ import { FaXmark } from 'react-icons/fa6';
 
 const ReservationGrid = () => {
 
+  const getTodaysDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // Add 1 because getMonth() returns 0-based month
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const today = getTodaysDate();
+
   const [data, setData] = useState([]);
   const [isOpen, setisOpen] = useState(false);
   const [submitData, setsubmitData] = useState({
-    date: '',
+    date: today,
     time: '',
   });
   const [note, setnote] = useState('');
@@ -46,15 +56,6 @@ const ReservationGrid = () => {
     'hotelId': hotel_id
   }
 
-  const getTodaysDate = () => {
-    const today = new Date();
-    const year = today.getFullYear();
-    const month = String(today.getMonth() + 1).padStart(2, '0'); // Add 1 because getMonth() returns 0-based month
-    const day = String(today.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-
-  const today = getTodaysDate();
 
   async function handleFetchReservations() {
     try {
@@ -195,11 +196,7 @@ const ReservationGrid = () => {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0 md:space-x-4 mb-4">
-          <div className="border border-green-500 text-center p-4 rounded">
-            <p className=" font-bold">Total Reservation</p>
-            <p className="text-2xl">{data.length}</p>
-          </div>
+        <div className="flex flex-col md:flex-row justify-end space-y-4 md:space-y-0 md:space-x-4 mb-4">
           <div className='flex justify-end items-end'>
             <button
               onClick={() => {
@@ -212,7 +209,7 @@ const ReservationGrid = () => {
           </div>
         </div>
 
-        <h3 className="font-bold mb-2">Reservation Grid</h3>
+        <h3 className="font-bold mb-2">Today's Reservations</h3>
         <div className="border rounded-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse rounded-lg table-auto">
@@ -344,7 +341,7 @@ const ReservationGrid = () => {
                     <div className='p-2 w-full'>
                       <label htmlFor="customer">Time</label>
                       <input
-                        type="text"
+                        type="time"
                         placeholder="Time"
                         name='time'
                         required
