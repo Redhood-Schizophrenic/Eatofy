@@ -149,33 +149,6 @@ const BillTable = () => {
     if (isFormValid) {
       try {
 
-        let cgstRate, sgstRate, vatAmt = 0, discountAmount = 0;
-
-        if (menutotal < 7500) {
-          cgstRate = 2.5;
-          sgstRate = 2.5;
-        }
-        else {
-          cgstRate = 9;
-          sgstRate = 9;
-        }
-
-        const cgstAmt = menutotal * (cgstRate / 100);
-        const sgstAmt = menutotal * (sgstRate / 100);
-
-        let total = menutotal + cgstAmt + sgstAmt;
-
-        if (vatRate != 0) {
-          vatAmt = total * (vatRate / 100);
-          total = total + vatAmt
-        }
-
-        if (discountRate != 0) {
-          discountAmount = total * (discountRate / 100);
-          total = total - discountAmount
-        }
-
-
         const response = await fetch(`${ApiHost}/api/hotel/bills/management/update/payment`, {
           method: 'PUT',
           headers: {
@@ -183,18 +156,8 @@ const BillTable = () => {
           },
           body: JSON.stringify({
             'bill_id': billId,
-            'table_id': TableId,
-            'total_amount': total,
-            'cgst_rate': `${cgstRate}`,
-            'cgst_amount': cgstAmt,
-            'sgst_rate': `${sgstRate}`,
-            'sgst_amount': sgstAmt,
-            'vat_rate': `${vatRate}`,
-            'vat_amount': vatAmt,
             'menu_total': menutotal,
             'balance_amount': BalanceAmt,
-            'discount_rate': `${discountRate}`,
-            'discount_amount': discountAmount,
             'payment_mode': PaymentMode,
             'payment_status': PaymentStatus
           }),

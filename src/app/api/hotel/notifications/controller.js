@@ -151,10 +151,13 @@ export async function notifications(data) {
 		}
 
 
+		// Read Notifications
+		const end_result = await read_notifications({ hotel_id });
+
 		return {
 			returncode: 200,
 			message: "Notifications Fetched",
-			output: result.output
+			output: end_result.output
 		};
 
 	} catch (error) {

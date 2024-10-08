@@ -15,11 +15,11 @@ export async function add_staff_details(data) {
 		const designation = data['designation'] || null;
 		const role = data['role'] || null;
 		const salary = data['salary'] || 0;
-		const incentives = data['incentives'] || null;
+		const incentives = data['incentives'] || 0;
 		const hotel_id = data['hotel_id'] || null;
 
 		// Default Invalid Checker
-		if (hotel_id == null || first_name == null || last_name == null || address == null || contact == null || email == null || password == null || department_name == null || designation == null || role == null ) {
+		if (hotel_id == null || first_name == null || last_name == null || address == null || contact == null || email == null || password == null || department_name == null || designation == null || role == null) {
 			return {
 				returncode: 400,
 				message: 'Invalid Input',

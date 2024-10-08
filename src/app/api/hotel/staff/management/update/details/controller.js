@@ -11,12 +11,12 @@ export async function update_staff(data) {
 		const department_name = data['department_name'] || null;
 		const designation = data['designation'] || null;
 		const role = data['role'] || null;
-		const salary = data['salary'] || null;
-		const incentives = data['incentives'] || null;
+		const salary = data['salary'] || 0;
+		const incentives = data['incentives'] || 0;
 
 
 		// Default Invalid Checker
-		if (staff_id == null || first_name == null || last_name == null || address == null || contact == null || department_name == null || designation == null || role == null || salary == null) {
+		if (staff_id == null || first_name == null || last_name == null || address == null || contact == null || department_name == null || designation == null || role == null) {
 			return {
 				returncode: 400,
 				message: 'Invalid Input',

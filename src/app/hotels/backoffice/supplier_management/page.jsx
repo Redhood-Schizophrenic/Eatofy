@@ -172,7 +172,9 @@ export default function Supplier_management() {
                   <input
                     id="contact"
                     value={contact}
-                    type="number"
+                    type="text"
+                    minLength={10}
+                    maxLength={10}
                     placeholder="1234567890"
                     onChange={
                       (e) => {
