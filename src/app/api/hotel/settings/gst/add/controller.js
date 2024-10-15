@@ -6,7 +6,7 @@ export async function add_gst_settings(data) {
 	try {
 
 		const hotel_id = data['hotel_id'] || null;
-		const visibility = data['visibility'] || true;
+		const visibility = data['visibility'] || false;
 		const gst_percent = data['gst_percent'] || null;
 
 

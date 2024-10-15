@@ -27,6 +27,9 @@ export default function Menu() {
 	const [ShowError, setShowError] = useState(false);
 	const [disAmt, setdisAmt] = useState('');
 	const [vatAmt, setvatAmt] = useState('');
+	const [Vat, setVat] = useState('');
+	const [Cgst, setCgst] = useState('');
+	const [Sgst, setSgst] = useState('');
 	const [BalanceAmt, setBalanceAmt] = useState(0);
 	const [PaymentMode, setPaymentMode] = useState('Cash');
 	const [PaymentStatus, setPaymentStatus] = useState('Paid');
@@ -306,11 +309,55 @@ export default function Menu() {
 		cgstRate = "9%";
 		sgstRate = "9%";
 	}
-	const cgstRateNum = parseFloat(cgstRate.replace('%', ''));
-	const sgstRateNum = parseFloat(sgstRate.replace('%', ''));
+
+	async function LoadSettings() {
+		console.log(HotelId)
+		try {
+			const res = await fetch(`${ApiHost}/api/hotel/settings/gst/read`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ 'hotel_id': HotelId })
+			});
+
+			const resVat = await fetch(`${ApiHost}/api/hotel/settings/vat/read`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ 'hotel_id': HotelId })
+			});
+
+			if (res.ok) {
+				const data = await res.json();
+				console.log(data);
+				const Gst = data?.output[0]?.GSTPercent;
+				console.log(Gst);
+				const half = Gst / 2;
+				console.log(half)
+				setCgst(half);
+				setSgst(half);
+			}
+
+			if (resVat.ok) {
+				const data = await resVat.json();
+				console.log(data);
+				const Vat = data?.output[0]?.VATPercent;
+				console.log(Vat);
+				setVat(Vat);
+			}
+		} catch (e) {
+			throw console.error(e);
+		}
+	}
+
+	const cgstRateNum = Cgst;
+	const sgstRateNum = Sgst;
 	const cgstAmt = (cgstRateNum / 100) * parseFloat(menutotal);
 	const sgstAmt = (sgstRateNum / 100) * parseFloat(menutotal);
-	const VatAmt = vatAmt === '' ? 0 : (parseFloat(vatAmt.replace('%', '')) / 100) * parseFloat(menutotal);
+	console.log(cgstAmt)
+	console.log(sgstAmt)
+	const VatAmt =
+		Vat === ""
+			? 0
+			: (Vat / 100) * parseFloat(menutotal);
 	console.log(menutotal)
 	const grosstotal = parseFloat(menutotal) + cgstAmt + sgstAmt + VatAmt;
 	console.log("Gross", grosstotal, "Cgst", cgstAmt, "sgst", sgstAmt)
@@ -364,6 +411,7 @@ export default function Menu() {
 
 		if (HotelId) {
 			fetch_bill()
+			LoadSettings()
 		}
 	}, [HotelId, Type]);
 
@@ -507,22 +555,26 @@ export default function Menu() {
 
 					</div>
 
-					<div className={`bg-black text-white h-auto transition-transform duration-500 max-h-dvh ${isMenuOpen || OldCart.length !== 0 ? 'fixed w-[35dvw] top-0 right-0' : 'fixed top-0 right-[-100%]'}`}>
+					<div
+						className={`bg-black text-white h-screen transition-transform duration-500 max-h-dvh ${isMenuOpen || OldCart.length !== 0
+							? "fixed w-[35dvw] top-0 right-0"
+							: "fixed top-0 right-[-100%]"
+							}`}
+					>
 
-						{
-							IsOrderSaved ? (
-								<div className="w-1/4 h-[60px] fixed top-10 right-10 bg-green-200 z-50 border-t-[4px] border-green-500 inline-grid place-items-center">
-									<h1 className="text-green-400">Order Saved</h1>
-								</div>
-							) : IsOrderFailed ? (
-								<div className="w-1/4 h-[60px] fixed top-10 right-10 bg-red-200 border-t-[4px] border-red-500 inline-grid place-items-center">
-									<h1 className="text-red-400">Failed to save order</h1>
-								</div>
-							) : []
-						}
+						{IsOrderSaved ? (
+							<div className="w-1/4 h-[60px] fixed top-10 right-10 bg-green-200 z-50 border-[4px] border-green-500 inline-grid place-items-center">
+								<h1 className="text-green-400">Order Saved</h1>
+							</div>
+						) : IsOrderFailed ? (
+							<div className="w-1/4 h-[60px] fixed top-10 right-10 bg-red-200 border-t-[4px] border-red-500 inline-grid place-items-center">
+								<h1 className="text-red-400">Failed to save order</h1>
+							</div>
+						) : (
+							[]
+						)}
 
 						<div className="flex flex-col gap-4 justify-center align-center h-dvh overflow-y-scroll py-2">
-
 							<div className="flex px-4">
 								<div className=" flex justify-start">
 									<button
@@ -627,7 +679,17 @@ export default function Menu() {
 									:
 									isSettleBill ? (
 										<div className="w-full h-auto max-h-[75dvh] overflow-y-scroll overflow-x-hidden bg-black px-4 mb-10 flex flex-col gap-4">
-											<p className={`border-2 border-zinc-500 text-center ${Message === 'Payment Successful' ? 'bg-green-200 border-green-500 text-green-500 p-2' : ''} ${Message === 'Payment Failed' ? 'bg-red-200 border-red-500 text-red-500 p-2' : ''}`}>{Message}</p>
+											<p
+												className={`w-[300px] py-6 fixed top-10 right-10 border-l-3 text-center rounded-lg ${Message === "Payment Successful"
+													? "bg-green-200 border-green-500 text-green-500 p-2 text-lg"
+													: ""
+													} ${Message === "Payment Failed"
+														? "bg-red-200 border-red-500 text-red-500 p-2"
+														: ""
+													}`}
+											>
+												{Message}
+											</p>
 											<div className="font-bold mt-2 text-xl">
 												Payment mode
 											</div>
@@ -899,12 +961,12 @@ export default function Menu() {
 							</thead>
 							<tbody>
 								{
-									OldCart.map((items, index) => {
+									Cart.map((items, index) => {
 										return (
 											<tr key={index} className="border-b">
-												<td className="py-1">{items.Menu.Dish.DishName}</td>
-												<td className="py-1 text-center">{items.Quantity}</td>
-												<td className="py-1 text-right">{items.Menu.Price}</td>
+												<td className="py-1">{items.Dish.DishName}</td>
+												<td className="py-1 text-center">{items.quantity}</td>
+												<td className="py-1 text-right">{items.Price}</td>
 											</tr>
 										);
 									})

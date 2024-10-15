@@ -24,6 +24,9 @@ export default function Swiggy_Menu() {
   const [isSettleBill, setisSettleBill] = useState(false);
   const [disAmt, setdisAmt] = useState("");
   const [vatAmt, setvatAmt] = useState("");
+  const [Vat, setVat] = useState('');
+  const [Cgst, setCgst] = useState('');
+  const [Sgst, setSgst] = useState('');
   const [BalanceAmt, setBalanceAmt] = useState(0);
   const [PaymentMode, setPaymentMode] = useState("Cash");
   const [PaymentStatus, setPaymentStatus] = useState("Paid");
@@ -291,14 +294,55 @@ export default function Swiggy_Menu() {
     cgstRate = "9%";
     sgstRate = "9%";
   }
-  const cgstRateNum = parseFloat(cgstRate.replace("%", ""));
-  const sgstRateNum = parseFloat(sgstRate.replace("%", ""));
+
+  async function LoadSettings() {
+    console.log(HotelId)
+    try {
+      const res = await fetch(`${ApiHost}/api/hotel/settings/gst/read`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'hotel_id': HotelId })
+      });
+
+      const resVat = await fetch(`${ApiHost}/api/hotel/settings/vat/read`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 'hotel_id': HotelId })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        console.log(data);
+        const Gst = data?.output[0]?.GSTPercent;
+        console.log(Gst);
+        const half = Gst / 2;
+        console.log(half)
+        setCgst(half);
+        setSgst(half);
+      }
+
+      if (resVat.ok) {
+        const data = await resVat.json();
+        console.log(data);
+        const Vat = data?.output[0]?.VATPercent;
+        console.log(Vat);
+        setVat(Vat);
+      }
+    } catch (e) {
+      throw console.error(e);
+    }
+  }
+
+  const cgstRateNum = Cgst;
+  const sgstRateNum = Sgst;
   const cgstAmt = (cgstRateNum / 100) * parseFloat(menutotal);
   const sgstAmt = (sgstRateNum / 100) * parseFloat(menutotal);
+  console.log(cgstAmt)
+  console.log(sgstAmt)
   const VatAmt =
-    vatAmt === ""
+    Vat === ""
       ? 0
-      : (parseFloat(vatAmt.replace("%", "")) / 100) * parseFloat(menutotal);
+      : (Vat / 100) * parseFloat(menutotal);
   console.log(menutotal);
   const grosstotal = parseFloat(menutotal) + cgstAmt + sgstAmt + VatAmt;
   console.log("Gross", grosstotal, "Cgst", cgstAmt, "sgst", sgstAmt);
@@ -353,6 +397,7 @@ export default function Swiggy_Menu() {
 
     if (HotelId) {
       fetch_bill();
+      LoadSettings();
     }
   }, [HotelId, Type]);
 

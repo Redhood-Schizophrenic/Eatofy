@@ -1,8 +1,11 @@
 "use client";
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
+import { useRouter } from "next/navigation";
+import { Router } from "next/router";
 import React, { useState, useEffect } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { IoIosArrowBack } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineModeEditOutline, MdOutlineRemoveRedEye } from "react-icons/md";
 
@@ -14,6 +17,7 @@ const BillTable = () => {
   const [ordersInfo, setOrdersInfo] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   let hotel_id
+  const router = useRouter();
 
   // Settle Bill
   const [billId, setbillId] = useState('');
@@ -149,6 +153,33 @@ const BillTable = () => {
     if (isFormValid) {
       try {
 
+        let cgstRate, sgstRate, vatAmt = 0, discountAmount = 0;
+
+        if (menutotal < 7500) {
+          cgstRate = 2.5;
+          sgstRate = 2.5;
+        }
+        else {
+          cgstRate = 9;
+          sgstRate = 9;
+        }
+
+        const cgstAmt = menutotal * (cgstRate / 100);
+        const sgstAmt = menutotal * (sgstRate / 100);
+
+        let total = menutotal + cgstAmt + sgstAmt;
+
+        if (vatRate != 0) {
+          vatAmt = total * (vatRate / 100);
+          total = total + vatAmt
+        }
+
+        if (discountRate != 0) {
+          discountAmount = total * (discountRate / 100);
+          total = total - discountAmount
+        }
+
+
         const response = await fetch(`${ApiHost}/api/hotel/bills/management/update/payment`, {
           method: 'PUT',
           headers: {
@@ -156,8 +187,18 @@ const BillTable = () => {
           },
           body: JSON.stringify({
             'bill_id': billId,
+            'table_id': TableId,
+            'total_amount': total,
+            'cgst_rate': `${cgstRate}`,
+            'cgst_amount': cgstAmt,
+            'sgst_rate': `${sgstRate}`,
+            'sgst_amount': sgstAmt,
+            'vat_rate': `${vatRate}`,
+            'vat_amount': vatAmt,
             'menu_total': menutotal,
             'balance_amount': BalanceAmt,
+            'discount_rate': `${discountRate}`,
+            'discount_amount': discountAmount,
             'payment_mode': PaymentMode,
             'payment_status': PaymentStatus
           }),
@@ -236,9 +277,12 @@ const BillTable = () => {
     <>
       <HotelSideNav />
       <div className="ml-[70px] flex-1 h-screen p-4 bg-white">
-
-        <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Order History</h2>
-
+        <div className="flex justify-start items-center gap-4 mb-4">
+          <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+            router.back()
+          }} />
+          <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Order History</h2>
+        </div>
         <div className="">
           <input
             type="text"
@@ -414,9 +458,9 @@ const BillTable = () => {
       {
         // Popup Screen
         displayBillInfo &&
-        <div className="fixed z-10 inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-[70dvw]  relative h-auto">
-            <div className="flex justify-between w-full">
+        <div onClick={() => setDisplayBillInfo(false)} className="fixed z-10 inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center overflow-scroll">
+          <div className="bg-white p-6 rounded-lg w-[70dvw] relative h-auto">
+            <div className="flex justify-between w-full mt-5">
               <h1 className="text-2xl font-semibold">Invoice</h1>
               <button onClick={() => setDisplayBillInfo(false)}>
                 <IoClose size={35} />
@@ -441,11 +485,10 @@ const BillTable = () => {
                     <div className="flex flex-col gap-2">
                       <h1 className="font-bold">Payment: </h1>
                       <div>
-                        <p className={`p-1.5 text-sm font-bold uppercase tracking-wider rounded-lg bg-opacity-80 text-center 
-${billInfo.Status === "Paid" ? "bg-green-300 text-green-800" :
-                            billInfo.Status === "Active" ? "bg-yellow-300 text-yellow-800" :
-                              billInfo.Status === "Unpaid" ? "bg-red-300 text-red-800" :
-                                "bg-gray-300 text-gray-800"
+                        <p className={`p-1.5 text-sm font-bold uppercase tracking-wider rounded-lg bg-opacity-80 text-center ${billInfo.Status === "Paid" ? "bg-green-300 text-green-800" :
+                          billInfo.Status === "Active" ? "bg-yellow-300 text-yellow-800" :
+                            billInfo.Status === "Unpaid" ? "bg-red-300 text-red-800" :
+                              "bg-gray-300 text-gray-800"
                           }`}>
                           {billInfo.Status}
                         </p>

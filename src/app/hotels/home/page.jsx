@@ -1,5 +1,6 @@
 'use client';
 
+import Notification from '@/components/Notification';
 import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
 import Image from 'next/image';
@@ -71,10 +72,10 @@ const Eatofy = () => {
       <HotelSideNav />
       <div className="ml-[70px]">
         <div className="w-full p-4 h-full">
-          <div className='flex justify-between'>
+          <div className='flex justify-between items-center'>
             <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Eatofy</h2>
 
-            <div className='w-[40%] pl-4 flex border rounded-3xl border-black justify-between items-center'>
+            <div className='w-[40%] py-2 pl-4 flex border rounded-3xl border-black justify-between items-center'>
               <input
                 ref={searchBar}
                 type="text"
@@ -88,14 +89,16 @@ const Eatofy = () => {
               </div>
             </div>
 
-            <div className='flex flex-col gap-4'>
+            <div className='flex gap-4 items-center'>
               <Link
                 href="/hotels/table_reservation"
                 className='px-4 py-2 bg-red-500 text-white rounded-2xl font-bold'
               >
                 Reservation +
               </Link>
+              <Notification />
             </div>
+
 
           </div>
           <div className="flex justify-between items-center my-8 p-4">

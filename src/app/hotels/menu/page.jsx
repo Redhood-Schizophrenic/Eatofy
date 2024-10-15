@@ -60,6 +60,7 @@ export default function Menu() {
   const [CustomerEmail, setCustomerEmail] = useState("");
   const [CustomerOccassion, setCustomerOccassion] = useState("");
   const [CustomerDate, setCustomerDate] = useState("" || Date.now());
+  const [Customer_list, setCustomer_list] = useState([]);
 
   // Fetch Display Data
   const [Menus, setMenus] = useState([]);
@@ -176,6 +177,41 @@ export default function Menu() {
       console.error(e);
       return;
     } finally {
+    }
+  };
+
+  const fetchCustomerList = async () => {
+    try {
+      const response = await fetch(`${ApiHost}/api/hotel/customers/management/fetch`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 'hotel_id': HotelId }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        if (result.returncode === 200) {
+          // Map the output objects to Staff interface
+          const mappedCustomerList = result.output.map((item) => ({
+            id: item.id,
+            customer_name: item.CustomerName,
+            contact: item.Contact,
+            email: item.Email,
+            occassion: item.CustomerOccassion[0]?.Occassion || "N/A",
+            date: item.CustomerOccassion[0]?.Date || "N/A",
+            wallet: item?.EatocoinsWallet | 0 || "0"
+          }));
+          setCustomer_list(mappedCustomerList);
+        } else {
+          console.error("Unexpected response format:", result);
+        }
+      } else {
+        console.error("Failed to fetch customer list");
+      }
+    } catch (error) {
+      console.error("Error:", error);
     }
   };
 
@@ -356,13 +392,13 @@ export default function Menu() {
   async function LoadSettings() {
     console.log(HotelId)
     try {
-      const res = await fetch(`${ApiHost}/api/hotel/settings/gst/read`,{
+      const res = await fetch(`${ApiHost}/api/hotel/settings/gst/read`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 'hotel_id': HotelId })
       });
 
-      const resVat = await fetch(`${ApiHost}/api/hotel/settings/vat/read`,{
+      const resVat = await fetch(`${ApiHost}/api/hotel/settings/vat/read`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 'hotel_id': HotelId })
@@ -388,7 +424,7 @@ export default function Menu() {
       }
     } catch (e) {
       throw console.error(e);
-    }       
+    }
   }
 
   const cgstRateNum = Cgst;
@@ -459,6 +495,26 @@ export default function Menu() {
     }
   };
 
+  function handleSearchAutoComplete(event) {
+    try {
+      if (event) {
+        const name = event.target.value;
+        const customer = Customer_list?.find((cust) => cust.customer_name === name);
+        if (customer) {
+          setCustomerName(customer?.customer_name)
+          setCustomerContact(customer?.contact);
+          setCustomerEmail(customer?.email);
+          setCustomerOccassion(customer?.occassion);
+          setCustomerDate(customer?.date);
+        }
+      } else {
+        alert('Auto Complete is Failed please try again');
+      }
+    } catch (e) {
+      throw console.error(e);
+    }
+  }
+
   useEffect(() => {
     setType(sessionStorage.getItem("type"));
     setHotelId(localStorage.getItem("hotel_id"));
@@ -469,11 +525,12 @@ export default function Menu() {
       if (searchBar.current) {
         searchBar.current.focus();
         fetch_bill();
+        fetchCustomerList();
       }
     }
   }, [HotelId, Type]);
 
-  // console.log();
+  console.log(CustomerName, CustomerContact, CustomerDate);
 
   return (
     <>
@@ -978,12 +1035,19 @@ export default function Menu() {
                         className="w-full bg-zinc-900 text-white rounded-md"
                         type="text"
                         value={CustomerName}
-                        onChange={(e) => {
-                          setCustomerName(e.target.value);
-                        }}
+                        onChange={handleSearchAutoComplete}
                         placeholder="Enter Customer Name"
+                        list="customer_name"
                         required
                       />
+                      <datalist id="customer_name">
+                        {Customer_list.map((item, index) => (
+                          <option
+                            key={index}
+                            value={item.customer_name}
+                          ></option>
+                        ))}
+                      </datalist>
                     </div>
                     <div className="w-full flex flex-col gap-3">
                       <label htmlFor="CustomerContact" className="text-lg">

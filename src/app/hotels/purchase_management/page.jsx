@@ -253,8 +253,8 @@ export default function Purchase_management() {
       <HotelSideNav />
       {
         <div className="ml-[70px]">
-          <h2 className="w-full text-center pt-4 bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Purchase Management</h2>
-          <div className="text-right">
+          <div className="flex justify-between items-center">
+            <h2 className="p-4 bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Purchase Management</h2>
             <button onClick={() => { setShowTableForm(!showtableform) }} className="text-xl bg-red-500 text-white px-4 py-2 rounded-lg m-4 text-right">
               Add Purchase
             </button>
@@ -681,7 +681,7 @@ export default function Purchase_management() {
                   <th className="p-4">Payment mode</th>
                   <th className="p-4">Payment</th>
                   <th className="p-4">Invoice Date</th>
-                  <th className="p-4"></th>
+                  <th className="p-4">Actions</th>
                   {/*<th>QTY</th>*/}
                 </tr>
               </thead>
@@ -698,7 +698,7 @@ export default function Purchase_management() {
                       </td>
                       <td className="p-3">{items.Date}</td>
                       <td className="p-3">
-                        <div className='flex gap-2 justify-center items-center '>
+                        <div className='flex gap-8 justify-start items-center '>
                           <button
                             onClick={() => { displayPurchasedStock(items) }}
                           >

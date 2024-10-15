@@ -172,9 +172,7 @@ export default function Supplier_management() {
                   <input
                     id="contact"
                     value={contact}
-                    type="text"
-                    minLength={10}
-                    maxLength={10}
+                    type="number"
                     placeholder="1234567890"
                     onChange={
                       (e) => {
@@ -267,8 +265,8 @@ export default function Supplier_management() {
           <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Supplier Management</h2>
         </div>
         <div className="flex justify-between items-center">
-          <button onClick={handleAddMenu} className="bg-red-500 font-semibold inline-flex justify-center items-center gap-4 p-2 rounded-lg">
-            Add <FaPlus size={20} />
+          <button onClick={handleAddMenu} className="bg-red-500 font-semibold inline-flex justify-center items-center gap-4 p-2 rounded-lg text-white">
+            Add <FaPlus size={20} color="#fff" />
           </button>
           <div className="">
             <input

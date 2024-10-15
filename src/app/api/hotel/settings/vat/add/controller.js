@@ -6,7 +6,7 @@ export async function add_vat_settings(data) {
 	try {
 
 		const hotel_id = data['hotel_id'] || null;
-		const visibility = data['visibility'] || true;
+		const visibility = data['visibility'] || false;
 		const vat_percent = data['vat_percent'] || null;
 
 

@@ -4,9 +4,9 @@ import HotelSideNav from '@/components/SideNavHotel';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import Switch from 'react-switch';
-import { throws } from 'assert';
 import { ApiHost } from '@/constants/url_consts';
 import Link from 'next/link';
+import Image from 'next/image';
 
 const EatofyApp = () => {
   const [activeIndex, setActiveIndex] = useState(null);
@@ -61,10 +61,11 @@ const EatofyApp = () => {
 
       if (vat.ok) {
         const vat_settings = await vat.json();
-        const vat_visibility = vat_settings?.output[0]?.Visibility || false;
-        const vat_percent = vat_settings?.output[0]?.VATPercent || 0;
+        const vat_visibility = vat_settings?.output[0]?.Visibility;
+        const vat_percent = vat_settings?.output[0]?.VATPercent;
         setVatInput(vat_percent);
         setisVatOn(vat_visibility);
+        console.log(vat_percent, " ", vat_visibility);
       }
 
       // Gst
@@ -78,8 +79,8 @@ const EatofyApp = () => {
 
       if (gst.ok) {
         const gst_settings = await gst.json();
-        const gst_visibility = gst_settings?.output[0]?.Visibility || false;
-        const gstpercent = gst_settings?.output[0]?.GSTPercent || 0;
+        const gst_visibility = gst_settings?.output[0]?.Visibility;
+        const gstpercent = gst_settings?.output[0]?.GSTPercent;
         setGstInput(gstpercent);
         setisGstOn(gst_visibility);
       }
@@ -95,59 +96,46 @@ const EatofyApp = () => {
 
       if (eatocoins.ok) {
         const eatocoins_settings = await eatocoins.json();
-        const eatocoins_visibility = eatocoins_settings?.output[0]?.Visibility || false;
-        const credit_amt = eatocoins_settings?.output[0]?.CreditLimitAmt || 0;
-        const credit_rate = eatocoins_settings?.output[0]?.CreditLimitPercent || 0;
-        const redeem_amt = eatocoins_settings?.output[0]?.RedeemLimitAmount || 0;
-        const redeem_rate = eatocoins_settings?.output[0]?.RedeemLimitPercent || 0;
+        const eatocoins_visibility = eatocoins_settings?.output[0]?.Visibility;
+        const credit_amt = eatocoins_settings?.output[0]?.CreditLimitAmt;
+        const credit_rate = eatocoins_settings?.output[0]?.CreditLimitPercent;
+        const redeem_amt = eatocoins_settings?.output[0]?.RedeemLimitAmount;
+        const redeem_rate = eatocoins_settings?.output[0]?.RedeemLimitPercent;
         setCredit_limit_amt(credit_amt);
         setCredit_limit_rate(credit_rate);
         setRedeem_limit_amt(redeem_amt);
         setRedeem_limit_rate(redeem_rate);
         setisEtocoinOn(eatocoins_visibility);
       }
-
-      // if (localStorage.getItem('darkmode')) {
-      //   setisDarkTheme(true);
-      // }
-      // if (localStorage.getItem('isvaton')) {
-      //   setisVatOn(true);
-      // }
-      // if (localStorage.getItem('isgston')) {
-      //   setisGstOn(true);
-      // }
-      // if (localStorage.getItem('iseatocoinson')) {
-      //   setisEtocoinOn(true);
-      // }
     } catch (e) {
       throw console.error(e);
     }
   }
 
-  async function handleSettingsDarkMode() {
-    try {
-      const result = await fetch(`${ApiHost}/api/hotel/settings/dark_mode/add`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          'hotel_id': hotel_id,
-          'mode': isDarkTheme
-        }),
-      });
-
-      if (result.ok) {
-        const data = await result.json();
-        console.log(data);
-        setmessage('Dark mode');
-        setTimeout(() => {
-          setNotificationON(true);
-        }, 800);
-        setNotificationON(false);
-      }
-    } catch (e) {
-      throw console.error(e);
-    }
-  }
+  // async function handleSettingsDarkMode() {
+  //   try {
+  //     const result = await fetch(`${ApiHost}/api/hotel/settings/dark_mode/add`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({
+  //         'hotel_id': hotel_id,
+  //         'mode': isDarkTheme
+  //       }),
+  //     });
+  //
+  //     if (result.ok) {
+  //       const data = await result.json();
+  //       console.log(data);
+  //       setmessage('Dark mode');
+  //       setTimeout(() => {
+  //         setNotificationON(false);
+  //       }, 1500);
+  //       setNotificationON(true);
+  //     }
+  //   } catch (e) {
+  //     throw console.error(e);
+  //   }
+  // }
 
   async function handleSettingsVat() {
     try {
@@ -166,9 +154,9 @@ const EatofyApp = () => {
         console.log(data);
         setmessage('Vat');
         setTimeout(() => {
-          setNotificationON(true);
-        }, 2000);
-        setNotificationON(false);
+          setNotificationON(false);
+        }, 1500);
+        setNotificationON(true);
       }
     } catch (e) {
       throw console.error(e);
@@ -192,9 +180,9 @@ const EatofyApp = () => {
         console.log(data);
         setmessage('Gst');
         setTimeout(() => {
-          setNotificationON(true);
-        }, 2000);
-        setNotificationON(false);
+          setNotificationON(false);
+        }, 1500);
+        setNotificationON(true);
       }
     } catch (e) {
       throw console.error(e);
@@ -210,10 +198,10 @@ const EatofyApp = () => {
         body: JSON.stringify({
           'hotel_id': hotel_id,
           'visibility': isEtocoinOn,
-          "credit_limit_amt": parseFloat(credit_limit_amt) || 0,
-          "credit_limit_percent": parseFloat(credit_limit_rate) || 0,
-          "redeem_limit_amt": parseFloat(redeem_limit_amt) || 0,
-          "redeem_limit_percent": parseFloat(redeem_limit_rate) || 0,
+          "credit_limit_amt": parseFloat(credit_limit_amt),
+          "credit_limit_percent": parseFloat(credit_limit_rate),
+          "redeem_limit_amt": parseFloat(redeem_limit_amt),
+          "redeem_limit_percent": parseFloat(redeem_limit_rate),
           "rate": 10
         }),
       });
@@ -223,9 +211,9 @@ const EatofyApp = () => {
         console.log(data);
         setmessage('Eatocoins');
         setTimeout(() => {
-          setNotificationON(true);
-        }, 2000);
-        setNotificationON(false);
+          setNotificationON(false);
+        }, 1500);
+        setNotificationON(true);
       }
     } catch (e) {
       throw console.error(e);
@@ -248,6 +236,7 @@ const EatofyApp = () => {
     }
   }, [hotel_id, search])
 
+  console.log(NotificationON)
 
   return (
     <>
@@ -258,6 +247,24 @@ const EatofyApp = () => {
             <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Settings</h1>
           </div>
           <div ref={parent} className="flex flex-col gap-8">
+            <div ref={parent} className='w-full rounded-md shadow-gray-400 shadow-md py-4 px-4'>
+              <div className='w-full flex justify-between items-center'>
+                <div className='flex gap-6 items-center'>
+                  <Image
+                    src='/bgimg.jpg'
+                    alt='hotel image'
+                    width={80}
+                    height={400}
+                    style={{ height: 80, borderRadius: '50%' }}
+                  />
+                  <div className='text-lg'>Random Hotel Name</div>
+                </div>
+                <div className='flex gap-6'>
+                  <button className='py-2 px-4 bg-red-500 active:bg-red-600 text-white font-bold rounded-md shadow-gray-400 shadow-sm'>View Details</button>
+                  <button className='py-2 px-4 bg-red-500 active:bg-red-600 text-white font-bold rounded-md shadow-gray-400 shadow-sm'>Update</button>
+                </div>
+              </div>
+            </div>
             {/*<div ref={parent} className='w-full rounded-md shadow-gray-400 shadow-md py-4 px-4'>
               <div className='flex justify-between items-center'>
                 <span>Theme</span>

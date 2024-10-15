@@ -114,8 +114,8 @@ const CustomerTable = () => {
     setSearchQuery(e.target.value);
   };
 
-  const filteredCustomers = customerList.filter((customer) =>
-    customer.customer_name.toLowerCase().includes(searchQuery.toLowerCase()) || customer.contact.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCustomers = customerList?.filter((customer) =>
+    customer?.customer_name?.toLowerCase().includes(searchQuery.toLowerCase()) || customer?.contact?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
@@ -184,7 +184,6 @@ const CustomerTable = () => {
                           name="customer_name"
                           value={formData.customer_name}
                           onChange={handleInputChange}
-                          placeholder="eg; John Doe"
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
                         />
@@ -193,12 +192,9 @@ const CustomerTable = () => {
                         <label className="block mb-2 text-black">Contact<span className="text-red-500">*</span></label>
                         <input
                           type="text"
-                          minLength={10}
-                          maxLength={10}
                           name="contact"
                           value={formData.contact}
                           onChange={handleInputChange}
-                          placeholder="eg; 1234567890"
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
                         />
@@ -210,7 +206,6 @@ const CustomerTable = () => {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
-                          placeholder="(Optional)"
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
                         />
@@ -222,7 +217,6 @@ const CustomerTable = () => {
                           name="occassion"
                           value={formData.occassion}
                           onChange={handleInputChange}
-                          placeholder="(Optional)"
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
                         />

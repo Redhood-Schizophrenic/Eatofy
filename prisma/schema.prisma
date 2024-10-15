@@ -17,42 +17,44 @@ model User {
 }
 
 model Hotels {
-  id                   String                 @id @unique @default(uuid())
-  HotelName            String                 @unique
-  Email                String                 @unique
-  HashedPassword       String
-  SaltPassword         String
-  Address              String
-  Speciality           String[]
-  HotelLogo            Bytes?
-  Contacts             String[]
-  Website              String?
-  FSSAICode            String
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @updatedAt
-  AvailableStock       AvailableStock[]
-  Bills                Bills[]
-  ComplianceChecklist  ComplianceChecklist[]
-  Customers            Customers[]
-  Dishes               Dishes[]
-  Expenses             Expenses[]
-  Subscription         Hotel_Subscription[]
-  ItemCategory         ItemCategories[]
-  Items                Items[]
-  MenuCategory         MenuCategory[]
-  Order                Orders[]
-  Invoice              PurchasedInvoice[]
-  Sections             Sections[]
-  Staff                Staffs[]
-  Supplier             Suppliers[]
-  Reservations         TableReservation[]
-  Tables               Tables[]
-  AvailableStockReport AvailableStockReport[]
-  DarkModeSettings     DarkModeSettings[]
-  EatocoinsSettings    EatocoinsSettings[]
-  VatSettings          VatSettings[]
-  GSTSettings          GstSettings[]
-  Notifications        Notifications[]
+  id                     String                   @id @unique @default(uuid())
+  HotelName              String                   @unique
+  Email                  String                   @unique
+  HashedPassword         String
+  SaltPassword           String
+  Address                String
+  Speciality             String[]
+  HotelLogo              Bytes?
+  Contacts               String[]
+  Website                String?
+  FSSAICode              String
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  AvailableStock         AvailableStock[]
+  Bills                  Bills[]
+  ComplianceChecklist    ComplianceChecklist[]
+  Customers              Customers[]
+  Dishes                 Dishes[]
+  Expenses               Expenses[]
+  Subscription           Hotel_Subscription[]
+  ItemCategory           ItemCategories[]
+  Items                  Items[]
+  MenuCategory           MenuCategory[]
+  Order                  Orders[]
+  Invoice                PurchasedInvoice[]
+  Sections               Sections[]
+  Staff                  Staffs[]
+  Supplier               Suppliers[]
+  Reservations           TableReservation[]
+  Tables                 Tables[]
+  AvailableStockReport   AvailableStockReport[]
+  DarkModeSettings       DarkModeSettings[]
+  EatocoinsSettings      EatocoinsSettings[]
+  VatSettings            VatSettings[]
+  GSTSettings            GstSettings[]
+  Notifications          Notifications[]
+  KotPrinterSettings     KotPrinterSettings[]
+  InvoicePrinterSettings InvoicePrinterSettings[]
 }
 
 model Subscriptions {
@@ -469,6 +471,32 @@ model EatocoinsSettings {
   Hotel              Hotels   @relation(fields: [HotelId], references: [id])
 }
 
+model KotPrinterSettings {
+  id           String   @id @unique @default(uuid())
+  Visibility   Boolean  @default(false)
+  NetworkIP    String?
+  Encoding     String?
+  BluetoothMac String?
+  HotelId      String
+  Status       String   @default("Active")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  Hotel        Hotels   @relation(fields: [HotelId], references: [id])
+}
+
+model InvoicePrinterSettings {
+  id           String   @id @unique @default(uuid())
+  Visibility   Boolean  @default(false)
+  NetworkIP    String?
+  Encoding     String?
+  BluetoothMac String?
+  HotelId      String
+  Status       String   @default("Active")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  Hotel        Hotels   @relation(fields: [HotelId], references: [id])
+}
+
 model Notifications {
   id          String   @id @unique @default(uuid())
   HotelId     String
@@ -479,4 +507,6 @@ model Notifications {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   Hotel       Hotels   @relation(fields: [HotelId], references: [id])
+
+  @@unique([HotelId, Description]) // Composite unique constraint
 }

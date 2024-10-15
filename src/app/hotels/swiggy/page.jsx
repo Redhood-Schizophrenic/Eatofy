@@ -25,6 +25,9 @@ export default function Swiggy_Menu() {
 	const [isSettleBill, setisSettleBill] = useState(false);
 	const [disAmt, setdisAmt] = useState('');
 	const [vatAmt, setvatAmt] = useState('');
+	const [Vat, setVat] = useState('');
+	const [Cgst, setCgst] = useState('');
+	const [Sgst, setSgst] = useState('');
 	const [BalanceAmt, setBalanceAmt] = useState(0);
 	const [PaymentMode, setPaymentMode] = useState('Cash');
 	const [PaymentStatus, setPaymentStatus] = useState('Paid');
@@ -279,11 +282,55 @@ export default function Swiggy_Menu() {
 		cgstRate = "9%";
 		sgstRate = "9%";
 	}
-	const cgstRateNum = parseFloat(cgstRate.replace('%', ''));
-	const sgstRateNum = parseFloat(sgstRate.replace('%', ''));
+
+	async function LoadSettings() {
+		console.log(HotelId)
+		try {
+			const res = await fetch(`${ApiHost}/api/hotel/settings/gst/read`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ 'hotel_id': HotelId })
+			});
+
+			const resVat = await fetch(`${ApiHost}/api/hotel/settings/vat/read`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ 'hotel_id': HotelId })
+			});
+
+			if (res.ok) {
+				const data = await res.json();
+				console.log(data);
+				const Gst = data?.output[0]?.GSTPercent;
+				console.log(Gst);
+				const half = Gst / 2;
+				console.log(half)
+				setCgst(half);
+				setSgst(half);
+			}
+
+			if (resVat.ok) {
+				const data = await resVat.json();
+				console.log(data);
+				const Vat = data?.output[0]?.VATPercent;
+				console.log(Vat);
+				setVat(Vat);
+			}
+		} catch (e) {
+			throw console.error(e);
+		}
+	}
+
+	const cgstRateNum = Cgst;
+	const sgstRateNum = Sgst;
 	const cgstAmt = (cgstRateNum / 100) * parseFloat(menutotal);
 	const sgstAmt = (sgstRateNum / 100) * parseFloat(menutotal);
-	const VatAmt = vatAmt === '' ? 0 : (parseFloat(vatAmt.replace('%', '')) / 100) * parseFloat(menutotal);
+	console.log(cgstAmt)
+	console.log(sgstAmt)
+	const VatAmt =
+		Vat === ""
+			? 0
+			: (Vat / 100) * parseFloat(menutotal);
 	console.log(menutotal)
 	const grosstotal = parseFloat(menutotal) + cgstAmt + sgstAmt + VatAmt;
 	console.log("Gross", grosstotal, "Cgst", cgstAmt, "sgst", sgstAmt)
@@ -337,6 +384,7 @@ export default function Swiggy_Menu() {
 
 		if (HotelId) {
 			fetch_bill()
+			LoadSettings()
 		}
 	}, [HotelId, Type]);
 
@@ -617,7 +665,17 @@ export default function Swiggy_Menu() {
 										:
 										isSettleBill ? (
 											<div className="w-full h-auto max-h-[75dvh] overflow-y-scroll overflow-x-hidden bg-black px-4 mb-10 flex flex-col gap-4">
-												<p className={`border-2 border-zinc-500 text-center ${Message === 'Payment Successful' ? 'bg-green-200 border-green-500 text-green-500 p-2' : ''} ${Message === 'Payment Failed' ? 'bg-red-200 border-red-500 text-red-500 p-2' : ''}`}>{Message}</p>
+												<p
+													className={`w-[300px] py-6 fixed top-10 right-10 border-l-3 text-center rounded-lg ${Message === "Payment Successful"
+														? "bg-green-200 border-green-500 text-green-500 p-2 text-lg"
+														: ""
+														} ${Message === "Payment Failed"
+															? "bg-red-200 border-red-500 text-red-500 p-2"
+															: ""
+														}`}
+												>
+													{Message}
+												</p>
 												<div className="font-bold mt-2 text-xl">
 													Payment mode
 												</div>
@@ -797,15 +855,6 @@ export default function Swiggy_Menu() {
 								}
 
 								<div className="fixed bottom-0 w-[35dvw] bg-black flex justify-between items-center gap-3 p-4">
-									{
-										OldCart.length === 0 ? ('') :
-											(
-												<div
-													onClick={() => handleUpdateMenu()}
-													className="w-full p-1.5 bg-red-500 font-semibold text-white text-center rounded-md cursor-pointer"
-												>Update</div>
-											)
-									}
 									<div
 										onClick={() => {
 											if (Cart === 0) {
@@ -813,7 +862,7 @@ export default function Swiggy_Menu() {
 											} else {
 												handleSaveMenu();
 												handleKotPrint();
-												route.push('/hotels/home');
+												// route.push('/hotels/home');
 											}
 										}}
 										className="w-full p-1.5 bg-red-500 font-semibold text-center rounded-md cursor-pointer"

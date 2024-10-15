@@ -4,7 +4,7 @@ import { create_notification } from "../../../../db/crud/notifications/managemen
 import { read_reservations } from "@/db/crud/reservations/read";
 import { read_available_stock } from "../../../../db/crud/inventory/available_stock/read";
 import { read_notifications } from "../../../../db/crud/notifications/management/read";
-import { update_notification_status } from "../../../../db/crud/notifications/management/update";
+// import { update_notification_status } from "../../../../db/crud/notifications/management/update";
 
 const getTodaysDate = () => {
 	const today = new Date();
@@ -57,15 +57,7 @@ export async function notifications(data) {
 					const description = `${stock.Items.ItemName} is at low stock with quantity ${stock.Quantity} ${stock.Unit}.`;
 					const type = "Inventory";
 					const notification = { title, description, type, hotel_id };
-					let flag = false;
-					result.output.forEach((element) => {
-						if (description === element.Description) {
-							flag = true;
-						}
-					});
-					if (!flag) {
-						notifications.push(notification);
-					}
+					notifications.push(notification);
 				}
 
 				if (stock.Status === "Unavailable") {
@@ -74,16 +66,7 @@ export async function notifications(data) {
 					const description = `${stock.Items.ItemName} is empty.`;
 					const type = "Inventory";
 					const notification = { title, description, type };
-					let flag = false;
-					result.output.forEach((element) => {
-						if (description === element.Description) {
-							flag = true;
-						}
-					});
-					if (!flag) {
-						notifications.push(notification);
-					}
-
+					notifications.push(notification);
 				}
 			});
 		}
@@ -102,15 +85,7 @@ export async function notifications(data) {
 					const description = `${reservation.Customer.CustomerName} has booked a reservation for ${reservation.Time} for ${reservation.NoOfPersons} people.`;
 					const type = "Reservation";
 					const notification = { title, description, type, hotel_id };
-					let flag = false;
-					result.output.forEach((element) => {
-						if (description === element.Description) {
-							flag = true;
-						}
-					});
-					if (!flag) {
-						notifications.push(notification);
-					}
+					notifications.push(notification);
 				}
 			});
 		}
@@ -129,24 +104,15 @@ export async function notifications(data) {
 				const description = `Your Subscription is gonna end in ${daysLeft} days.`;
 				const type = "Subscription";
 				const notification = { title, description, type, hotel_id };
-				let flag = false;
-				result.output.forEach((element) => {
-					if (description === element.Description) {
-						flag = true;
-					}
-				});
-				if (!flag) {
-					notifications.push(notification);
-				}
+				notifications.push(notification);
 			}
 		}
 
 		// Notification Added
 		if (notifications.length > 0) {
 
-			notifications.forEach((notification) => {
-
-				create_notification(notification);
+			notifications.forEach(async (notification) => {
+				await create_notification(notification);
 			});
 		}
 

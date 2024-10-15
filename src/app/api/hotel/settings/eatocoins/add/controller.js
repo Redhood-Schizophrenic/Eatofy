@@ -6,7 +6,7 @@ export async function add_eatocoins_settings(data) {
 	try {
 
 		const hotel_id = data['hotel_id'] || null;
-		const visibility = data['visibility'] || true;
+		const visibility = data['visibility'] || false;
 		const credit_limit_amt = data['credit_limit_amt'] || null;
 		const credit_limit_percent = data['credit_limit_percent'] || null;
 		const rate = data['rate'] || 0;
