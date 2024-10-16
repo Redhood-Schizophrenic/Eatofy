@@ -27,30 +27,29 @@ export default function Hotels() {
 	const specialArray = speciality.split(',');
 	const contactsArray = contacts.split(',');
 
-	
-	const handleSubmitProfle = async (e) => {
-		e.preventDefault();
-
-		const formData = new FormData(e.currentTarget);
-		formData.append('logo',file);
-		
-		try {
-			const response = await fetch(`${ApiHost}/api/eatofy/hotels/management/fetch`, {
-				method: 'PUT',
-				body: formData,
-			});
-
-			if (response.ok) {
-				const data = await response.json();
-				setMessage('Profile updated');
-			} else {
-				console.error('Profile Update Failed');
-				setMessage('Profile update failed');
-			}
-		} catch (error) {
-			console.error('An error occurred:', error);
-		}
-	};
+	// const handleSubmitProfle = async (e) => {
+	// 	e.preventDefault();
+	//
+	// 	const formData = new FormData(e.currentTarget);
+	// 	formData.append('logo', file);
+	//
+	// 	try {
+	// 		const response = await fetch(`${ApiHost}/api/eatofy/hotels/management/fetch`, {
+	// 			method: 'PUT',
+	// 			body: formData,
+	// 		});
+	//
+	// 		if (response.ok) {
+	// 			const data = await response.json();
+	// 			setMessage('Profile updated');
+	// 		} else {
+	// 			console.error('Profile Update Failed');
+	// 			setMessage('Profile update failed');
+	// 		}
+	// 	} catch (error) {
+	// 		console.error('An error occurred:', error);
+	// 	}
+	// };
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();

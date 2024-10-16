@@ -15,9 +15,18 @@ const EatofyApp = () => {
   const [hotel_id, sethotel_id] = useState('');
   const [isOpen, setisOpen] = useState(false);
   const [message, setmessage] = useState('');
+  const [HotelData, setHotelData] = useState([]);
   const search = useRef();
   const darkMode = useRef();
   const [parent, enableAnimations] = useAutoAnimate()
+  //HotelINFO
+  const [HotelName, setHotelName] = useState('');
+  const [HotelContact, setHotelContact] = useState([]);
+  const [HotelEmail, setHotelEmail] = useState('');
+  const [HotelAddress, setHotelAddress] = useState('');
+  const [HotelFssaiCode, setHotelFssaiCode] = useState('');
+  const [HotelSpeciality, setHotelSpeciality] = useState([]);
+  const [HotelWebsite, setHotelWebsite] = useState('');
   //booleans for on and off
   const [isDarkTheme, setisDarkTheme] = useState(false);
   const [NotificationON, setNotificationON] = useState(false);
@@ -38,17 +47,30 @@ const EatofyApp = () => {
   const [isVatOn, setisVatOn] = useState(false);
   const [VatInput, setVatInput] = useState('');
 
-
-  function handleDarkMode() {
-    setisDarkTheme(!isDarkTheme);
-    handledark();
-  }
-
-  function handledark() {
-  }
-
   async function CheckAndLoadSettings() {
     try {
+
+      //HotelInfo
+      const hotel = await fetch(`${ApiHost}/api/eatofy/hotels/management/fetch/id`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          'hotel_id': hotel_id,
+        }),
+      });
+
+      if (hotel.ok) {
+        const hotelData = await hotel.json();
+        console.log(hotelData);
+        setHotelData(HotelData);
+        setHotelName(hotelData?.output[0]?.HotelName);
+        setHotelEmail(hotelData?.output[0]?.Email);
+        setHotelContact(hotelData?.output[0]?.Contacts);
+        setHotelAddress(hotelData?.output[0]?.Address);
+        setHotelFssaiCode(hotelData?.output[0]?.FSSAICode);
+        setHotelSpeciality(hotelData?.output[0]?.Speciality);
+        setHotelWebsite(hotelData?.output[0]?.Website);
+      }
 
       // Vat
       const vat = await fetch(`${ApiHost}/api/hotel/settings/vat/read`, {
@@ -111,31 +133,6 @@ const EatofyApp = () => {
       throw console.error(e);
     }
   }
-
-  // async function handleSettingsDarkMode() {
-  //   try {
-  //     const result = await fetch(`${ApiHost}/api/hotel/settings/dark_mode/add`, {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({
-  //         'hotel_id': hotel_id,
-  //         'mode': isDarkTheme
-  //       }),
-  //     });
-  //
-  //     if (result.ok) {
-  //       const data = await result.json();
-  //       console.log(data);
-  //       setmessage('Dark mode');
-  //       setTimeout(() => {
-  //         setNotificationON(false);
-  //       }, 1500);
-  //       setNotificationON(true);
-  //     }
-  //   } catch (e) {
-  //     throw console.error(e);
-  //   }
-  // }
 
   async function handleSettingsVat() {
     try {
@@ -236,7 +233,16 @@ const EatofyApp = () => {
     }
   }, [hotel_id, search])
 
-  console.log(NotificationON)
+  console.log(
+    HotelName,
+    HotelEmail,
+    HotelFssaiCode,
+    HotelAddress,
+    HotelContact,
+    HotelSpeciality,
+    HotelWebsite,
+    HotelData.output[0]
+  )
 
   return (
     <>
@@ -251,13 +257,13 @@ const EatofyApp = () => {
               <div className='w-full flex justify-between items-center'>
                 <div className='flex gap-6 items-center'>
                   <Image
-                    src='/bgimg.jpg'
+                    src={`data:image/*;base64,${HotelData?.output[0].HotelLogo}`}
                     alt='hotel image'
                     width={80}
                     height={400}
                     style={{ height: 80, borderRadius: '50%' }}
                   />
-                  <div className='text-lg'>Random Hotel Name</div>
+                  <div className='text-lg'>{HotelName}</div>
                 </div>
                 <div className='flex gap-6'>
                   <button className='py-2 px-4 bg-red-500 active:bg-red-600 text-white font-bold rounded-md shadow-gray-400 shadow-sm'>View Details</button>
@@ -265,22 +271,6 @@ const EatofyApp = () => {
                 </div>
               </div>
             </div>
-            {/*<div ref={parent} className='w-full rounded-md shadow-gray-400 shadow-md py-4 px-4'>
-              <div className='flex justify-between items-center'>
-                <span>Theme</span>
-                <div className='inline-flex items-center gap-8'>
-                  <button onClick={handleSettingsDarkMode} className='py-2 px-4 bg-red-500 active:bg-red-600 text-white font-bold rounded-md shadow-gray-400 shadow-sm'>Save</button>
-                  <Fragment>
-                    <Switch
-                      checked={isDarkTheme}
-                      onHandleColor='#fff'
-                      onColor='#ef4444'
-                      onChange={() => { setisDarkTheme(!isDarkTheme); localStorage.setItem('darkmode', isDarkTheme); }}
-                    />
-                  </Fragment>
-                </div>
-              </div>
-            </div>*/}
             <div ref={parent} className='w-full rounded-md shadow-gray-400 shadow-md py-4 px-4'>
               <div className='flex justify-between items-center'>
                 <span className='text-xl font-bold'>VAT Settings</span>

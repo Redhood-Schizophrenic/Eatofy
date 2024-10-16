@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react';
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import { FaXmark } from "react-icons/fa6";
+import { IoIosArrowBack } from "react-icons/io";
 import { MdOutlineEdit } from "react-icons/md";
+import { useRouter } from 'next/navigation';
 
 export default function Available_stock() {
   const [isLoading, setLoading] = useState(false);
@@ -17,6 +19,7 @@ export default function Available_stock() {
   const [unit, setunit] = useState('');
   const [itemId, setitemId] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     fetchItems();
@@ -154,7 +157,12 @@ export default function Available_stock() {
     <>
       <HotelSideNav />
       <div className="ml-[70px]">
-        <h2 className="p-4 text-center w-full bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Available Stock</h2>
+        <div>
+          <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+            router.back()
+          }} />
+          <h2 className="p-4 text-center w-full bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Available Stock</h2>
+        </div>
         <div className="flex items-center justify-between p-4">
           <input
             type="text"
