@@ -1,6 +1,7 @@
 "use client"
 
 import HotelSideNav from '@/components/SideNavHotel';
+import Modal from '@/components/Modal';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import Switch from 'react-switch';
@@ -9,15 +10,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const EatofyApp = () => {
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [searchBar, setsearchBar] = useState('');
-  const [ThemeMode, setThemeMode] = useState('Light');
   const [hotel_id, sethotel_id] = useState('');
-  const [isOpen, setisOpen] = useState(false);
   const [message, setmessage] = useState('');
-  const [HotelData, setHotelData] = useState([]);
   const search = useRef();
   const darkMode = useRef();
+  const [modalOpen, setmodalOpen] = useState(false);
   const [parent, enableAnimations] = useAutoAnimate()
   //HotelINFO
   const [HotelName, setHotelName] = useState('');
@@ -27,8 +24,8 @@ const EatofyApp = () => {
   const [HotelFssaiCode, setHotelFssaiCode] = useState('');
   const [HotelSpeciality, setHotelSpeciality] = useState([]);
   const [HotelWebsite, setHotelWebsite] = useState('');
+  const [HotelLogo, setHotelLogo] = useState();
   //booleans for on and off
-  const [isDarkTheme, setisDarkTheme] = useState(false);
   const [NotificationON, setNotificationON] = useState(false);
   //booleans for dropdown
   const [isVat, setisVat] = useState(false);
@@ -62,7 +59,7 @@ const EatofyApp = () => {
       if (hotel.ok) {
         const hotelData = await hotel.json();
         console.log(hotelData);
-        setHotelData(HotelData);
+        setHotelLogo(hotelData?.output[0]?.HotelLogo);
         setHotelName(hotelData?.output[0]?.HotelName);
         setHotelEmail(hotelData?.output[0]?.Email);
         setHotelContact(hotelData?.output[0]?.Contacts);
@@ -217,6 +214,10 @@ const EatofyApp = () => {
     }
   }
 
+  function handleModal() {
+    setmodalOpen(!modalOpen);
+  }
+
   useEffect(() => {
     sethotel_id(localStorage.getItem('hotel_id'));
     if (hotel_id) {
@@ -241,7 +242,6 @@ const EatofyApp = () => {
     HotelContact,
     HotelSpeciality,
     HotelWebsite,
-    HotelData.output[0]
   )
 
   return (
@@ -257,7 +257,7 @@ const EatofyApp = () => {
               <div className='w-full flex justify-between items-center'>
                 <div className='flex gap-6 items-center'>
                   <Image
-                    src={`data:image/*;base64,${HotelData?.output[0].HotelLogo}`}
+                    src={`data:image/*;base64,${HotelLogo}`}
                     alt='hotel image'
                     width={80}
                     height={400}
@@ -266,10 +266,21 @@ const EatofyApp = () => {
                   <div className='text-lg'>{HotelName}</div>
                 </div>
                 <div className='flex gap-6'>
-                  <button className='py-2 px-4 bg-red-500 active:bg-red-600 text-white font-bold rounded-md shadow-gray-400 shadow-sm'>View Details</button>
-                  <button className='py-2 px-4 bg-red-500 active:bg-red-600 text-white font-bold rounded-md shadow-gray-400 shadow-sm'>Update</button>
+                  <button onClick={handleModal} className='py-2 px-4 bg-red-500 active:bg-red-600 text-white font-bold rounded-md shadow-gray-400 shadow-sm'>View Details</button>
                 </div>
               </div>
+              <Modal
+                isOpen={modalOpen}
+                handleModal={handleModal}
+                HotelName={HotelName}
+                HotelEmail={HotelEmail}
+                HotelWebsite={HotelWebsite}
+                HotelLogo={HotelLogo}
+                HotelSpeciality={HotelSpeciality}
+                HotelFssaiCode={HotelFssaiCode}
+                HotelContact={HotelContact}
+                HotelAddress={HotelAddress}
+              />
             </div>
             <div ref={parent} className='w-full rounded-md shadow-gray-400 shadow-md py-4 px-4'>
               <div className='flex justify-between items-center'>
