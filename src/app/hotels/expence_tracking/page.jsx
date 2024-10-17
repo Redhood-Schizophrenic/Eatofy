@@ -5,6 +5,8 @@ import { ApiHost } from "@/constants/url_consts";
 import HotelSideNav from "@/components/SideNavHotel";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 import { MdOutlineEdit } from "react-icons/md";
+import { useRouter } from "next/navigation";
+import { IoIosArrowBack } from "react-icons/io";
 
 const ExpenseTracking = () => {
   const [showAddExpenseForm, setShowAddExpenseForm] = useState(false);
@@ -12,6 +14,7 @@ const ExpenseTracking = () => {
   const [expenses, setExpenses] = useState([]);
   const [expenseId, setExpenseId] = useState([]);
   const [selectedExpense, setSelectedExpense] = useState(null);
+  const router = useRouter();
   const [expenseDetails, setExpenseDetails] = useState({
     bearer: "",
     date: "",
@@ -198,9 +201,12 @@ const ExpenseTracking = () => {
       <HotelSideNav />
       <div className="flex-1 ml-[70px] p-8">
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold">
-            Expenses <span className="text-red-500">Management</span>
-          </h2>
+          <div className="flex justify-start items-center gap-4 mb-4">
+            <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+              router.back()
+            }} />
+            <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Expence Tracking</h2>
+          </div>
           <button
             className="bg-red-500 text-white w-30 h-10 px-4 py-2 rounded font-semibold"
             onClick={() => {

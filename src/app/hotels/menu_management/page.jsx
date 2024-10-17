@@ -3,12 +3,12 @@
 import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
 import { Button } from '@react-email/components';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useRef, useState } from 'react';
 import { FaPlus } from 'react-icons/fa';
 import { FaTrashCan, FaXmark } from 'react-icons/fa6';
 import { FiEdit } from 'react-icons/fi';
-import { IoIosAddCircleOutline } from 'react-icons/io';
+import { IoIosArrowBack } from 'react-icons/io';
 import { MdOutlineModeEdit } from 'react-icons/md';
 
 const MenuManagement = () => {
@@ -23,6 +23,7 @@ const MenuManagement = () => {
   const [SuccessMessage, setSuccessMessage] = useState('');
   const [ErrorMessage, setErrorMessage] = useState('');
   const searchBar = useRef();
+  const router = useRouter();
 
   // Search Dishes
   const handleSearch = (element) => {
@@ -547,9 +548,12 @@ const MenuManagement = () => {
       <div className="ml-[70px] flex-1 p-4">
         <div className='flex m-6 justify-center gap-2 flex-col'>
           <div className='flex justify-between'>
-            <h1 className="text-3xl  font-bold mb-4">
-              Menu <span className="text-red-500">Management</span>
-            </h1>
+            <div className="flex justify-start items-center gap-4 mb-4">
+              <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+                router.back()
+              }} />
+              <h2 className="inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Order <span className='bg-red-500'>History</span></h2>
+            </div>
             <div>
               <input
                 ref={searchBar}

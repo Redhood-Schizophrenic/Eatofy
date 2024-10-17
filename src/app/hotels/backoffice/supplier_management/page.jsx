@@ -2,9 +2,11 @@
 
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { FaXmark } from "react-icons/fa6";
+import { IoIosArrowBack } from "react-icons/io";
 
 export default function Supplier_management() {
 
@@ -18,6 +20,7 @@ export default function Supplier_management() {
   const [showaddmenu, setShowaddmenu] = useState(false);
   const [hotel_id, sethotel_id] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     sethotel_id(localStorage.getItem('hotel_id'));
@@ -261,8 +264,11 @@ export default function Supplier_management() {
           <div className="hidden"></div>
       }
       <div className="ml-[70px] px-4">
-        <div className="flex justify-center items-center p-4">
-          <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Supplier Management</h2>
+        <div className="flex justify-start items-center gap-4 mb-4">
+          <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+            router.back()
+          }} />
+          <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Order History</h2>
         </div>
         <div className="flex justify-between items-center">
           <button onClick={handleAddMenu} className="bg-red-500 font-semibold inline-flex justify-center items-center gap-4 p-2 rounded-lg text-white">

@@ -1,7 +1,9 @@
 "use client";
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import { IoIosArrowBack } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineDeleteOutline, MdOutlineEdit } from "react-icons/md";
 
@@ -27,7 +29,7 @@ const StaffTable = () => {
     hotel_id: hotel_id
   });
   const [searchQuery, setSearchQuery] = useState('');
-
+  const router = useRouter();
 
   // Delete
   const handleDelete = async () => {
@@ -291,7 +293,12 @@ const StaffTable = () => {
     <>
       <HotelSideNav />
       <div className={`ml-[70px] flex-1 h-screen p-4 bg-white ${isFormVisible ? "" : ""}`}>
-        <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Staff</h2>
+        <div className="flex justify-start items-center gap-4 mb-4">
+          <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+            router.back()
+          }} />
+          <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Order History</h2>
+        </div>
         <div className="flex justify-between space-x-4 mb-4">
           <div className="">
             <input

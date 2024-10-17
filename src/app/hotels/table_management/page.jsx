@@ -1,9 +1,10 @@
 "use client";
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { FaTrash } from "react-icons/fa";
-import { IoIosAddCircleOutline } from "react-icons/io";
+import { IoIosAddCircleOutline, IoIosArrowBack } from "react-icons/io";
 
 
 const Widget = () => {
@@ -21,7 +22,7 @@ const Widget = () => {
   const [message, setMessage] = useState("");
   const [isExist, setIsExist] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-
+  const router = useRouter();
 
   useEffect(() => {
     sethotelId(localStorage.getItem("hotel_id"));
@@ -422,7 +423,12 @@ const Widget = () => {
           </div>
         )}
 
-        <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Table Management</h2>
+        <div className="flex justify-start items-center gap-4 mb-4">
+          <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+            router.back()
+          }} />
+          <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Order History</h2>
+        </div>
         <div className="flex gap-4 mt-10 justify-between flex-wrap">
           <div>
             <input

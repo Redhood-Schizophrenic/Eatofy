@@ -21,7 +21,7 @@ const MenuManagement = () => {
   const [dishtype, setDishType] = useState('');
   const [price, setprice] = useState(0);
   const [code, setcode] = useState('');
-  const [hotel_id, sethotel_id] = useState(''); 
+  const [hotel_id, sethotel_id] = useState('');
 
   useEffect(() => {
     sethotel_id(sessionStorage.getItem('hotel_id'));

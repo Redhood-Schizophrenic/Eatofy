@@ -8,6 +8,7 @@ import Switch from 'react-switch';
 import { ApiHost } from '@/constants/url_consts';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const EatofyApp = () => {
   const [hotel_id, sethotel_id] = useState('');
@@ -16,6 +17,7 @@ const EatofyApp = () => {
   const darkMode = useRef();
   const [modalOpen, setmodalOpen] = useState(false);
   const [parent, enableAnimations] = useAutoAnimate()
+  const router = useRouter();
   //HotelINFO
   const [HotelName, setHotelName] = useState('');
   const [HotelContact, setHotelContact] = useState([]);
@@ -151,6 +153,8 @@ const EatofyApp = () => {
           setNotificationON(false);
         }, 1500);
         setNotificationON(true);
+        router.refresh();
+        setisVat(!isVat)
       }
     } catch (e) {
       throw console.error(e);
@@ -177,6 +181,8 @@ const EatofyApp = () => {
           setNotificationON(false);
         }, 1500);
         setNotificationON(true);
+        router.refresh();
+        setisGst(!isGst);
       }
     } catch (e) {
       throw console.error(e);
@@ -208,6 +214,8 @@ const EatofyApp = () => {
           setNotificationON(false);
         }, 1500);
         setNotificationON(true);
+        router.refresh();
+        setisEtoCoin(!isEtoCoin);
       }
     } catch (e) {
       throw console.error(e);
@@ -263,7 +271,7 @@ const EatofyApp = () => {
                     height={400}
                     style={{ height: 80, borderRadius: '50%' }}
                   />
-                  <div className='text-lg'>{HotelName}</div>
+                  <div className='text-2xl font-bold'>{HotelName}</div>
                 </div>
                 <div className='flex gap-6'>
                   <button onClick={handleModal} className='py-2 px-4 bg-red-500 active:bg-red-600 text-white font-bold rounded-md shadow-gray-400 shadow-sm'>View Details</button>

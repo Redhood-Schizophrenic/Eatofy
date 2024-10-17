@@ -6,7 +6,8 @@ import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import { MdOutlineEdit } from 'react-icons/md';
 import Link from 'next/link';
-import { IoIosAddCircleOutline } from 'react-icons/io';
+import { IoIosAddCircleOutline, IoIosArrowBack } from 'react-icons/io';
+import { useRouter } from 'next/navigation';
 
 export default function Purchase_management() {
 
@@ -32,6 +33,7 @@ export default function Purchase_management() {
   const [newStockItem, setNewStockItem] = useState({ item_id: '', quantity: '0', unit: '', per_price: '0', total_price: '0' });
   const [invoice, setInvoice] = useState({});
   const [Stock, setStock] = useState([]);
+  const router = useRouter();
 
   // Array of Stocks
   const addStockDetail = () => {
@@ -254,6 +256,9 @@ export default function Purchase_management() {
       {
         <div className="ml-[70px]">
           <div className="flex justify-between items-center">
+            <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+              router.back()
+            }} />
             <h2 className="p-4 bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Purchase Management</h2>
             <button onClick={() => { setShowTableForm(!showtableform) }} className="text-xl bg-red-500 text-white px-4 py-2 rounded-lg m-4 text-right">
               Add Purchase

@@ -1,7 +1,9 @@
 "use client";
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
+import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import { IoIosArrowBack } from "react-icons/io";
 import { MdClose } from "react-icons/md";
 
 const StaffTable = () => {
@@ -18,6 +20,7 @@ const StaffTable = () => {
   const [isFailed, setisFailed] = useState(false);
   const today = new Date();
   const [dateFilter, setDateFilter] = useState(today.toISOString().split('T')[0]);
+  const router = useRouter();
 
   const fetch_attendance = async () => {
     try {
@@ -115,7 +118,12 @@ const StaffTable = () => {
     <>
       <HotelSideNav />
       <div className={`ml-[70px] flex-1 h-screen p-4 bg-white`}>
-        <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-2xl uppercase font-bold pb-6">Staff Attendance</h2>
+        <div className="flex justify-start items-center gap-4 mb-4">
+          <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+            router.back()
+          }} />
+          <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Staff Attendance</h2>
+        </div>
 
         {
           isAttended ? (

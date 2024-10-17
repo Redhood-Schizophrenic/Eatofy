@@ -2,7 +2,6 @@
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import { useRouter } from "next/navigation";
-import { Router } from "next/router";
 import React, { useState, useEffect } from "react";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { IoIosArrowBack } from "react-icons/io";
@@ -16,7 +15,7 @@ const BillTable = () => {
   const [billInfo, setBillInfo] = useState({});
   const [ordersInfo, setOrdersInfo] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  let hotel_id
+  const [hotel_id, sethotel_id] = useState('');
   const router = useRouter();
 
   // Settle Bill
@@ -220,15 +219,6 @@ const BillTable = () => {
     }
   }
 
-
-  useEffect(() => {
-    hotel_id = localStorage.getItem('hotel_id');
-    console.log("Hotel Id", hotel_id);
-    if (hotel_id) {
-      fetchBillList();
-    }
-  }, [hotel_id]);
-
   // Bill Delete
   const handleBillDelete = async (bill_id) => {
     try {
@@ -242,22 +232,13 @@ const BillTable = () => {
 
       if (response.ok) {
         const result = await response.json();
-        if (result.returncode === 200) {
-          fetchBillList();
-        } else {
-          alert(`${result.message}`);
-        }
+        fetchBillList();
       } else {
         alert("Failed to fetch bill list");
       }
     } catch (error) {
       alert(`Error: ${error}`);
     }
-  };
-
-  // Search Bar
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
   };
 
   const filteredOrders = billList.filter((bill) =>
@@ -272,6 +253,17 @@ const BillTable = () => {
     bill.Status.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  useEffect(() => {
+    sethotel_id(localStorage.getItem('hotel_id'));
+    if (hotel_id) {
+      fetchBillList();
+    }
+  }, [hotel_id]);
+
+  // Search Bar
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
 
   return (
     <>

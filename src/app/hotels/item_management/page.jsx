@@ -2,8 +2,10 @@
 
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaXmark } from "react-icons/fa6";
+import { IoIosArrowBack } from "react-icons/io";
 
 export default function Item_management() {
 
@@ -17,6 +19,7 @@ export default function Item_management() {
   const [description, setdescription] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [hotel_id, sethotel_id] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     sethotel_id(localStorage.getItem('hotel_id'));
@@ -156,7 +159,12 @@ export default function Item_management() {
       <HotelSideNav />
       {
         <div className="ml-[70px]">
-          <h2 className="pt-4 w-full text-center bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Item Management</h2>
+          <div className="flex justify-start items-center gap-4 mb-4">
+            <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+              router.back()
+            }} />
+            <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Item Management</h2>
+          </div>
           <div className="flex items-center justify-between p-4">
             <div className="">
               <input
