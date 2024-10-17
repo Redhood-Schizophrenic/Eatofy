@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { IoIosArrowBack } from "react-icons/io";
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import React, { useEffect, useState } from "react";
@@ -8,6 +10,8 @@ import { Line } from "react-chartjs-2";
 import { FaEye, FaXmark } from "react-icons/fa6";
 
 export default function Financial_Report() {
+
+  const router = useRouter();
   // For A Week before
   const today = new Date();
   const weekbefore = new Date(today);
@@ -259,9 +263,14 @@ export default function Financial_Report() {
       <div className="ml-[70px] bg-zinc-200 flex h-auto">
         <div className="flex-1 p-4">
           <div className="flex justify-between items-center mb-4">
-            <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold pb-6">
-              Financial Reports
-            </h1>
+            <div className="flex gap-4 items-center pb-6">
+              <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+                router.back()
+              }} />
+              <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold ">
+                Financial Reports
+              </h1>
+            </div>
             <div className="flex gap-4">
               <div className='flex flex-col justify-center text-sm font-semibold text-zinc-700 items-end'>
                 <select value={selectedRange} onChange={(e) => { e.preventDefault(); handleRangeChange(e.target.value); }} className='w-[200px] rounded-lg'>

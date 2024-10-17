@@ -427,7 +427,7 @@ const Widget = () => {
           <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
             router.back()
           }} />
-          <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Order History</h2>
+          <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Table Management</h2>
         </div>
         <div className="flex gap-4 mt-10 justify-between flex-wrap">
           <div>

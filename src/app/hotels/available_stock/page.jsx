@@ -157,8 +157,8 @@ export default function Available_stock() {
     <>
       <HotelSideNav />
       <div className="ml-[70px]">
-        <div>
-          <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+        <div className='pt-4 pl-4'>
+          <IoIosArrowBack size={50} color="red" className="cursor-pointer " onClick={() => {
             router.back()
           }} />
           <h2 className="p-4 text-center w-full bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Available Stock</h2>

@@ -204,7 +204,6 @@ export default function Subscription() {
 
   useEffect(() => {
     fetchSubscription();
-    filterEndDate();
   }, []);
 
   return (

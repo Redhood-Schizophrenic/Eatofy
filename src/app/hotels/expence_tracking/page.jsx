@@ -205,7 +205,7 @@ const ExpenseTracking = () => {
             <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
               router.back()
             }} />
-            <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Expence Tracking</h2>
+            <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Expense Tracking</h2>
           </div>
           <button
             className="bg-red-500 text-white w-30 h-10 px-4 py-2 rounded font-semibold"

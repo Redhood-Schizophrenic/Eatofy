@@ -1,8 +1,9 @@
 "use client";
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
-import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import { MdOutlineDeleteOutline, MdOutlineEdit } from "react-icons/md";
@@ -10,6 +11,7 @@ import { MdOutlineDeleteOutline, MdOutlineEdit } from "react-icons/md";
 
 const StaffTable = () => {
 
+  const router = useRouter();
   const [hotel_id, sethotel_id] = useState('');
   const [staffList, setStaffList] = useState([]);
   const [isEditFormVisible, setEditFormVisible] = useState(false);
@@ -24,12 +26,16 @@ const StaffTable = () => {
     department_name: "",
     designation: "",
     role: "",
-    salary: "",
-    incentives: "",
+    salary: "0",
+    incentives: "0",
     hotel_id: hotel_id
   });
   const [searchQuery, setSearchQuery] = useState('');
-  const router = useRouter();
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  };
 
   // Delete
   const handleDelete = async () => {
@@ -293,12 +299,14 @@ const StaffTable = () => {
     <>
       <HotelSideNav />
       <div className={`ml-[70px] flex-1 h-screen p-4 bg-white ${isFormVisible ? "" : ""}`}>
-        <div className="flex justify-start items-center gap-4 mb-4">
+        <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 text-transparent bg-clip-text text-3xl uppercase font-bold mb-4 flex items-center gap-4">
           <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
             router.back()
           }} />
-          <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Order History</h2>
-        </div>
+          <label>
+            Staff
+          </label>
+        </h2>
         <div className="flex justify-between space-x-4 mb-4">
           <div className="">
             <input
@@ -387,6 +395,7 @@ const StaffTable = () => {
                             type="text"
                             name="first_name"
                             value={formData.first_name}
+                            placeholder="Enter First Name"
                             onChange={handleInputChange}
                             className="border rounded px-4 py-2 text-black border-red-500 w-full"
                             required
@@ -397,6 +406,7 @@ const StaffTable = () => {
                           <input
                             type="text"
                             name="last_name"
+                            placeholder="Enter Last Name"
                             value={formData.last_name}
                             onChange={handleInputChange}
                             className="border rounded px-4 py-2 text-black border-red-500 w-full"
@@ -409,6 +419,7 @@ const StaffTable = () => {
                             type="text"
                             name="address"
                             value={formData.address}
+                            placeholder="Enter Address"
                             onChange={handleInputChange}
                             className="border rounded px-4 py-2 text-black border-red-500 w-full"
                             required
@@ -421,6 +432,9 @@ const StaffTable = () => {
                             name="contact"
                             value={formData.contact}
                             onChange={handleInputChange}
+                            placeholder="eg; 1234567890"
+                            minLength={10}
+                            maxLength={10}
                             className="border rounded px-4 py-2 text-black border-red-500 w-full"
                             required
                           />
@@ -432,20 +446,35 @@ const StaffTable = () => {
                             name="email"
                             value={formData.email}
                             onChange={handleInputChange}
+                            placeholder="Enter Email Address"
                             className="border rounded px-4 py-2 text-black border-red-500 w-full"
                             required
                           />
                         </div>
                         <div className="mb-4">
                           <label className="block mb-2 text-black">Password</label>
-                          <input
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleInputChange}
-                            className="border rounded px-4 py-2 text-black border-red-500 w-full"
-                            required
-                          />
+                          <div className="flex gap-2 border rounded px-4  border-red-500">
+                            <input
+                              name="password"
+                              type={passwordVisible ? 'text' : 'password'}
+                              value={formData.password}
+                              onChange={handleInputChange}
+                              placeholder="Enter Strong Password"
+                              className="text-black w-full border-none"
+                              required
+                            />
+                            <button
+                              type="button"
+                              className="flex items-center text-zinc-500"
+                              onClick={togglePasswordVisibility}
+                            >
+                              {passwordVisible ? (
+                                <FaEye size={20} />
+                              ) : (
+                                <FaEyeSlash size={20} />
+                              )}
+                            </button>
+                          </div>
                         </div>
                       </div>
                       <div className="w-1/2">
@@ -456,6 +485,7 @@ const StaffTable = () => {
                             name="department_name"
                             value={formData.department_name}
                             onChange={handleInputChange}
+                            placeholder="eg; Staff"
                             className="border rounded px-4 py-2 text-black border-red-500 w-full"
                             required
                           />
@@ -467,20 +497,25 @@ const StaffTable = () => {
                             name="designation"
                             value={formData.designation}
                             onChange={handleInputChange}
+                            placeholder="eg; Waiter"
                             className="border rounded px-4 py-2 text-black border-red-500 w-full"
                             required
                           />
                         </div>
                         <div className="mb-4">
                           <label className="block mb-2 text-black">Role</label>
-                          <input
-                            type="text"
+                          <select
                             name="role"
                             value={formData.role}
                             onChange={handleInputChange}
                             className="border rounded px-4 py-2 text-black border-red-500 w-full"
                             required
-                          />
+                          >
+                            <option value="">--SELECT--</option>
+                            <option value="Owner">Owner</option>
+                            <option value="Waiter">Waiter</option>
+                            <option value="Backoffice">Backoffice</option>
+                          </select>
                         </div>
                         <div className="mb-4">
                           <label className="block mb-2 text-black">Salary</label>
@@ -489,6 +524,7 @@ const StaffTable = () => {
                             name="salary"
                             value={formData.salary}
                             onChange={handleInputChange}
+                            placeholder="Enter Salary"
                             className="border rounded px-4 py-2 text-black border-red-500 w-full"
                             required
                           />
@@ -500,6 +536,7 @@ const StaffTable = () => {
                             name="incentives"
                             value={formData.incentives}
                             onChange={handleInputChange}
+                            placeholder="Enter Incentives"
                             className="border rounded px-4 py-2 text-black border-red-500 w-full"
                             required
                           />
@@ -545,6 +582,7 @@ const StaffTable = () => {
                           type="text"
                           name="first_name"
                           value={formData.first_name}
+                          placeholder="Enter First Name"
                           onChange={handleInputChange}
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
@@ -555,6 +593,7 @@ const StaffTable = () => {
                         <input
                           type="text"
                           name="last_name"
+                          placeholder="Enter Last Name"
                           value={formData.last_name}
                           onChange={handleInputChange}
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
@@ -567,6 +606,7 @@ const StaffTable = () => {
                           type="text"
                           name="address"
                           value={formData.address}
+                          placeholder="Enter Address"
                           onChange={handleInputChange}
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
@@ -579,6 +619,9 @@ const StaffTable = () => {
                           name="contact"
                           value={formData.contact}
                           onChange={handleInputChange}
+                          placeholder="eg; 1234567890"
+                          minLength={10}
+                          maxLength={10}
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
                         />
@@ -590,20 +633,35 @@ const StaffTable = () => {
                           name="email"
                           value={formData.email}
                           onChange={handleInputChange}
+                          placeholder="Enter Email Address"
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
                         />
                       </div>
                       <div className="mb-4">
                         <label className="block mb-2 text-black">Password</label>
-                        <input
-                          type="password"
-                          name="password"
-                          value={formData.password}
-                          onChange={handleInputChange}
-                          className="border rounded px-4 py-2 text-black border-red-500 w-full"
-                          required
-                        />
+                        <div className="flex gap-2 border rounded px-4  border-red-500">
+                          <input
+                            name="password"
+                            type={passwordVisible ? 'text' : 'password'}
+                            value={formData.password}
+                            onChange={handleInputChange}
+                            placeholder="Enter Strong Password"
+                            className="text-black w-full border-none"
+                            required
+                          />
+                          <button
+                            type="button"
+                            className="flex items-center text-zinc-500"
+                            onClick={togglePasswordVisibility}
+                          >
+                            {passwordVisible ? (
+                              <FaEye size={20} />
+                            ) : (
+                              <FaEyeSlash size={20} />
+                            )}
+                          </button>
+                        </div>
                       </div>
                     </div>
                     <div className="w-1/2">
@@ -614,6 +672,7 @@ const StaffTable = () => {
                           name="department_name"
                           value={formData.department_name}
                           onChange={handleInputChange}
+                          placeholder="eg; Staff"
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
                         />
@@ -625,20 +684,24 @@ const StaffTable = () => {
                           name="designation"
                           value={formData.designation}
                           onChange={handleInputChange}
+                          placeholder="eg; Waiter"
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
                         />
                       </div>
                       <div className="mb-4">
                         <label className="block mb-2 text-black">Role</label>
-                        <input
-                          type="text"
+                        <select
                           name="role"
                           value={formData.role}
                           onChange={handleInputChange}
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
-                        />
+                        >
+                          <option value="Owner">Owner</option>
+                          <option value="Waiter">Waiter</option>
+                          <option value="Backoffice">Backoffice</option>
+                        </select>
                       </div>
                       <div className="mb-4">
                         <label className="block mb-2 text-black">Salary</label>
@@ -647,6 +710,7 @@ const StaffTable = () => {
                           name="salary"
                           value={formData.salary}
                           onChange={handleInputChange}
+                          placeholder="Enter Salary"
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
                         />
@@ -658,6 +722,7 @@ const StaffTable = () => {
                           name="incentives"
                           value={formData.incentives}
                           onChange={handleInputChange}
+                          placeholder="Enter Incentives"
                           className="border rounded px-4 py-2 text-black border-red-500 w-full"
                           required
                         />

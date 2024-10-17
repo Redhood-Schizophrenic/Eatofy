@@ -548,11 +548,15 @@ const MenuManagement = () => {
       <div className="ml-[70px] flex-1 p-4">
         <div className='flex m-6 justify-center gap-2 flex-col'>
           <div className='flex justify-between'>
-            <div className="flex justify-start items-center gap-4 mb-4">
-              <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
-                router.back()
-              }} />
-              <h2 className="inline-block text-transparent bg-clip-text text-3xl uppercase font-bold">Order <span className='bg-red-500'>History</span></h2>
+            <div className="flex justify-start items-center gap-4 mb-2">
+              <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 text-transparent bg-clip-text text-3xl uppercase font-bold flex items-center gap-4">
+                <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+                  router.back()
+                }} />
+                <label>
+                  Menu Management
+                </label>
+              </h2>
             </div>
             <div>
               <input

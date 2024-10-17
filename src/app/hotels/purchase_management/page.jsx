@@ -513,12 +513,17 @@ export default function Purchase_management() {
                             <div>
 
                               <div className="mb-4">
-                                <label
-                                  className="block text-gray-700 text-sm font-bold mb-2"
-                                  htmlFor="Item"
-                                >
-                                  Item
-                                </label>
+                                <div className='flex items-center gap-4 mb-2'>
+                                  <label
+                                    className="block text-gray-700 text-sm font-bold"
+                                    htmlFor="Item"
+                                  >
+                                    Item
+                                  </label>
+                                  <Link href={`/hotels/item_management`}>
+                                    <IoIosAddCircleOutline size={23} />
+                                  </Link>
+                                </div>
                                 <select value={newStockItem.item_id} onChange={(e) => setNewStockItem({ ...newStockItem, item_id: e.target.value })} className="rounded-lg w-full">
                                   <option value="">--- Select Item ---</option>
                                   {fetcheditems.map((item) => (

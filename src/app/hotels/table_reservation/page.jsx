@@ -71,12 +71,7 @@ const ReservationGrid = () => {
       })
 
       const data = await response.json();
-
-      if (data.returncode === 200) {
-        setData(data.output);
-      } else {
-        alert("Fetch Failed!!! :(")
-      }
+      setData(data.output);
 
     } catch (e) {
       throw console.error(e);

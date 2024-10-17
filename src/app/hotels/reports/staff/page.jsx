@@ -1,4 +1,7 @@
 "use client";
+
+import { useRouter } from "next/navigation";
+import { IoIosArrowBack } from "react-icons/io";
 import HotelSideNav from "@/components/SideNavHotel";
 import { ApiHost } from "@/constants/url_consts";
 import React, { useState, useEffect } from "react";
@@ -6,6 +9,7 @@ import React, { useState, useEffect } from "react";
 
 const StaffReports = () => {
 
+  const router = useRouter();
   // Fetch Params
   const [staffList, setStaffList] = useState([]);
 
@@ -72,7 +76,14 @@ const StaffReports = () => {
     <>
       <HotelSideNav />
       <div className={`ml-[70px] flex-1 h-auto p-4 bg-slate-200`}>
-        <h2 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold mb-4">Staff Reports</h2>
+        <div className="flex gap-4 items-center pb-6">
+          <IoIosArrowBack size={50} color="red" className="cursor-pointer" onClick={() => {
+            router.back()
+          }} />
+          <h1 className="bg-gradient-to-r from-red-600 via-orange-500 to-red-400 inline-block text-transparent bg-clip-text text-3xl uppercase font-bold ">
+            Staff Reports
+          </h1>
+        </div>
         <div className="flex justify-between space-x-4 mb-4">
           <div className="">
             <input
