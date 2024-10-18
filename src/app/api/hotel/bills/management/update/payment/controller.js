@@ -55,7 +55,7 @@ export async function pay_bill(data) {
 
 		// VAT
 		const vat_settings_info = await read_vat_settings({ hotel_id });
-		let vat_rate = "0%", vat_amount = 0;
+		let vat_rate = "0%", vat_amount = 0; // Initializing Values
 		if (vat_settings_info.output.length != 0 && vat_settings_info.returncode === 200) {
 
 			const vat_settings = vat_settings_info.output[0];
@@ -69,10 +69,11 @@ export async function pay_bill(data) {
 
 		// Eatocoins
 		const eatocoins_settings_info = await read_eatocoins_settings({ hotel_id });
+		let eatocoins_rate = 0; // Initializing Values
 		if (eatocoins_settings_info.output.length != 0 && eatocoins_settings_info.returncode === 200) {
 
 			const eatocoins_settings = eatocoins_settings_info.output[0];
-			let eatocoins_rate = eatocoins_settings.RedeemLimitPercent || 0;
+			eatocoins_rate = eatocoins_settings.RedeemLimitPercent || 0;
 			let redeem_limit_amt = eatocoins_settings.RedeemLimitAmount || 0;
 			let credit_limit_amt = eatocoins_settings.CreditLimitAmt || 0;
 			let credit_limit_rate = eatocoins_settings.CreditLimitPercent || 0;
