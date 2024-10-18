@@ -231,8 +231,7 @@ const BillTable = () => {
       });
 
       if (response.ok) {
-        const result = await response.json();
-        fetchBillList();
+        fechBillList();
       } else {
         alert("Failed to fetch bill list");
       }
