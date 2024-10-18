@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FaArrowRightToBracket } from "react-icons/fa6";
 
-export default function Subscription(){
+export default function Subscription() {
 
 	const [sub, setSubscription] = useState([]);
 	const route = useRouter();
@@ -22,12 +22,15 @@ export default function Subscription(){
 		fetchSubscription();
 	}, [])
 
-	return(
+	return (
 		<>
 			<SideNav />
 			<section className="ml-[60px] h-dvh bg-gradient-to-tr from-red-500 to-zinc-800">
 				<div className="w-full h-auto text-right py-4 px-4">
-					<Link href="/eatofy/add/subscription" className="p-2 bg-red-500 text-white font-bold rounded-md">
+					<Link
+						href={`${ApiHost}/eatofy/add/subscription`}
+						className="p-2 bg-red-500 text-white font-bold rounded-md"
+					>
 						Add Subscription
 					</Link>
 				</div>
@@ -44,7 +47,7 @@ export default function Subscription(){
 						</thead>
 						<tbody>
 							{
-								sub.map((items, i)=>(
+								sub.map((items, i) => (
 									<tr className="px-4 py-4 border border-black" key={items.id}>
 										<td className="px-4 py-4">{++i}</td>
 										<td className="px-4 py-4">{items.SubscriptionName}</td>
@@ -73,7 +76,7 @@ export default function Subscription(){
 						</tbody>
 					</table>
 				</div>
-			</section>
+			</section >
 		</>
 	)
 }
