@@ -1,9 +1,9 @@
-import { fetch_kot_printer_settings } from "./controller";
+import { fetch_invoice_printer_settings } from "./controller";
 
 export async function POST(request) {
 	try {
 		const data = await request.json();
-		const result = await fetch_kot_printer_settings(data);
+		const result = await fetch_invoice_printer_settings(data);
 		return Response.json(
 			{
 				returncode: result.returncode,
