@@ -69,7 +69,7 @@ export async function pay_bill(data) {
 
 		// Eatocoins
 		const eatocoins_settings_info = await read_eatocoins_settings({ hotel_id });
-		let eatocoins_rate = 0; // Initializing Values
+		let eatocoins_rate = 0; let credit_eatocoins = 0; // Initializing Values
 		if (eatocoins_settings_info.output.length != 0 && eatocoins_settings_info.returncode === 200) {
 
 			const eatocoins_settings = eatocoins_settings_info.output[0];
@@ -77,7 +77,6 @@ export async function pay_bill(data) {
 			let redeem_limit_amt = eatocoins_settings.RedeemLimitAmount || 0;
 			let credit_limit_amt = eatocoins_settings.CreditLimitAmt || 0;
 			let credit_limit_rate = eatocoins_settings.CreditLimitPercent || 0;
-			let credit_eatocoins = 0;
 			if (total_amount >= credit_limit_amt) {
 				credit_eatocoins = (credit_limit_rate / 100) * total_amount;
 			}
@@ -159,7 +158,6 @@ export async function pay_bill(data) {
 				status: "Active"
 			});
 		}
-		console.log("Eatocoins", credit_eatocoins);
 
 		if (customer_id != null) {
 			const customer_info = await read_customer_by_id({ customer_id });
