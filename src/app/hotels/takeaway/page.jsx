@@ -14,6 +14,8 @@ import { FaCashRegister, FaGooglePay } from "react-icons/fa";
 
 export default function Menu() {
 	const [isLoading, setLoading] = useState(false);
+	const [isGstSet, setisGstSet] = useState(false);
+	const [isVatSet, setisVatSet] = useState(false);
 	const [isMenuOpen, setMenuOpen] = useState(false);
 	const [Search, setSearch] = useState('');
 	const [isDishDisplayFullWidth, setDishDisplayFullWidth] = useState(false);
@@ -132,6 +134,7 @@ export default function Menu() {
 
 	const handlePaymentStatusClick = (status) => {
 		setPaymentStatus(status);
+		statusChangeHandler(status);
 	};
 
 	const fetch_bill = async () => {
@@ -298,20 +301,24 @@ export default function Menu() {
 		return amount.toString();
 	}
 
-	const menutotal = CalculateSubTotal();
-	let cgstRate;
-	let sgstRate;
 
-	if (CalculateSubTotal() < 7500) {
-		cgstRate = "2.5%";
-		sgstRate = "2.5%";
-	} else {
-		cgstRate = "9%";
-		sgstRate = "9%";
-	}
+	const statusChangeHandler = (status) => {
+		const selectedStatus = status;
+
+		if (selectedStatus === "Paid") {
+			setBalanceAmt(0);
+		} else if (selectedStatus === "Partpaid") {
+			if (BalanceAmt === 0) {
+				alert("Balance cannot be zero");
+			}
+		} else if (selectedStatus === "Unpaid") {
+			setBalanceAmt(totalAmt);
+		}
+	};
+
+	const menutotal = CalculateSubTotal();
 
 	async function LoadSettings() {
-		console.log(HotelId)
 		try {
 			const res = await fetch(`${ApiHost}/api/hotel/settings/gst/read`, {
 				method: 'POST',
@@ -327,20 +334,17 @@ export default function Menu() {
 
 			if (res.ok) {
 				const data = await res.json();
-				console.log(data);
+				setisGstSet(data?.output[0]?.Visibility || false);
 				const Gst = data?.output[0]?.GSTPercent;
-				console.log(Gst);
 				const half = Gst / 2;
-				console.log(half)
 				setCgst(half);
 				setSgst(half);
 			}
 
 			if (resVat.ok) {
 				const data = await resVat.json();
-				console.log(data);
+				setisVatSet(data?.output[0]?.Visibility || false);
 				const Vat = data?.output[0]?.VATPercent;
-				console.log(Vat);
 				setVat(Vat);
 			}
 		} catch (e) {
@@ -348,24 +352,24 @@ export default function Menu() {
 		}
 	}
 
-	const cgstRateNum = Cgst;
-	const sgstRateNum = Sgst;
-	const cgstAmt = (cgstRateNum / 100) * parseFloat(menutotal);
-	const sgstAmt = (sgstRateNum / 100) * parseFloat(menutotal);
-	console.log(cgstAmt)
-	console.log(sgstAmt)
-	const VatAmt =
-		Vat === ""
-			? 0
-			: (Vat / 100) * parseFloat(menutotal);
-	console.log(menutotal)
-	const grosstotal = parseFloat(menutotal) + cgstAmt + sgstAmt + VatAmt;
-	console.log("Gross", grosstotal, "Cgst", cgstAmt, "sgst", sgstAmt)
-	const discount = disAmt === '' ? 0 : (parseFloat(disAmt.replace('%', '')) / 100) * grosstotal;
-	const totalAmt = discount === 0 ? grosstotal : grosstotal - discount;
-	console.log("Total", totalAmt)
-	// const TotalAmt = CalculateTotal();
 
+	let cgstAmt = 0; let sgstAmt = 0; let cgstRateNum = 0; let sgstRateNum = 0;
+	if (isGstSet) {
+
+		cgstRateNum = Cgst;
+		sgstRateNum = Sgst;
+		cgstAmt = (cgstRateNum / 100) * parseFloat(menutotal);
+		sgstAmt = (sgstRateNum / 100) * parseFloat(menutotal);
+	}
+
+	let VatAmt = 0;
+	if (isVatSet) {
+		VatAmt = Vat === "" ? 0 : (Vat / 100) * parseFloat(menutotal);
+	}
+
+	const grosstotal = parseFloat(menutotal) + cgstAmt + sgstAmt + VatAmt;
+	const discount = disAmt === "" ? 0 : (parseFloat(disAmt.replace("%", "")) / 100) * grosstotal;
+	const totalAmt = discount === 0 ? grosstotal : grosstotal - discount;
 	const handleSettleBill = async () => {
 
 		try {
@@ -712,29 +716,61 @@ export default function Menu() {
 												Payment Details
 											</div>
 											<div className="w-full p-2 flex flex-col gap-2 text-lg">
-												<div className="w-full inline-flex justify-between items-center ">
-													<label className="w-1/2">Cgst</label>
-													<div className="w-1/2 text-right">{cgstAmt}</div>
-												</div>
-												<div className="w-full inline-flex justify-between items-center">
-													<label className="w-1/2">Sgst</label>
-													<div className="w-1/2 text-right">{sgstAmt}</div>
-												</div>
-												<div className="w-full inline-flex justify-between items-center">
-													<label className="w-1/2">Total Gst</label>
-													<div className="w-1/2 text-right">{cgstAmt + sgstAmt}</div>
-												</div>
-												<div className="w-full inline-flex justify-between items-center mb-2">
-													<label className="w-1/2">Enter Vat in %</label>
-													<input type="text" value={vatAmt} onChange={(e) => { setvatAmt(e.target.value) }} className="w-1/2 bg-[#252836] text-base text-white" placeholder="Vat in %" />
-												</div>
+												{
+													isGstSet && (
+														<>
+															<div className="w-full inline-flex justify-between items-center ">
+																<label className="w-1/2">CGST ({Cgst}%)</label>
+																<div className="w-1/2 text-right">
+																	{(cgstAmt || 0).toFixed(2)}
+																</div>
+															</div>
+															<div className="w-full inline-flex justify-between items-center">
+																<label className="w-1/2">SGST ({Sgst}%)</label>
+																<div className="w-1/2 text-right">
+																	{(sgstAmt || 0).toFixed(2)}
+																</div>
+															</div>
+															<div className="w-full inline-flex justify-between items-center">
+																<label className="w-1/2">GST ({Cgst + Sgst}%)</label>
+																<div className="w-1/2 text-right">
+																	{(cgstAmt + sgstAmt || 0).toFixed(2)}
+																</div>
+															</div>
+														</>
+													)
+												}
+												{
+													isVatSet && (
+														<div className="w-full inline-flex justify-between items-center mb-2">
+															<label className="w-1/2">VAT ({Vat}%)</label>
+															<div className="w-1/2 text-right">
+																{VatAmt}
+															</div>
+														</div>
+													)
+												}
 												<div className="w-full inline-flex justify-between items-center mb-2">
 													<label className="w-1/2">Enter Discount</label>
 													<input type="text" value={disAmt} onChange={(e) => { setdisAmt(e.target.value) }} className="w-1/2 p-1 bg-[#252836] text-base text-white" placeholder="Discount in %" />
 												</div>
 												<div className="w-full inline-flex justify-end items-center mb-2 ">
 													<label className="w-1/2">Enter Balance Amount</label>
-													<input type="text" value={BalanceAmt} onChange={(e) => { setBalanceAmt(e.target.value) }} className="w-1/2 p-1 bg-[#252836] text-base text-white" placeholder="Balance amount" />
+													<input
+														type="text"
+														value={BalanceAmt}
+														onChange={(e) => {
+															if (e.target.value != 0) {
+																setPaymentStatus("Part-paid")
+															}
+															else {
+																setPaymentStatus("Paid")
+															}
+															setBalanceAmt(e.target.value);
+														}}
+														className="w-1/2 p-1 bg-[#252836] text-base text-white"
+														placeholder="Balance amount"
+													/>
 												</div>
 												<div className="w-full inline-flex justify-between items-center border-t border-zinc-500">
 													<h1 className="text-right my-2 text-xl ">Total:- </h1>
@@ -873,9 +909,7 @@ export default function Menu() {
 									OldCart.length === 0
 										? (
 											<div
-												onClick={() => handleSaveMenu()}
-												className="w-full p-1.5 bg-red-500 font-semibold text-white text-center rounded-md cursor-pointer"
-											>Save</div>
+											></div>
 										)
 										:
 										(
@@ -942,21 +976,39 @@ export default function Menu() {
 							</div>
 */}
 					</div>
-
-					<div ref={bill} className="max-w-md mx-auto p-4 border border-zinc-300 rounded-md bg-white text-black fixed top-[50dvh] left-0 z-[-150]">
+					<div
+						ref={bill}
+						className="max-w-md mx-auto p-4 border border-zinc-300 rounded-md bg-white text-black fixed top-[50dvh] left-0 z-[-150]"
+					>
 						<div className="flex flex-col justify-between mb-2">
 							<span>Bill No: {billId.slice(0, 12)}</span>
 							<span>Date: {formattedDate}</span>
+							<span>-----------------------------------------------------------------------------</span>
 						</div>
 						<div className="mb-2">
-							<span><strong>{TableName}</strong></span>
+							<span>
+								<strong>Takeaway</strong>
+							</span>
 						</div>
+						<span>-----------------------------------------------------------------------------</span>
 						<table className="w-full text-left border-collapse mb-2">
 							<thead>
 								<tr className="border-b">
-									<th className="py-1">Item</th>
-									<th className="py-1 text-center">Qty</th>
-									<th className="py-1 text-right">Rate</th>
+									<th className="py-1">
+										<strong>
+											Item
+										</strong>
+									</th>
+									<th className="py-1 text-center">
+										<strong>
+											Qty
+										</strong>
+									</th>
+									<th className="py-1 text-right">
+										<strong>
+											Rate
+										</strong>
+									</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -973,42 +1025,66 @@ export default function Menu() {
 								}
 							</tbody>
 						</table>
+						<span>-----------------------------------------------------------------------------</span>
 						<div className="w-full p-1 inline-flex justify-between items-center">
-							<div>
-								Cgst
-							</div>
-							<div>{cgstAmt}</div>
+							<div>Sub-Total</div>
+							<div>{menutotal}</div>
 						</div>
+						{
+							isGstSet && (
+								<>
+
+									<div className="w-full p-1 inline-flex justify-between items-center">
+										<div>CGST ({Cgst}%)</div>
+										<div>{cgstAmt}</div>
+									</div>
+									<div className="w-full p-1 inline-flex justify-between items-center">
+										<div>SGST ({Sgst}%)</div>
+										<div>{sgstAmt}</div>
+									</div>
+								</>
+							)
+
+						}
+						{
+							isVatSet && (
+								<>
+									<div className="w-full p-1 inline-flex justify-between items-center">
+										<div>VAT ({Vat}%)</div>
+										<div>{VatAmt}</div>
+									</div>
+								</>
+							)
+						}
+						{
+							disAmt && (
+								<div className="w-full p-1 inline-flex justify-between items-center">
+									<div>Discount ({disAmt}%)</div>
+									<div>( - {discount})</div>
+								</div>
+							)
+						}
+						<span>-----------------------------------------------------------------------------</span>
+						{
+							BalanceAmt > 0 ? (
+
+								<div className="w-full p-1 inline-flex justify-between items-center">
+									<div>Balance Amount</div>
+									<div>{BalanceAmt}</div>
+								</div>
+							) : ""
+						}
 						<div className="w-full p-1 inline-flex justify-between items-center">
-							<div>
-								Sgst
-							</div>
-							<div>{sgstAmt}</div>
+							<div><strong> Total Amount </strong></div>
+							<div><strong> {totalAmt} </strong></div>
 						</div>
-						<div className="w-full p-1 inline-flex justify-between items-center">
-							<div>
-								Vat %
-							</div>
-							<div>{VatAmt}</div>
-						</div>
-						<div className="w-full p-1 inline-flex justify-between items-center">
-							<div>
-								Discount %
-							</div>
-							<div>{discount}</div>
-						</div>
-						<div className="w-full p-1 inline-flex justify-between items-center">
-							<div>
-								Total Amount
-							</div>
-							<div>{totalAmt}</div>
-						</div>
+						<span>-----------------------------------------------------------------------------</span>
 
 						<div className="text-center m-6">
 							<span>!!! Thank You !!!</span>
 						</div>
-
 					</div>
+
 				</div >
 			}
 		</>

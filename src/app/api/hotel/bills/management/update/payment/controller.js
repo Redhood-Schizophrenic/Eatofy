@@ -67,6 +67,19 @@ export async function pay_bill(data) {
 			}
 		}
 
+		// Delivery Rate
+		if (delivery_rate != 0) {
+			delivery_amount = (delivery_rate / 100) * menu_total;
+		}
+
+		// Total amount
+		const total_amount = menu_total + cgst_amount + sgst_amount + vat_amount + delivery_amount;
+
+		// Discount
+		if (discount_rate != 0) {
+			discount_amount = (discount_rate / 100) * total_amount;
+		}
+
 		// Eatocoins
 		const eatocoins_settings_info = await read_eatocoins_settings({ hotel_id });
 		let eatocoins_rate = 0; let credit_eatocoins = 0; // Initializing Values
@@ -110,20 +123,6 @@ export async function pay_bill(data) {
 			}
 
 		}
-
-		// Delivery Rate
-		if (delivery_rate != 0) {
-			delivery_amount = (delivery_rate / 100) * menu_total;
-		}
-
-		// Total amount
-		const total_amount = menu_total + cgst_amount + sgst_amount + vat_amount + delivery_amount;
-
-		// Discount
-		if (discount_rate != 0) {
-			discount_amount = (discount_rate / 100) * total_amount;
-		}
-
 
 		// Amount
 		let amount = total_amount - discount_amount - eatocoins;
