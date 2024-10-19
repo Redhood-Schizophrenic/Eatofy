@@ -7,7 +7,7 @@ export async function delete_notifications({
 	try {
 
 		// Updating the record
-		const result = await db.notifications.delete({
+		const result = await db.notifications.deleteMany({
 			where: {
 				HotelId: hotel_id
 			}
