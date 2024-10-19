@@ -7,13 +7,10 @@ export async function delete_notifications({
 	try {
 
 		// Updating the record
-		const result = await db.notifications.update({
+		const result = await db.notifications.delete({
 			where: {
 				HotelId: hotel_id
-			},
-			data: {
-				Status: "Inactive"
-			},
+			}
 		});
 
 		// Database is disconnected
