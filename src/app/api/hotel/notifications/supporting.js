@@ -1,6 +1,7 @@
 import db from "@/db/connector";
 import { differenceInDays, parseISO } from 'date-fns';
-import { read_reservations_desc } from "@/db/crud/reservations/read";
+// import { read_reservations_desc } from "@/db/crud/reservations/read";
+import { read_reservations } from "@/db/crud/reservations/read";
 import { read_notifications } from "../../../../db/crud/notifications/management/read";
 import { read_available_stock } from "../../../../db/crud/inventory/available_stock/read";
 import { create_notification } from "../../../../db/crud/notifications/management/create";
@@ -76,7 +77,9 @@ export const reservations_notifications = async (hotel_id) => {
 
 	let notifications = [];
 
-	const reservations_data = await read_reservations_desc({ hotel_id });
+	// const reservations_data = await read_reservations_desc({ hotel_id });
+	const reservations_data = await read_reservations({ hotel_id });
+
 	const today_date = getTodaysDate();
 	if (reservations_data.returncode === 200) {
 
@@ -93,6 +96,7 @@ export const reservations_notifications = async (hotel_id) => {
 			}
 		});
 	}
+	console.log(notifications);
 
 	// Notification Added
 	if (notifications.length > 0) {

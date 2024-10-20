@@ -11,7 +11,13 @@ export async function read_notifications({
 				NOT: {
 					Status: "Inactive"
 				}
-			}
+			},
+			orderBy: [
+				{
+					createdAt: "asc"
+				}
+			],
+
 		});
 
 		// Database is disconnected
