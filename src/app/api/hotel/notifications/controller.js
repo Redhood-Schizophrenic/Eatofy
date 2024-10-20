@@ -1,6 +1,5 @@
 import { read_notifications } from "../../../../db/crud/notifications/management/read";
 import { inventory_notifications, reservations_notifications, subscriptions_notifications } from './supporting';
-import { delete_notifications } from "../../../../db/crud/notifications/management/update";
 
 export async function notifications(data) {
 	try {
@@ -16,9 +15,6 @@ export async function notifications(data) {
 			}
 
 		}
-
-		// Delete Notifications
-		await delete_notifications({ hotel_id });
 
 		// Add Notifications
 		await inventory_notifications(hotel_id);
