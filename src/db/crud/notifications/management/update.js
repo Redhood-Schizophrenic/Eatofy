@@ -1,24 +1,18 @@
 import db from "@/db/connector";
 
 // Delete Hotels notifications
-export async function delete_notifications({
-	hotel_id,
-}) {
+export async function delete_notifications() {
 	try {
 
 		// Updating the record
-		const result = await db.notifications.deleteMany({
-			where: {
-				HotelId: hotel_id
-			}
-		});
+		const result = await db.notifications.deleteMany();
 
 		// Database is disconnected
 		db.$disconnect();
 
 		return {
 			returncode: 200,
-			message: "Data Updated",
+			message: "Data Deleted",
 			output: result
 		};
 
