@@ -1,6 +1,6 @@
 import db from "@/db/connector";
 import { differenceInDays, parseISO } from 'date-fns';
-import { read_reservations_desc } from "@/db/crud/reservations/read";
+import { read_reservations } from "@/db/crud/reservations/read";
 import { read_notifications } from "../../../../db/crud/notifications/management/read";
 import { read_available_stock } from "../../../../db/crud/inventory/available_stock/read";
 import { create_notification } from "../../../../db/crud/notifications/management/create";
