@@ -18,7 +18,7 @@ export async function read_reservations({
 					Date: "desc"
 				},
 				{
-					Time: "asc"
+					Time: "desc"
 				}
 			],
 			include: {
