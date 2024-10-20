@@ -4,7 +4,7 @@ export async function notifications_delete() {
 	try {
 
 		// Delete Notifications
-		await delete_notifications();
+		const end_result = await delete_notifications();
 
 		return {
 			returncode: 200,
