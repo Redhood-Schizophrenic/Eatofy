@@ -76,7 +76,7 @@ export const reservations_notifications = async (hotel_id) => {
 
 	let notifications = [];
 
-	const reservations_data = await read_reservations_desc({ hotel_id });
+	const reservations_data = await read_reservations({ hotel_id });
 	const today_date = getTodaysDate();
 	if (reservations_data.returncode === 200) {
 
