@@ -1,5 +1,7 @@
 'use client';
 
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { useRouter } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
 import HotelSideNav from "@/components/SideNavHotel";
@@ -7,11 +9,12 @@ import { ApiHost } from "@/constants/url_consts";
 import React, { useEffect, useState } from 'react';
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
-import { FaEye, FaXmark } from "react-icons/fa6";
+import { FaEye, FaRegFilePdf, FaXmark } from "react-icons/fa6";
 
 export default function Purchase_Report() {
 
   const router = useRouter();
+
   // For A Week before
   const today = new Date();
   const weekbefore = new Date(today);
@@ -44,6 +47,44 @@ export default function Purchase_Report() {
   // Search 
   const [searchQuery, setSearchQuery] = useState('');
 
+
+  // PDF Generation function
+  const handlePdfGeneration = async () => {
+    const inputData = document.getElementById("Report");  // Replace with your specific element if needed
+
+    // Take a screenshot of the whole page
+    const canvas = await html2canvas(inputData, { scale: 2 });
+
+    // Get the image dimensions
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = 180;  // Width of the Image in mm
+    const pageWidth = 210;  // Width of the PDF page (in mm)  
+    const pageHeight = 290; // Height of the PDF page in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const heightLeft = imgHeight;
+    // Calculate margins to center the image on the page
+    const xOffset = (pageWidth - imgWidth) / 2;  // Horizontal centering
+
+
+    // Create a new PDF document
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    let position = 10;
+
+    // Add the image to the first page
+    pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
+    let remainingHeight = heightLeft - pageHeight;
+
+    // Loop through the rest of the image, adding new pages as needed
+    while (remainingHeight > 0) {
+      position = remainingHeight - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
+      remainingHeight -= pageHeight;
+    }
+
+    // Save the PDF
+    pdf.save(`${selectedRange}'s_Purchase_Report_ (${to_default}).pdf`);
+  };
 
   // Fetch Values 
   const fetchPurchaseData = async () => {
@@ -333,7 +374,7 @@ export default function Purchase_Report() {
             )
           }
 
-          <div className="flex justify-start items-end w-full">
+          <div className="flex justify-between items-center w-full">
             <input
               type="text"
               value={searchQuery}
@@ -341,115 +382,124 @@ export default function Purchase_Report() {
               placeholder="Search Supplier Name or Payment Status..."
               className="px-4 py-2 border rounded-lg w-1/2"
             />
+
+            <div>
+              <a onClick={() => { handlePdfGeneration() }} className="cursor-pointer flex gap-2 items-center bg-red-500 text-white px-4 py-2 font-semibold rounded-lg">
+                Download PDF <FaRegFilePdf />
+              </a>
+            </div>
           </div>
 
-          <div className="flex w-full mt-10 gap-4 pb-4">
-            <div
-              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-green-500 cursor-pointer w-1/4"
-              onClick={() => {
-                setfetchedpurchase(PaidTable);
-                setTotal(PaidTable.reduce((sum, bill) => sum + bill.TotalAmount, 0));
-              }}
-            >
-              <h2 className="text-zinc-500">Paid Bills</h2>
-              <p className="text-2xl font-bold">{PaidTable.length}</p>
-            </div>
-            <div
-              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer w-1/4"
-              onClick={() => {
-                setfetchedpurchase(UnpaidTable);
-                setTotal(UnpaidTable.reduce((sum, bill) => sum + bill.TotalAmount, 0));
-              }}
-            >
-              <h2 className="text-zinc-500">Unpaid Bills</h2>
-              <p className="text-2xl font-bold">{UnpaidTable.length}</p>
-            </div>
-            <div
-              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-yellow-500 cursor-pointer w-1/4"
-              onClick={() => {
-                setfetchedpurchase(PartPaidTable);
-                setTotal(PartPaidTable.reduce((sum, bill) => sum + bill.TotalAmount, 0));
-              }}
-            >
-              <h2 className="text-zinc-500">Part-Paid Bills</h2>
-              <p className="text-2xl font-bold">{PartPaidTable.length}</p>
-            </div>
+          <div id="Report">
 
-            <div
-              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 w-1/4"
-            >
-              <h2 className="text-xl text-zinc-500"> Total Purchases </h2>
-              <p className="text-xl font-bold">Rs. {TotalAmount}</p>
-            </div>
-
-          </div>
-
-          <div className='w-full flex gap-4 pt-6'>
-
-            <div className="w-full bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500">
-              <div className="flex justify-between items-center mb-4 w-full">
-                <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Overall Purchases Chart</h2>
+            <div className="flex w-full mt-10 gap-4 pb-4">
+              <div
+                className="bg-white p-4 rounded-lg shadow-md border-l-4 border-green-500 cursor-pointer w-1/4"
+                onClick={() => {
+                  setfetchedpurchase(PaidTable);
+                  setTotal(PaidTable.reduce((sum, bill) => sum + bill.TotalAmount, 0));
+                }}
+              >
+                <h2 className="text-zinc-500">Paid Bills</h2>
+                <p className="text-2xl font-bold">{PaidTable.length}</p>
               </div>
-              <div className="flex gap-20 mb-4">
-                <div className="w-full mr-2">
-                  <div className='w-full h-[60dvh]'>
-                    <Line data={dataLine} options={options} />
+              <div
+                className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer w-1/4"
+                onClick={() => {
+                  setfetchedpurchase(UnpaidTable);
+                  setTotal(UnpaidTable.reduce((sum, bill) => sum + bill.TotalAmount, 0));
+                }}
+              >
+                <h2 className="text-zinc-500">Unpaid Bills</h2>
+                <p className="text-2xl font-bold">{UnpaidTable.length}</p>
+              </div>
+              <div
+                className="bg-white p-4 rounded-lg shadow-md border-l-4 border-yellow-500 cursor-pointer w-1/4"
+                onClick={() => {
+                  setfetchedpurchase(PartPaidTable);
+                  setTotal(PartPaidTable.reduce((sum, bill) => sum + bill.TotalAmount, 0));
+                }}
+              >
+                <h2 className="text-zinc-500">Part-Paid Bills</h2>
+                <p className="text-2xl font-bold">{PartPaidTable.length}</p>
+              </div>
+
+              <div
+                className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 w-1/4"
+              >
+                <h2 className="text-xl text-zinc-500"> Total Purchases </h2>
+                <p className="text-xl font-bold">Rs. {TotalAmount}</p>
+              </div>
+
+            </div>
+
+            <div className='w-full flex gap-4 pt-6'>
+
+              <div className="w-full bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500">
+                <div className="flex justify-between items-center mb-4 w-full">
+                  <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Overall Purchases Chart</h2>
+                </div>
+                <div className="flex gap-20 mb-4">
+                  <div className="w-full mr-2">
+                    <div className='w-full h-[60dvh]'>
+                      <Line data={dataLine} options={options} />
+                    </div>
                   </div>
                 </div>
               </div>
+
             </div>
 
-          </div>
 
+            {/* Table */}
+            <div className='mt-[5dvh]'>
+              <div className="bg-white p-4 rounded-lg shadow-md mt-5 border-l-4 border-red-500" >
+                <div className="flex justify-between items-center mb-4 w-full">
+                  <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Purchases Data</h2>
+                </div>
+                <div className=' flex justify-center items-center'>
+                  <table className="table-fixed w-full p-2">
+                    <thead className="bg-gray-500 text-white">
+                      <tr className="font-bold text-left">
+                        <th className="p-4">From</th>
+                        <th className="p-4">Total</th>
+                        <th className="p-4">Balance(amt)</th>
+                        <th className="p-4">Payment mode</th>
+                        <th className="p-4">Payment</th>
+                        <th className="p-4">Invoice Date</th>
+                        <th className="p-4"></th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-zinc-100">
+                      {
+                        filteredPurchases.map((items, index) => (
+                          <tr
+                            key={index}
+                            className={index % 2 === 0 ? "bg-zinc-100 text-black font-light" : "text-black font-light"}
+                          >
 
-          {/* Table */}
-          <div className='mt-[5dvh]'>
-            <div className="bg-white p-4 rounded-lg shadow-md mt-5 border-l-4 border-red-500" >
-              <div className="flex justify-between items-center mb-4 w-full">
-                <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Purchases Data</h2>
-              </div>
-              <div className=' flex justify-center items-center'>
-                <table className="table-fixed w-full p-2">
-                  <thead className="bg-gray-500 text-white">
-                    <tr className="font-bold text-left">
-                      <th className="p-4">From</th>
-                      <th className="p-4">Total</th>
-                      <th className="p-4">Balance(amt)</th>
-                      <th className="p-4">Payment mode</th>
-                      <th className="p-4">Payment</th>
-                      <th className="p-4">Invoice Date</th>
-                      <th className="p-4"></th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-zinc-100">
-                    {
-                      filteredPurchases.map((items, index) => (
-                        <tr
-                          key={index}
-                          className={index % 2 === 0 ? "bg-zinc-100 text-black font-light" : "text-black font-light"}
-                        >
+                            <td className="border px-4 py-2">{items.Suppliers.SupplierName}</td>
+                            <td className="border px-4 py-2">{items.TotalAmount}</td>
+                            <td className="border px-4 py-2">{items.BalanceAmount}</td>
+                            <td className="border px-4 py-2">{items.PaymentMode}</td>
+                            <td className="border px-4 py-2 inline-flex justify-center items-center">
+                              <div className={`px-4 p-2`}>{items.PaymentStatus}</div>
+                            </td>
+                            <td className="border px-4 py-2">{items.Date}</td>
+                            <td className="border px-4 py-2">
+                              <button
+                                onClick={() => { displayPurchasedStock(items) }}
+                              >
+                                <FaEye size={25} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
 
-                          <td className="border px-4 py-2">{items.Suppliers.SupplierName}</td>
-                          <td className="border px-4 py-2">{items.TotalAmount}</td>
-                          <td className="border px-4 py-2">{items.BalanceAmount}</td>
-                          <td className="border px-4 py-2">{items.PaymentMode}</td>
-                          <td className="border px-4 py-2 inline-flex justify-center items-center">
-                            <div className={`px-4 p-2`}>{items.PaymentStatus}</div>
-                          </td>
-                          <td className="border px-4 py-2">{items.Date}</td>
-                          <td className="border px-4 py-2">
-                            <button
-                              onClick={() => { displayPurchasedStock(items) }}
-                            >
-                              <FaEye size={25} />
-                            </button>
-                          </td>
-                        </tr>
-                      ))
-                    }
-                  </tbody>
-                </table>
-
+                </div>
               </div>
             </div>
           </div>

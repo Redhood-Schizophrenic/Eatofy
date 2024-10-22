@@ -1,5 +1,7 @@
 'use client';
 
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { useRouter } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
 import HotelSideNav from '@/components/SideNavHotel';
@@ -7,11 +9,12 @@ import { ApiHost } from '@/constants/url_consts';
 import React, { useEffect, useState } from 'react';
 import "chart.js/auto";
 import { Doughnut } from 'react-chartjs-2';
-import { FaWallet } from 'react-icons/fa6';
+import { FaRegFilePdf, FaWallet } from 'react-icons/fa6';
 
 const Expenses_Report = () => {
 
   const router = useRouter();
+
   // For A Week before
   const today = new Date();
   const weekbefore = new Date(today);
@@ -36,6 +39,44 @@ const Expenses_Report = () => {
   // Search 
   const [searchQuery, setSearchQuery] = useState('');
 
+
+  // PDF Generation function
+  const handlePdfGeneration = async () => {
+    const inputData = document.getElementById("Report");  // Replace with your specific element if needed
+
+    // Take a screenshot of the whole page
+    const canvas = await html2canvas(inputData, { scale: 2 });
+
+    // Get the image dimensions
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = 180;  // Width of the Image in mm
+    const pageWidth = 210;  // Width of the PDF page (in mm)  
+    const pageHeight = 290; // Height of the PDF page in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const heightLeft = imgHeight;
+    // Calculate margins to center the image on the page
+    const xOffset = (pageWidth - imgWidth) / 2;  // Horizontal centering
+
+
+    // Create a new PDF document
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    let position = 10;
+
+    // Add the image to the first page
+    pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
+    let remainingHeight = heightLeft - pageHeight;
+
+    // Loop through the rest of the image, adding new pages as needed
+    while (remainingHeight > 0) {
+      position = remainingHeight - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
+      remainingHeight -= pageHeight;
+    }
+
+    // Save the PDF
+    pdf.save(`${selectedRange}'s_Expenses_Report_ (${to_default}).pdf`);
+  };
 
   // Fetch Expenses
   const fetchExpenses = async () => {
@@ -235,111 +276,121 @@ const Expenses_Report = () => {
             )
           }
 
-          <div className="w-1/3 flex items-end ">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={handleSearchChange}
-              placeholder="Search Bearer or Payment Status..."
-              className="px-4 py-2 border rounded-lg w-full"
-            />
+          <div className='w-full flex justify-between'>
+            <div className="w-1/3 flex items-end ">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearchChange}
+                placeholder="Search Bearer or Payment Status..."
+                className="px-4 py-2 border rounded-lg w-full"
+              />
+            </div>
+            <div>
+              <a onClick={() => { handlePdfGeneration() }} className=" cursor-pointer flex gap-2 items-center bg-red-500 text-white px-4 py-2 font-semibold rounded-lg">
+                Download PDF <FaRegFilePdf />
+              </a>
+            </div>
           </div>
 
-          <div className='w-full flex gap-4 pt-6'>
+          <div id="Report">
 
-            <div className="w-full bg-white p-4 rounded-lg shadow-md">
-              <div className="flex justify-between items-center mb-4 w-full">
-                <h2 className="text-3xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Expenses Distribution</h2>
-              </div>
+            <div className='w-full flex gap-4 pt-6'>
 
-              <div className="flex gap-20 mb-4">
-                <div className="w-full mr-2 flex">
-                  <div className='w-1/2 h-[40dvh] flex justify-center items-center p-2'>
-                    <Doughnut data={dataPie} />
-                  </div>
-                  <div className='w-1/2 p-[50px] flex flex-col items-center'>
-                    <div className='w-full h-1/2 border-b border-zinc-500 flex flex-col items-center justify-end'>
-                      <div className='w-full flex justify-center p-4 text-xl gap-6'>
-                        <h1 className='text-2xl font-bold text-gray-700'> Total Expenses </h1>
-                      </div>
-                      <div className='w-full flex justify-center p-4 text-xl gap-6'>
-                        <div className='bg-red-200 text-red-500 p-4 rounded-lg'>
-                          <FaWallet />
-                        </div>
-                        <div className='h-auto flex items-center'>
-                          <h1 className='text-black text-2xl'>{TotalAmount}</h1>
-                        </div>
-                      </div>
+              <div className="w-full bg-white p-4 rounded-lg shadow-md">
+                <div className="flex justify-between items-center mb-4 w-full">
+                  <h2 className="text-3xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Expenses Distribution</h2>
+                </div>
+
+                <div className="flex gap-20 mb-4">
+                  <div className="w-full mr-2 flex">
+                    <div className='w-1/2 h-[40dvh] flex justify-center items-center p-2'>
+                      <Doughnut data={dataPie} />
                     </div>
-                    <div className='w-full h-1/2 flex justify-center p-4'>
-                      <div className='w-full h-full flex justify-between flex-wrap'>
-                        {(Data.Category && Data.Category.length !== 0 && Data.Amount && Data.Amount.length !== 0) && Data.Category.map((category, index) => (
-                          <div key={index} className='w-[14dvw] flex flex-col text-xl text-left'>
-                            <h1 className='font-semibold text-black'>
-                              {category}
-                            </h1>
-                            {index < Data.Amount.length && (
-                              <p className='text-black text-lg'>
-                                Rs. {Data.Amount[index]}
-                              </p>
-                            )}
+                    <div className='w-1/2 p-[50px] flex flex-col items-center'>
+                      <div className='w-full h-1/2 border-b border-zinc-500 flex flex-col items-center justify-end'>
+                        <div className='w-full flex justify-center p-4 text-xl gap-6'>
+                          <h1 className='text-2xl font-bold text-gray-700'> Total Expenses </h1>
+                        </div>
+                        <div className='w-full flex justify-center p-4 text-xl gap-6'>
+                          <div className='bg-red-200 text-red-500 p-4 rounded-lg'>
+                            <FaWallet />
                           </div>
-                        ))}
+                          <div className='h-auto flex items-center'>
+                            <h1 className='text-black text-2xl'>{TotalAmount}</h1>
+                          </div>
+                        </div>
+                      </div>
+                      <div className='w-full h-1/2 flex justify-center p-4'>
+                        <div className='w-full h-full flex justify-between flex-wrap'>
+                          {(Data.Category && Data.Category.length !== 0 && Data.Amount && Data.Amount.length !== 0) && Data.Category.map((category, index) => (
+                            <div key={index} className='w-[14dvw] flex flex-col text-xl text-left'>
+                              <h1 className='font-semibold text-black'>
+                                {category}
+                              </h1>
+                              {index < Data.Amount.length && (
+                                <p className='text-black text-lg'>
+                                  Rs. {Data.Amount[index]}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div>
+                <div>
+
+                </div>
 
               </div>
 
             </div>
 
-          </div>
 
+            <div className='mt-[5dvh]'>
+              <div className="bg-white p-4 rounded-lg shadow-md mt-5" >
+                <div className="flex justify-between items-center mb-4 w-full">
+                  <h2 className="text-3xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Expenses Data</h2>
+                </div>
+                <div className=' flex justify-center items-center'>
 
-          <div className='mt-[5dvh]'>
-            <div className="bg-white p-4 rounded-lg shadow-md mt-5" >
-              <div className="flex justify-between items-center mb-4 w-full">
-                <h2 className="text-3xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Expenses Data</h2>
-              </div>
-              <div className=' flex justify-center items-center'>
-
-                <table className="min-w-full text-black border-collapse">
-                  <thead>
-                    <tr className="bg-gray-500 text-white font-bold">
-                      <th className="border px-4 py-2">SR#</th>
-                      <th className="border px-4 py-2">Date</th>
-                      <th className="border px-4 py-2">Category</th>
-                      <th className="border px-4 py-2">Bearer</th>
-                      <th className="border px-4 py-2">Balance Amount</th>
-                      <th className="border px-4 py-2">Paid Amount</th>
-                      <th className="border px-4 py-2">Note</th>
-                      <th className="border px-4 py-2">Payment Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {
-                      filteredExpenses.map((row, index) => (
-                        <tr
-                          key={index}
-                          className={index % 2 === 0 ? "bg-zinc-100 text-black font-light" : "text-black font-light"}
-                        >
-                          <td className="border px-4 py-2">{index + 1}</td>
-                          <td className="border px-4 py-2">{row.Date}</td>
-                          <td className="border px-4 py-2">{row.ExpenseName}</td>
-                          <td className="border px-4 py-2">{row.PayableTo}</td>
-                          <td className="border px-4 py-2">{row.AmountPayable}</td>
-                          <td className="border px-4 py-2">{row.AmountPaid}</td>
-                          <td className="border px-4 py-2">{row.Note}</td>
-                          <td className="border px-4 py-2">{row.PaymentStatus}</td>
-                        </tr>
-                      ))
-                    }
-                  </tbody>
-                </table>
+                  <table className="min-w-full text-black border-collapse">
+                    <thead>
+                      <tr className="bg-gray-500 text-white font-bold">
+                        <th className="border px-4 py-2">SR#</th>
+                        <th className="border px-4 py-2">Date</th>
+                        <th className="border px-4 py-2">Category</th>
+                        <th className="border px-4 py-2">Bearer</th>
+                        <th className="border px-4 py-2">Balance Amount</th>
+                        <th className="border px-4 py-2">Paid Amount</th>
+                        <th className="border px-4 py-2">Note</th>
+                        <th className="border px-4 py-2">Payment Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {
+                        filteredExpenses.map((row, index) => (
+                          <tr
+                            key={index}
+                            className={index % 2 === 0 ? "bg-zinc-100 text-black font-light" : "text-black font-light"}
+                          >
+                            <td className="border px-4 py-2">{index + 1}</td>
+                            <td className="border px-4 py-2">{row.Date}</td>
+                            <td className="border px-4 py-2">{row.ExpenseName}</td>
+                            <td className="border px-4 py-2">{row.PayableTo}</td>
+                            <td className="border px-4 py-2">{row.AmountPayable}</td>
+                            <td className="border px-4 py-2">{row.AmountPaid}</td>
+                            <td className="border px-4 py-2">{row.Note}</td>
+                            <td className="border px-4 py-2">{row.PaymentStatus}</td>
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

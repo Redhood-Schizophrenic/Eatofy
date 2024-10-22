@@ -1,5 +1,7 @@
 'use client';
 
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { useRouter } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
 import HotelSideNav from "@/components/SideNavHotel";
@@ -7,10 +9,12 @@ import { ApiHost } from "@/constants/url_consts";
 import React, { useEffect, useState } from 'react';
 import "chart.js/auto";
 import { Line } from "react-chartjs-2";
+import { FaRegFilePdf } from 'react-icons/fa6';
 
 export default function Inventory_Report() {
 
   const router = useRouter();
+
   // For A Week before
   const today = new Date();
   const weekbefore = new Date(today);
@@ -92,6 +96,43 @@ export default function Inventory_Report() {
     }
   }
 
+  // PDF Generation function
+  const handlePdfGeneration = async () => {
+    const inputData = document.getElementById("Report");  // Replace with your specific element if needed
+
+    // Take a screenshot of the whole page
+    const canvas = await html2canvas(inputData, { scale: 2 });
+
+    // Get the image dimensions
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = 180;  // Width of the Image in mm
+    const pageWidth = 210;  // Width of the PDF page (in mm)  
+    const pageHeight = 290; // Height of the PDF page in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const heightLeft = imgHeight;
+    // Calculate margins to center the image on the page
+    const xOffset = (pageWidth - imgWidth) / 2;  // Horizontal centering
+
+
+    // Create a new PDF document
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    let position = 10;
+
+    // Add the image to the first page
+    pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
+    let remainingHeight = heightLeft - pageHeight;
+
+    // Loop through the rest of the image, adding new pages as needed
+    while (remainingHeight > 0) {
+      position = remainingHeight - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
+      remainingHeight -= pageHeight;
+    }
+
+    // Save the PDF
+    pdf.save(`${selectedRange}'s_Inventory_Report_ (${to_default}).pdf`);
+  };
 
   const handleRangeChange = (selectedOption) => {
     setselectedRange(selectedOption);
@@ -304,7 +345,7 @@ export default function Inventory_Report() {
             )
           }
 
-          <div className="flex justify-start items-end w-full">
+          <div className="flex justify-between items-center w-full">
             <input
               type="text"
               value={searchQuery}
@@ -312,116 +353,125 @@ export default function Inventory_Report() {
               placeholder="Search Material Name..."
               className="px-4 py-2 border rounded-lg w-1/2"
             />
+
+            <div>
+              <a onClick={() => { handlePdfGeneration() }} className="flex gap-2 cursor-pointer items-center bg-red-500 text-white px-4 py-2 font-semibold rounded-lg">
+                Download PDF <FaRegFilePdf />
+              </a>
+            </div>
           </div>
 
-          <div className="flex w-full mt-10 gap-4 pb-4">
-            <div
-              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-green-500 cursor-pointer w-1/4"
-              onClick={() => {
-                setTable(Available);
-              }}
-            >
-              <h2 className="text-zinc-500">Available Products</h2>
-              <p className="text-2xl font-bold">{AvailableStock}</p>
-            </div>
-            <div
-              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer w-1/4"
-              onClick={() => {
-                setTable(UnAvailable);
-              }}
-            >
-              <h2 className="text-zinc-500">Empty Stock</h2>
-              <p className="text-2xl font-bold">{UnAvailableStock}</p>
-            </div>
-            <div
-              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-yellow-500 cursor-pointer w-1/4"
-              onClick={() => {
-                setTable(LowStock);
-              }}
-            >
-              <h2 className="text-zinc-500">Low Stock</h2>
-              <p className="text-2xl font-bold">{Low}</p>
-            </div>
+          <div id="Report">
 
-            <div
-              className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 w-1/4"
-            >
-              <h2 className="text-zinc-500"> Total Products </h2>
-              <p className="text-xl font-bold">{Total}</p>
-            </div>
-
-          </div>
-
-          <div className='w-full flex gap-4 pt-6'>
-
-            <div className="w-full bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500">
-              <div className="flex justify-between items-center mb-4 w-full">
-                <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Overall Material Chart</h2>
+            <div className="flex w-full mt-10 gap-4 pb-4">
+              <div
+                className="bg-white p-4 rounded-lg shadow-md border-l-4 border-green-500 cursor-pointer w-1/4"
+                onClick={() => {
+                  setTable(Available);
+                }}
+              >
+                <h2 className="text-zinc-500">Available Products</h2>
+                <p className="text-2xl font-bold">{AvailableStock}</p>
               </div>
-              <div className="flex gap-20 mb-4">
-                <div className="w-full mr-2">
-                  <div className='w-full h-[60dvh]'>
-                    <Line data={dataLine} options={options} />
+              <div
+                className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer w-1/4"
+                onClick={() => {
+                  setTable(UnAvailable);
+                }}
+              >
+                <h2 className="text-zinc-500">Empty Stock</h2>
+                <p className="text-2xl font-bold">{UnAvailableStock}</p>
+              </div>
+              <div
+                className="bg-white p-4 rounded-lg shadow-md border-l-4 border-yellow-500 cursor-pointer w-1/4"
+                onClick={() => {
+                  setTable(LowStock);
+                }}
+              >
+                <h2 className="text-zinc-500">Low Stock</h2>
+                <p className="text-2xl font-bold">{Low}</p>
+              </div>
+
+              <div
+                className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 w-1/4"
+              >
+                <h2 className="text-zinc-500"> Total Products </h2>
+                <p className="text-xl font-bold">{Total}</p>
+              </div>
+
+            </div>
+
+            <div className='w-full flex gap-4 pt-6'>
+
+              <div className="w-full bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500">
+                <div className="flex justify-between items-center mb-4 w-full">
+                  <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Overall Material Chart</h2>
+                </div>
+                <div className="flex gap-20 mb-4">
+                  <div className="w-full mr-2">
+                    <div className='w-full h-[60dvh]'>
+                      <Line data={dataLine} options={options} />
+                    </div>
                   </div>
                 </div>
               </div>
+
             </div>
 
-          </div>
 
+            {/* Table */}
+            <div className='mt-[5dvh]'>
+              <div className="bg-white p-4 rounded-lg shadow-md mt-5 border-l-4 border-red-500" >
+                <div className="flex justify-between items-center mb-4 w-full">
+                  <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Purchases Data</h2>
+                </div>
+                <div className=' flex justify-center items-center'>
+                  <table className="table-fixed w-full p-2">
+                    <thead className="bg-gray-500 text-white">
+                      <tr className="font-bold text-left">
+                        <th className="p-4">SR#</th>
+                        <th className="p-4">Date</th>
+                        <th className="p-4">Material</th>
+                        <th className="p-4">Quantity</th>
+                        <th className="p-4">Unit</th>
+                        <th className="p-4">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-zinc-100">
+                      {
+                        filteredTable.map((items, index) => (
+                          <tr
+                            key={index}
+                            className={index % 2 === 0 ? "bg-zinc-100 text-black font-light" : "text-black font-light"}
+                          >
+                            <td className="border px-4 py-2">{index + 1}</td>
+                            <td className="border px-4 py-2">{items.Date}</td>
+                            <td className="border px-4 py-2">{items.Items?.ItemName}</td>
+                            <td className="border px-4 py-2">{items.Quantity}</td>
+                            <td className="border px-4 py-2">{items.Unit}</td>
+                            <td className="border px-4 py-2">
+                              <span
+                                className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${items.Status.toLowerCase() === "available"
+                                  ? "bg-green-200 text-green-800"
+                                  : items.Status.toLowerCase() === "unavailable"
+                                    ? "bg-red-200 text-red-800"
+                                    : items.Status.toLowerCase() ===
+                                      "low stock"
+                                      ? "bg-yellow-200 text-yellow-800"
+                                      : "bg-gray-200 text-gray-800"
+                                  }`}
+                              >
+                                {items.Status}
+                              </span>
+                              {}
+                            </td>
+                          </tr>
+                        ))
+                      }
+                    </tbody>
+                  </table>
 
-          {/* Table */}
-          <div className='mt-[5dvh]'>
-            <div className="bg-white p-4 rounded-lg shadow-md mt-5 border-l-4 border-red-500" >
-              <div className="flex justify-between items-center mb-4 w-full">
-                <h2 className="text-xl font-semibold text-card-foreground text-zinc-500 text-center w-full">Purchases Data</h2>
-              </div>
-              <div className=' flex justify-center items-center'>
-                <table className="table-fixed w-full p-2">
-                  <thead className="bg-gray-500 text-white">
-                    <tr className="font-bold text-left">
-                      <th className="p-4">SR#</th>
-                      <th className="p-4">Date</th>
-                      <th className="p-4">Material</th>
-                      <th className="p-4">Quantity</th>
-                      <th className="p-4">Unit</th>
-                      <th className="p-4">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="bg-zinc-100">
-                    {
-                      filteredTable.map((items, index) => (
-                        <tr
-                          key={index}
-                          className={index % 2 === 0 ? "bg-zinc-100 text-black font-light" : "text-black font-light"}
-                        >
-                          <td className="border px-4 py-2">{index + 1}</td>
-                          <td className="border px-4 py-2">{items.Date}</td>
-                          <td className="border px-4 py-2">{items.Items?.ItemName}</td>
-                          <td className="border px-4 py-2">{items.Quantity}</td>
-                          <td className="border px-4 py-2">{items.Unit}</td>
-                          <td className="border px-4 py-2">
-                            <span
-                              className={`px-2 py-1 inline-flex text-sm leading-5 font-semibold rounded-lg ${items.Status.toLowerCase() === "available"
-                                ? "bg-green-200 text-green-800"
-                                : items.Status.toLowerCase() === "unavailable"
-                                  ? "bg-red-200 text-red-800"
-                                  : items.Status.toLowerCase() ===
-                                    "low stock"
-                                    ? "bg-yellow-200 text-yellow-800"
-                                    : "bg-gray-200 text-gray-800"
-                                }`}
-                            >
-                              {items.Status}
-                            </span>
-                            {}
-                          </td>
-                        </tr>
-                      ))
-                    }
-                  </tbody>
-                </table>
-
+                </div>
               </div>
             </div>
           </div>

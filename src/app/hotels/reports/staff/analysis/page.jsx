@@ -1,5 +1,7 @@
 "use client";
 
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { useRouter } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
 import { useState, useEffect } from "react";
@@ -10,6 +12,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearSca
 import { IoReceiptOutline } from "react-icons/io5";
 import { IoMdLogOut, IoMdLogIn } from "react-icons/io";
 import { FaStarHalfAlt } from "react-icons/fa";
+import { FaRegFilePdf } from 'react-icons/fa6';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement);
 
@@ -17,6 +20,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointE
 const StaffReport = () => {
 
   const router = useRouter();
+
   // For A Week before
   const today = new Date();
   const weekbefore = new Date(today);
@@ -60,27 +64,6 @@ const StaffReport = () => {
     ],
   };
 
-  const dataLine = {
-    labels: SalesChartDays,
-    datasets: [
-      {
-        label: 'Revenues',
-        data: SalesChart,
-        borderColor: '#FFA500',
-        backgroundColor: 'rgba(255, 0, 0, 0.1)',
-        fill: true,
-        tension: 0.4,
-        pointBackgroundColor: '#FFA500',
-        pointHoverBackgroundColor: '#FFA500',
-        pointBorderColor: '#FFF',
-        pointHoverBorderColor: '#FFF',
-        pointRadius: 5,
-        pointHoverRadius: 7,
-      },
-    ],
-  };
-
-
   const options = {
     cutout: '70%', // This controls the size of the inner hole, adjust as needed
     responsive: true,
@@ -92,47 +75,44 @@ const StaffReport = () => {
     },
   };
 
-  const options_line = {
-    responsive: true,
-    maintainAspectRatio: false,
-    scales: {
-      x: {
-        stacked: true,
-        grid: {
-          display: false, // Remove the grid lines
-        },
-        ticks: {
-          font: {
-            family: 'Poppins', // Use Poppins font
-            weight: 'bold', // Make the x-axis text bold
-          }
-        }
-      },
-      y: {
-        stacked: true,
-        grid: {
-          display: false, // Remove the grid lines
-        },
-        ticks: {
-          font: {
-            family: 'Poppins', // Use Poppins font
-            weight: 'bold', // Make the y-axis text bold
-          }
-        }
-      },
-    },
-    plugins: {
-      legend: {
-        labels: {
-          font: {
-            family: 'Poppins', // Use Poppins font
-            weight: 'bold', // Make the legend text bold
-          }
-        }
-      }
-    }
-  };
 
+  // PDF Generation function
+  const handlePdfGeneration = async () => {
+    const inputData = document.getElementById("Report");  // Replace with your specific element if needed
+
+    // Take a screenshot of the whole page
+    const canvas = await html2canvas(inputData, { scale: 2 });
+
+    // Get the image dimensions
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = 180;  // Width of the Image in mm
+    const pageWidth = 210;  // Width of the PDF page (in mm)  
+    const pageHeight = 290; // Height of the PDF page in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const heightLeft = imgHeight;
+    // Calculate margins to center the image on the page
+    const xOffset = (pageWidth - imgWidth) / 2;  // Horizontal centering
+
+
+    // Create a new PDF document
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    let position = 10;
+
+    // Add the image to the first page
+    pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
+    let remainingHeight = heightLeft - pageHeight;
+
+    // Loop through the rest of the image, adding new pages as needed
+    while (remainingHeight > 0) {
+      position = remainingHeight - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
+      remainingHeight -= pageHeight;
+    }
+
+    // Save the PDF
+    pdf.save(`${StaffName}_Report_ (${to_default}).pdf`);
+  };
 
   async function fetchReport() {
     const staff_id = sessionStorage.getItem('Staff_Report_Id');
@@ -343,144 +323,157 @@ const StaffReport = () => {
             </div>
           </div>
 
-          <div className="w-full flex justify-between">
-            <h2 className="text-xl">Performance Status of <span className="font-bold">{StaffName}</span> :</h2>
+          <div className='justify-end w-full flex'>
+            <div></div>
+            <div>
+              <a onClick={() => { handlePdfGeneration() }} className="flex gap-2 cursor-pointer items-center bg-red-500 text-white px-4 py-2 font-semibold rounded-lg">
+                Download PDF <FaRegFilePdf />
+              </a>
+            </div>
           </div>
 
-          <div className="w-full flex mt-[5dvh] gap-4 text-zinc-500">
-            <div className="bg-white  p-4 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer w-1/5">
-              <h1 className="font-bold">Performance</h1>
-              <div className="flex justify-between items-center h-auto">
-                <div className="flex flex-col justify-center">
-                  <h2 className="font-bold text-black text-2xl"> {Performance}% </h2>
-                  <p
-                    className={`text-xs border-l-4 mt-3 pl-2
+          <div id="Report">
+
+
+            <div className="w-full flex justify-between">
+              <h2 className="text-xl">Performance Status of <span className="font-bold">{StaffName}</span> :</h2>
+            </div>
+
+            <div className="w-full flex mt-[5dvh] gap-4 text-zinc-500">
+              <div className="bg-white  p-4 rounded-lg shadow-md border-l-4 border-red-500 cursor-pointer w-1/5">
+                <h1 className="font-bold">Performance</h1>
+                <div className="flex justify-between items-center h-auto">
+                  <div className="flex flex-col justify-center">
+                    <h2 className="font-bold text-black text-2xl"> {Performance}% </h2>
+                    <p
+                      className={`text-xs border-l-4 mt-3 pl-2
                             ${(Performance > 90) ? 'border-green-500' :
-                        (Performance > 75 && Performance < 90) ? 'border-green-300' :
-                          (Performance > 50 && Performance < 75) ? 'border-yellow-500' :
-                            (Performance < 50) ? 'border-red-500' :
-                              'border-gray-500'
-                      }`}
-                  >
-                    {PerformanceGrade}
-                  </p>
-                </div>
-                <div className="w-[100px] h-[100px] flex items-center ml-10">
-                  <Doughnut data={progress_data} options={options} />
+                          (Performance > 75 && Performance < 90) ? 'border-green-300' :
+                            (Performance > 50 && Performance < 75) ? 'border-yellow-500' :
+                              (Performance < 50) ? 'border-red-500' :
+                                'border-gray-500'
+                        }`}
+                    >
+                      {PerformanceGrade}
+                    </p>
+                  </div>
+                  <div className="w-[100px] h-[100px] flex items-center ml-10">
+                    <Doughnut data={progress_data} options={options} />
+                  </div>
                 </div>
               </div>
+
+              <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 flex flex-col justify-between w-1/5">
+                <div className='flex justify-between text-lg'>
+                  <h1 className="font-bold">Sales Generated</h1>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="">
+                    <p className="text-2xl font-bold text-black">Rs. {SalesAmt | 0}</p>
+                    <p className="text-zinc-500 text-sm">{SalesCount} Orders</p>
+                  </div>
+                  <div className="bg-orange-400 p-2 rounded-lg">
+                    <IoReceiptOutline size={55} color="white" fontSize={600} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 flex flex-col justify-between w-1/5">
+                <div className='flex justify-between text-lg'>
+                  <h1 className="font-bold">Days Present</h1>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="">
+                    <p className="text-2xl font-bold text-black"> {PresentPercent}% </p>
+                    <p className="text-zinc-500 text-sm">{PresentDays} Days</p>
+                  </div>
+                  <div className="bg-orange-400 p-2 rounded-lg">
+                    <IoMdLogIn size={55} color="white" fontSize={600} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 flex flex-col justify-between w-1/5">
+                <div className='flex justify-between text-lg'>
+                  <h1 className="font-bold">Days Absent</h1>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="">
+                    <p className="text-2xl font-bold text-black">{AbsentPercent}%</p>
+                    <p className="text-zinc-500 text-sm">{AbsentDays} Days</p>
+                  </div>
+                  <div className="bg-orange-400 p-2 rounded-lg">
+                    <IoMdLogOut size={55} color="white" fontSize={600} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 flex flex-col justify-between w-1/5">
+                <div className='flex justify-between text-lg'>
+                  <h1 className="font-bold">Half-Days Taken</h1>
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="">
+                    <p className="text-2xl font-bold text-black">{HalfDaysPercent}%</p>
+                    <p className="text-zinc-500 text-sm">{HalfDays} Days</p>
+                  </div>
+                  <div className="bg-orange-400 p-2 rounded-lg">
+                    <FaStarHalfAlt size={55} color="white" fontSize={600} />
+                  </div>
+                </div>
+              </div>
+
             </div>
 
-            <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 flex flex-col justify-between w-1/5">
-              <div className='flex justify-between text-lg'>
-                <h1 className="font-bold">Sales Generated</h1>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="">
-                  <p className="text-2xl font-bold text-black">Rs. {SalesAmt | 0}</p>
-                  <p className="text-zinc-500 text-sm">{SalesCount} Orders</p>
+            <div className="mt-[5dvh]">
+              <div className="bg-white p-4 rounded-lg shadow-md mt-5 border-l-4 border-red-500">
+                <h2 className="text-lg font-semibold text-card-foreground text-zinc-500 pb-4">
+                  Sales Data
+                </h2>
+                <div className=" flex justify-center items-center">
+                  <table className="min-w-full text-black border-collapse">
+                    <thead>
+                      <tr className="bg-gray-500 text-white font-bold">
+                        <th className="border px-4 py-2">SR#</th>
+                        <th className="border px-4 py-2">Date</th>
+                        <th className="border px-4 py-2">Type</th>
+                        <th className="border px-4 py-2">Waiter</th>
+                        <th className="border px-4 py-2">Total Amount</th>
+                        <th className="border px-4 py-2">Balance Amount</th>
+                        <th className="border px-4 py-2">Payment Mode</th>
+                        <th className="border px-4 py-2">Payment Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredTable.length != 0 ||
+                        filteredTable[0] != null ||
+                        filteredTable[0] != undefined ||
+                        filteredTable != 0
+                        ? filteredTable.map((row, index) => (
+                          <tr
+                            key={index}
+                            className={
+                              index % 2 === 0
+                                ? "bg-zinc-100 text-black font-light"
+                                : "text-black font-light"
+                            }
+                          >
+                            <td className="border px-4 py-2">{index + 1}</td>
+                            <td className="border px-4 py-2">{row.Date}</td>
+                            <td className="border px-4 py-2">{row.Type}</td>
+                            <td className="border px-4 py-2">
+                              {row.Waiter.FirstName} {row.Waiter.LastName}
+                            </td>
+                            <td className="border px-4 py-2">{row.TotalAmount}</td>
+                            <td className="border px-4 py-2">{row.BalanceAmount}</td>
+                            <td className="border px-4 py-2">{row.PaymentMode}</td>
+                            <td className="border px-4 py-2">{row.Status}</td>
+                          </tr>
+                        ))
+                        : null}
+                    </tbody>
+                  </table>
                 </div>
-                <div className="bg-orange-400 p-2 rounded-lg">
-                  <IoReceiptOutline size={55} color="white" fontSize={600} />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 flex flex-col justify-between w-1/5">
-              <div className='flex justify-between text-lg'>
-                <h1 className="font-bold">Days Present</h1>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="">
-                  <p className="text-2xl font-bold text-black"> {PresentPercent}% </p>
-                  <p className="text-zinc-500 text-sm">{PresentDays} Days</p>
-                </div>
-                <div className="bg-orange-400 p-2 rounded-lg">
-                  <IoMdLogIn size={55} color="white" fontSize={600} />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 flex flex-col justify-between w-1/5">
-              <div className='flex justify-between text-lg'>
-                <h1 className="font-bold">Days Absent</h1>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="">
-                  <p className="text-2xl font-bold text-black">{AbsentPercent}%</p>
-                  <p className="text-zinc-500 text-sm">{AbsentDays} Days</p>
-                </div>
-                <div className="bg-orange-400 p-2 rounded-lg">
-                  <IoMdLogOut size={55} color="white" fontSize={600} />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500 flex flex-col justify-between w-1/5">
-              <div className='flex justify-between text-lg'>
-                <h1 className="font-bold">Half-Days Taken</h1>
-              </div>
-              <div className="flex justify-between items-center">
-                <div className="">
-                  <p className="text-2xl font-bold text-black">{HalfDaysPercent}%</p>
-                  <p className="text-zinc-500 text-sm">{HalfDays} Days</p>
-                </div>
-                <div className="bg-orange-400 p-2 rounded-lg">
-                  <FaStarHalfAlt size={55} color="white" fontSize={600} />
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <div className="mt-[5dvh]">
-            <div className="bg-white p-4 rounded-lg shadow-md mt-5 border-l-4 border-red-500">
-              <h2 className="text-lg font-semibold text-card-foreground text-zinc-500 pb-4">
-                Sales Data
-              </h2>
-              <div className=" flex justify-center items-center">
-                <table className="min-w-full text-black border-collapse">
-                  <thead>
-                    <tr className="bg-gray-500 text-white font-bold">
-                      <th className="border px-4 py-2">SR#</th>
-                      <th className="border px-4 py-2">Date</th>
-                      <th className="border px-4 py-2">Type</th>
-                      <th className="border px-4 py-2">Waiter</th>
-                      <th className="border px-4 py-2">Total Amount</th>
-                      <th className="border px-4 py-2">Balance Amount</th>
-                      <th className="border px-4 py-2">Payment Mode</th>
-                      <th className="border px-4 py-2">Payment Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredTable.length != 0 ||
-                      filteredTable[0] != null ||
-                      filteredTable[0] != undefined ||
-                      filteredTable != 0
-                      ? filteredTable.map((row, index) => (
-                        <tr
-                          key={index}
-                          className={
-                            index % 2 === 0
-                              ? "bg-zinc-100 text-black font-light"
-                              : "text-black font-light"
-                          }
-                        >
-                          <td className="border px-4 py-2">{index + 1}</td>
-                          <td className="border px-4 py-2">{row.Date}</td>
-                          <td className="border px-4 py-2">{row.Type}</td>
-                          <td className="border px-4 py-2">
-                            {row.Waiter.FirstName} {row.Waiter.LastName}
-                          </td>
-                          <td className="border px-4 py-2">{row.TotalAmount}</td>
-                          <td className="border px-4 py-2">{row.BalanceAmount}</td>
-                          <td className="border px-4 py-2">{row.PaymentMode}</td>
-                          <td className="border px-4 py-2">{row.Status}</td>
-                        </tr>
-                      ))
-                      : null}
-                  </tbody>
-                </table>
               </div>
             </div>
           </div>

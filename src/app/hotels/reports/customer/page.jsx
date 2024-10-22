@@ -1,25 +1,59 @@
 'use client';
 
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import { useRouter } from "next/navigation";
 import { IoIosArrowBack } from "react-icons/io";
 import HotelSideNav from '@/components/SideNavHotel';
 import { ApiHost } from '@/constants/url_consts';
 import React, { useEffect, useState } from 'react';
+import { FaRegFilePdf } from 'react-icons/fa6';
 
 const Customer_Report = () => {
 
-  // // For A Week before
-  // const today = new Date();
-  // const weekbefore = new Date(today);
-  // weekbefore.setDate(today.getDate() - 1);
-  // const from_default = weekbefore.toISOString().split('T')[0];
-  // const to_default = today.toISOString().split('T')[0];
-  //
-  // //Request Params
-  // const [from, setFrom] = useState(from_default);
-  // const [to, setTo] = useState(to_default);
-
   const router = useRouter();
+
+  // PDF Generation function
+  const handlePdfGeneration = async () => {
+
+    const today = new Date();
+    const to_default = today.toISOString().split("T")[0];
+
+    const inputData = document.getElementById("Customer_Report");  // Replace with your specific element if needed
+
+    // Take a screenshot of the whole page
+    const canvas = await html2canvas(inputData, { scale: 2 });
+
+    // Get the image dimensions
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = 180;  // Width of the Image in mm
+    const pageWidth = 210;  // Width of the PDF page (in mm)  
+    const pageHeight = 290; // Height of the PDF page in mm
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+    const heightLeft = imgHeight;
+    // Calculate margins to center the image on the page
+    const xOffset = (pageWidth - imgWidth) / 2;  // Horizontal centering
+
+    // Create a new PDF document
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    let position = 10;
+
+    // Add the image to the first page
+    pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
+    let remainingHeight = heightLeft - pageHeight;
+
+    // Loop through the rest of the image, adding new pages as needed
+    while (remainingHeight > 0) {
+      position = remainingHeight - imgHeight;
+      pdf.addPage();
+      pdf.addImage(imgData, 'PNG', xOffset, position, imgWidth, imgHeight);
+      remainingHeight -= pageHeight;
+    }
+
+    // Save the PDF
+    pdf.save(`Customer_Report (${to_default}).pdf`);
+  };
+
   // Table
   const [Table, setTable] = useState([]);
 
@@ -93,9 +127,14 @@ const Customer_Report = () => {
                 className="px-4 py-2 border rounded-lg w-full"
               />
             </div>
+            <div>
+              <a onClick={() => { handlePdfGeneration() }} className="flex gap-2 cursor-pointer items-center bg-red-500 text-white px-4 py-2 font-semibold rounded-lg">
+                Download PDF <FaRegFilePdf />
+              </a>
+            </div>
           </div>
 
-          <div className='mt-[5dvh]'>
+          <div className='mt-[5dvh]' id='Customer_Report'>
             <div className="bg-white p-4 rounded-lg shadow-md mt-5 border-l-4 border-red-500" >
               <h2 className="text-lg font-semibold text-card-foreground text-zinc-500 pb-4">
                 Customer Data
