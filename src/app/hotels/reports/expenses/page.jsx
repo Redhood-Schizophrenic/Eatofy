@@ -51,7 +51,7 @@ const Expenses_Report = () => {
     const imgData = canvas.toDataURL('image/png');
     const imgWidth = 180;  // Width of the Image in mm
     const pageWidth = 210;  // Width of the PDF page (in mm)  
-    const pageHeight = 290; // Height of the PDF page in mm
+    const pageHeight = 270; // Height of the PDF page in mm
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
     const heightLeft = imgHeight;
     // Calculate margins to center the image on the page
